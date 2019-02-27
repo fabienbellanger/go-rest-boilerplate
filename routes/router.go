@@ -11,14 +11,7 @@ import (
 // StartServer : Démarrage du serveur
 func StartServer(port int) {
 	// Initialisation du serveur
-	// e := initServer()
-	router := gin.New()
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
-
-	if lib.Config.Environment == "production" {
-		gin.SetMode(gin.ReleaseMode)
-	}
+	router := initServer()
 
 	// This handler will match /user/john but will not match /user/ or /user
 	router.GET("/user/:name", func(c *gin.Context) {
@@ -38,6 +31,19 @@ func StartServer(port int) {
 	})
 
 	router.Run(":" + strconv.Itoa(port))
+}
+
+// initServer : Initialisation du serveur
+func initServer() *gin.Engine {
+	router := gin.New()
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
+
+	if lib.Config.Environment == "production" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	return router
 }
 
 // initServer : Initialisation du serveur

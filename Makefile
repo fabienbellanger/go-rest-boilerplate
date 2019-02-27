@@ -15,7 +15,7 @@ install:
 	$(GOINSTALL) ./...
 
 runApi:
-	$(GORUN) main.go web
+	$(GORUN) main.go web -p 8888
 serve: install runApi
 
 build: 
