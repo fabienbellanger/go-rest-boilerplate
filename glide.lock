@@ -1,10 +1,12 @@
-hash: b6031060191a4889d10a1f6f41677299e2c3e83a7cd523e12fb565aea768130d
-updated: 2019-02-26T22:59:09.331174+01:00
+hash: 5a2dc9a4e84883b840a2722db414dc5daa1e18c67facb4c6c3a258449f58f238
+updated: 2019-02-27T21:19:55.063717+01:00
 imports:
 - name: github.com/appleboy/gin-jwt
   version: 18c777042be3ecc5cb3bf79cd24cbd6b28683cdc
 - name: github.com/BurntSushi/toml
   version: 3012a1dbe2e4bd1391d42b32f0577cb7bbc7f005
+- name: github.com/gin-contrib/cors
+  version: cf4846e6a636a76237a28d9286f163c132e841bc
 - name: github.com/gin-contrib/sse
   version: 996076df5b3348fd04ff02aa5f9abd971c2d2d28
 - name: github.com/gin-gonic/gin

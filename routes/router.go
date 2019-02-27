@@ -3,8 +3,10 @@ package routes
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,58 +41,28 @@ func initServer() *gin.Engine {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
+	// Définition de l'environnement
+	// -----------------------------
 	if lib.Config.Environment == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	// CORS
+	// ----
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost"}, // TODO: Mettre dans le fichier de configuration
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+
+	// Gestion des routes inconnues
+	// ----------------------------
+	router.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{"code": http.StatusNotFound, "message": "Page not found"})
+	})
+
 	return router
 }
-
-// initServer : Initialisation du serveur
-// func initServer() *echo.Echo {
-// 	e := echo.New()
-
-// 	// Logger
-// 	logFile, err := os.OpenFile("api-access.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0777)
-// 	defer logFile.Close()
-
-// 	if err != nil {
-// 		log.Errorf("Cannot open 'api-access.log', (%s)", err.Error())
-// 		flag.Usage()
-// 		os.Exit(-1)
-// 	}
-
-// 	e.Debug = true
-
-// 	// if e.Debug {
-// 	// 	e.Logger.SetLevel(log.INFO)
-// 	// }
-
-// 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-// 		Format: "${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
-// 		Output: logFile,
-// 	}))
-
-// 	// Recover
-// 	e.Use(middleware.Recover())
-
-// 	// CORS
-// 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-// 		AllowOrigins: []string{"*"},
-// 		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
-// 	}))
-
-// 	// Secure
-// 	e.Use(middleware.SecureWithConfig(middleware.SecureConfig{
-// 		XSSProtection:         "1; mode=block",
-// 		ContentTypeNosniff:    "nosniff",
-// 		XFrameOptions:         "SAMEORIGIN",
-// 		HSTSMaxAge:            3600,
-// 		ContentSecurityPolicy: "default-src 'self'",
-// 	}))
-
-// 	// Favicon
-// 	e.File("/favicon.ico", "assets/images/favicon.ico")
-
-// 	return e
-// }

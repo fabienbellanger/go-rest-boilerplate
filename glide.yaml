@@ -10,3 +10,5 @@ import:
 - package: github.com/gin-contrib/sse
 - package: github.com/appleboy/gin-jwt
   version: ^2.5.0
+- package: github.com/gin-contrib/cors
+  version: ^1.2.0
