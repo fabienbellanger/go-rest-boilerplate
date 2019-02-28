@@ -11,4 +11,19 @@ func authRoutes(group *gin.RouterGroup, jwtMiddleware *jwt.GinJWTMiddleware) {
 	// ----------------
 	group.POST("/login", jwtMiddleware.LoginHandler)
 	group.GET("/refresh-token", jwtMiddleware.RefreshHandler)
+
+	group.Use(jwtMiddleware.MiddlewareFunc())
+	{
+		group.GET("/hello", helloHandler)
+	}
+}
+
+func helloHandler(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+
+	c.JSON(200, gin.H{
+		"userID": claims["id"],
+		"user":   claims["user"],
+		"text":   "Hello World.",
+	})
 }

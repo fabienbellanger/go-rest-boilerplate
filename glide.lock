@@ -1,5 +1,5 @@
-hash: 5a2dc9a4e84883b840a2722db414dc5daa1e18c67facb4c6c3a258449f58f238
-updated: 2019-02-28T13:48:07.184259799+01:00
+hash: 893d0b45b0bcfe2f2ce4703d4cef21ec9e6f2c3bea13139cf5d1d7d79c153d6e
+updated: 2019-02-28T23:05:24.312505+01:00
 imports:
 - name: github.com/appleboy/gin-jwt
   version: 18c777042be3ecc5cb3bf79cd24cbd6b28683cdc
