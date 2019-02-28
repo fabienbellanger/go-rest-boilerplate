@@ -1,3 +1,5 @@
 config.toml
 debug
 vendor
+
+.idea

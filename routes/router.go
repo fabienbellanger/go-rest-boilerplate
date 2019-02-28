@@ -10,32 +10,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// StartServer : Démarrage du serveur
+// StartServer starts the server
 func StartServer(port int) {
 	// Initialisation du serveur
+	// -------------------------
 	router := initServer()
 
-	// This handler will match /user/john but will not match /user/ or /user
-	router.GET("/user/:name", func(c *gin.Context) {
-		name := c.Param("name")
-		c.String(http.StatusOK, "Hello %s", name)
-	})
+	// Version
+	// -------
+	versionGroup := router.Group("/v1");
 
-	// However, this one will match /user/john/ and also /user/john/send
-	// If no other routers match /user/john, it will redirect to /user/john/
-	// :param : Paramètre obligatoire
-	// *param : Paramètre optionnel
-	router.GET("/user/:name/*action", func(c *gin.Context) {
-		name := c.Param("name")
-		action := c.Param("action")
-		message := name + " is " + action
-		c.String(http.StatusOK, message)
-	})
+	// Initialisation JWT
+	// ------------------
+	jwtMiddleware := initJWTMiddleware()
 
+	// Liste des routes
+	// ----------------
+	authRoutes(versionGroup, jwtMiddleware)
+	exampleRoutes(versionGroup)
+
+	// Lancement du serveur
+	// --------------------
 	router.Run(":" + strconv.Itoa(port))
 }
 
-// initServer : Initialisation du serveur
+// initServer initialize the server
 func initServer() *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Logger())
