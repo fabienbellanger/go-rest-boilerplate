@@ -1,8 +1,11 @@
 package commands
 
 import (
+	"errors"
 	"fmt"
 
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes"
 	"github.com/spf13/cobra"
 )
@@ -38,6 +41,16 @@ var ServeCommand = &cobra.Command{
 		if port < 1000 || port > 10000 {
 			port = defaultPort
 		}
+
+		// Connexion à MySQL
+		// -----------------
+		if !lib.IsDatabaseConfigCorrect() {
+			err := errors.New("No or missing database information in settings file")
+			lib.CheckError(err, 1)
+		}
+
+		database.Open()
+		defer database.DB.Close()
 
 		// Lancement du serveur web
 		// ------------------------

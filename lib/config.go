@@ -9,14 +9,16 @@ type ConfigType struct {
 	Version     string
 	Environment string
 	Database    database `toml:"database"`
-	Jwt    		jwt `toml:"jwt"`
+	Jwt         jwt      `toml:"jwt"`
 }
 
 type database struct {
-	Driver string
-	Host   string
-	Port   int
-	Name   string
+	Driver   string
+	Host     string
+	Port     int
+	Name     string
+	User     string
+	Password string
 }
 
 type jwt struct {
