@@ -23,8 +23,15 @@ func TestGetHTTPResponse(t *testing.T) {
 
 // TestGetHTTPInternalServerError : Test de la fonction GetHTTPInternalServerError
 func TestGetHTTPInternalServerError(t *testing.T) {
-	response := GetHTTPInternalServerError()
-	responseValid := HTTPResponse{500, "Internal Server Error", nil}
+	response := GetHTTPInternalServerError("Database Error")
+	responseValid := HTTPResponse{500, "Database Error", nil}
+
+	if response != responseValid {
+		t.Errorf("GetHTTPInternalServerError - got %+v: , want: %+v.", response, responseValid)
+	}
+
+	response = GetHTTPInternalServerError("")
+	responseValid = HTTPResponse{500, "Internal Server Error", nil}
 
 	if response != responseValid {
 		t.Errorf("GetHTTPInternalServerError - got %+v: , want: %+v.", response, responseValid)

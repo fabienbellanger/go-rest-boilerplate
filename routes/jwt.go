@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"fmt"
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"time"
 
 	"github.com/appleboy/gin-jwt"
@@ -26,7 +26,7 @@ type User struct {
 func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 	authMiddleware = &jwt.GinJWTMiddleware{
 		Realm:      "test zone",
-		Key:        []byte("secret key"), // TODO: Récupérer depuis le fichier de config
+		Key:        []byte(lib.Config.Jwt.Secret), // TODO: Récupérer depuis le fichier de config
 		Timeout:    time.Hour,
 		MaxRefresh: time.Hour,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
@@ -42,17 +42,17 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 			var loginParameters loginParametersType
 
 			if err := c.ShouldBind(&loginParameters); err != nil {
-				return "", jwt.ErrMissingLoginValues
+				return nil, jwt.ErrMissingLoginValues
 			}
 
-			userID := loginParameters.Username
+			username := loginParameters.Username
 			password := loginParameters.Password
 
 			// TODO: Test d'exemple, à modifier
-			if userID == "admin" && password == "pwd" {
+			if username == "admin" && password == "pwd" {
 				return &User{
 					ID:        123,
-					UserName:  userID,
+					UserName:  username,
 					LastName:  "Admin",
 					FirstName: "Admin",
 				}, nil
@@ -61,22 +61,22 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			fmt.Printf("Authorizator %f\n", data.(float64))
 			// data semble correspondre au claims["id"]
-			//
+			// fmt.Printf("Authorizator %v of type %v\n", data, reflect.TypeOf(data))
 
 			// TODO: Test d'exemple, à modifier
-			if v, ok := data.(float64); ok && v == 123 {
+			if v := uint64(data.(float64)); v == 123 {
 				return true
 			}
 
 			return false
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
-			c.JSON(code, gin.H{
-				"code":    code,
-				"message": "Unauthorized",
-			})
+			c.JSON(code, lib.GetHTTPResponse(
+				code,
+				"Unauthorized: " + message,
+				nil,
+			))
 		},
 		TokenLookup:   "header:Authorization",
 		TokenHeadName: "Bearer",

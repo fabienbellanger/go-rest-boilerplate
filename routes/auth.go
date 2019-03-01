@@ -2,7 +2,9 @@ package routes
 
 import (
 	"github.com/appleboy/gin-jwt"
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // authRoutes : Partie authentification
@@ -21,9 +23,12 @@ func authRoutes(group *gin.RouterGroup, jwtMiddleware *jwt.GinJWTMiddleware) {
 func helloHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 
-	c.JSON(200, gin.H{
-		"userID": claims["id"],
-		"user":   claims["user"],
-		"text":   "Hello World.",
-	})
+	c.JSON(http.StatusOK, lib.GetHTTPResponse(
+		http.StatusOK,
+		"Success",
+		gin.H{
+			"user": claims["user"],
+			"text": "Hello World.",
+		}),
+	)
 }

@@ -13,15 +13,15 @@ func init() {
 	// Flag
 	// ----
 	defaultPort = 8080
-	WebCommand.Flags().IntVarP(&port, "port", "p", defaultPort, "listened port")
+	ServeCommand.Flags().IntVarP(&port, "port", "p", defaultPort, "listened port")
 
 	// Ajout de la commande à la commande racine
-	rootCommand.AddCommand(WebCommand)
+	rootCommand.AddCommand(ServeCommand)
 }
 
-// WebCommand : Web command
-var WebCommand = &cobra.Command{
-	Use:   "web",
+// ServeCommand : Web command
+var ServeCommand = &cobra.Command{
+	Use:   "serve",
 	Short: "Launch the web server",
 
 	Run: func(cmd *cobra.Command, args []string) {

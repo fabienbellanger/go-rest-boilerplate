@@ -9,6 +9,7 @@ type ConfigType struct {
 	Version     string
 	Environment string
 	Database    database `toml:"database"`
+	Jwt    		jwt `toml:"jwt"`
 }
 
 type database struct {
@@ -16,6 +17,10 @@ type database struct {
 	Host   string
 	Port   int
 	Name   string
+}
+
+type jwt struct {
+	Secret string
 }
 
 // Config variable
@@ -32,5 +37,5 @@ func InitConfig() {
 
 // IsDatabaseConfigCorrect : La configuration de la base de données est-elle correcte ?
 func IsDatabaseConfigCorrect() bool {
-	return (Config.Database.Driver != "" && Config.Database.Name != "" && Config.Database.Host != "")
+	return Config.Database.Driver != "" && Config.Database.Name != "" && Config.Database.Host != ""
 }

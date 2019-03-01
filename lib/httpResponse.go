@@ -7,7 +7,7 @@ type HTTPResponse struct {
 	Data    interface{} `json:"data,omitempty" xml:"data"`
 }
 
-// GetHTTPResponse : Retourne le type HTTPResponse
+// GetHTTPResponse returns HTTPResponse type
 func GetHTTPResponse(code int, message string, data interface{}) HTTPResponse {
 	return HTTPResponse{
 		Code:    code,
@@ -16,11 +16,15 @@ func GetHTTPResponse(code int, message string, data interface{}) HTTPResponse {
 	}
 }
 
-// GetHTTPInternalServerError return 500 error
-func GetHTTPInternalServerError() HTTPResponse {
+// GetHTTPInternalServerError returns 500 error
+func GetHTTPInternalServerError(message string) HTTPResponse {
+	if message == "" {
+		message = "Internal Server Error"
+	}
+
 	return HTTPResponse{
 		Code:    500,
-		Message: "Internal Server Error",
+		Message: message,
 		Data:    nil,
 	}
 }
