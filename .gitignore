@@ -1,6 +1,8 @@
-config.toml
 debug
 vendor
+
+config.toml
+dump_*.sql
 
 .idea
 .vscode

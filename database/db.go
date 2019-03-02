@@ -1,7 +1,5 @@
 package database
 
-// TODO: Faire une pseudo "classe"
-
 import (
 	"database/sql"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"

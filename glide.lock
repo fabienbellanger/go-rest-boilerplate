@@ -1,10 +1,20 @@
-hash: 893d0b45b0bcfe2f2ce4703d4cef21ec9e6f2c3bea13139cf5d1d7d79c153d6e
-updated: 2019-02-28T23:05:24.312505+01:00
+hash: 8332298fb878d1f849c9cddb75a6c98950b841646abdb234d6e335887301bb01
+updated: 2019-03-02T23:02:19.297795+01:00
 imports:
 - name: github.com/appleboy/gin-jwt
   version: 18c777042be3ecc5cb3bf79cd24cbd6b28683cdc
 - name: github.com/BurntSushi/toml
   version: 3012a1dbe2e4bd1391d42b32f0577cb7bbc7f005
+- name: github.com/cloudfoundry/bytefmt
+  version: b31f603f5e1e047fdb38584e1a922dcc5c4de5c8
+- name: github.com/fabienbellanger/goMattermost
+  version: 131663126c1d2e3bcb691bbb35277468d4e29620
+  subpackages:
+  - config
+  - database
+  - toolbox
+- name: github.com/fatih/color
+  version: 5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4
 - name: github.com/gin-contrib/cors
   version: cf4846e6a636a76237a28d9286f163c132e841bc
 - name: github.com/gin-contrib/sse
@@ -25,6 +35,8 @@ imports:
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/json-iterator/go
   version: 5bc93205020f6311d7e4a34f82c5616a18ec35e5
+- name: github.com/mattn/go-colorable
+  version: efa589957cd060542a26d2dd7832fd6a6c6c3ade
 - name: github.com/mattn/go-isatty
   version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
 - name: github.com/modern-go/concurrent
@@ -43,6 +55,10 @@ imports:
   version: 3b58ed4ad3395d483fc92d5d14123ce2c3581fec
   subpackages:
   - unix
+- name: google.golang.org/appengine
+  version: 4216e58b9158e5f1c906f1aca75162a46a2ec88a
+  subpackages:
+  - cloudsql
 - name: gopkg.in/dgrijalva/jwt-go.v3
   version: 06ea1031745cb8b3dab3f6a236daf2b0aa468b7e
 - name: gopkg.in/go-playground/validator.v8

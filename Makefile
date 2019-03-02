@@ -18,6 +18,14 @@ runApi:
 	$(GORUN) main.go serve -p 8888
 serve: install runApi
 
+runDbInit:
+	$(GORUN) main.go db --init
+dbInit: install runDbInit
+
+runDbDump:
+	$(GORUN) main.go db --dump
+dbDump: install runDbDump
+
 build: 
 	$(GOBUILD) -o $(BINARY_NAME) -v
 
