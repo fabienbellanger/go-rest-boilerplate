@@ -27,8 +27,12 @@ func helloHandler(c *gin.Context) {
 		http.StatusOK,
 		"Success",
 		gin.H{
-			"user": claims["user"],
-			"text": "Hello World.",
+			"id":        claims["id"],
+			"username":  claims["username"],
+			"lastname":  claims["lastname"],
+			"firstname": claims["firstname"],
+			"fullname":  claims["fullname"],
+			"text":      "Hello World.",
 		}),
 	)
 }

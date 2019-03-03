@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/fabienbellanger/go-rest-boilerplate/modules/user"
 	"time"
 
 	"github.com/appleboy/gin-jwt"
@@ -14,26 +15,21 @@ type loginParametersType struct {
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
-// User structure
-type User struct {
-	ID        uint64
-	UserName  string
-	FirstName string
-	LastName  string
-}
-
 // initJWTMiddleware initialize JWT middleware
 func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 	authMiddleware = &jwt.GinJWTMiddleware{
 		Realm:      "test zone",
-		Key:        []byte(lib.Config.Jwt.Secret), // TODO: Récupérer depuis le fichier de config
+		Key:        []byte(lib.Config.Jwt.Secret),
 		Timeout:    time.Hour,
 		MaxRefresh: time.Hour,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			if v, ok := data.(*User); ok {
+			if v, ok := data.(*user.UserDB); ok {
 				return jwt.MapClaims{
-					"id":   v.ID,
-					"user": v,
+					"id":        v.ID,
+					"username":  v.Username,
+					"lastname":  v.Lastname,
+					"firstname": v.Firstname,
+					"fullname":  v.GetFullname(),
 				}
 			}
 			return jwt.MapClaims{}
@@ -48,14 +44,12 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 			username := loginParameters.Username
 			password := loginParameters.Password
 
-			// TODO: Test d'exemple, à modifier
-			if username == "admin" && password == "pwd" {
-				return &User{
-					ID:        123,
-					UserName:  username,
-					LastName:  "Admin",
-					FirstName: "Admin",
-				}, nil
+			// Vérification en base
+			// --------------------
+			userToCheck, err := user.CheckLogin(username, password)
+
+			if err == nil && userToCheck.ID != 0 {
+				return &userToCheck, nil
 			}
 
 			return nil, jwt.ErrFailedAuthentication
@@ -64,8 +58,8 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 			// data semble correspondre au claims["id"]
 			// fmt.Printf("Authorizator %v of type %v\n", data, reflect.TypeOf(data))
 
-			// TODO: Test d'exemple, à modifier
-			if v := uint64(data.(float64)); v == 123 {
+			// Si un ID existe, l'utilisateur est autorisé à utiliser l'API
+			if v := uint64(data.(float64)); v > 0 {
 				return true
 			}
 
@@ -74,7 +68,7 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, lib.GetHTTPResponse(
 				code,
-				"Unauthorized: " + message,
+				"Unauthorized: "+message,
 				nil,
 			))
 		},
