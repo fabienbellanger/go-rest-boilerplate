@@ -5,7 +5,7 @@ environment = "development" # development | production
 
 [database]
 driver = "mysql"
-host = "localhost"
+host = "localhost" # Pour docker : docker inspect <container name> | grep IPAddr
 port = 3306
 name = "myDatabase"
 user = "myUser"

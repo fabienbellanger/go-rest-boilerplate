@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	_ "github.com/go-sql-driver/mysql" // MySQL driver
 	"strconv"
@@ -19,9 +20,13 @@ func Open() {
 	db, err := sql.Open(
 		databaseConfig.Driver,
 		databaseConfig.User+":"+databaseConfig.Password+
-			"@tcp("+databaseConfig.Host+":"+strconv.Itoa(databaseConfig.Port)+
-			")/"+databaseConfig.Name+"?parseTime=true")
+			"@tcp("+databaseConfig.Host+":"+strconv.Itoa(databaseConfig.Port)+")"+
+			"/"+databaseConfig.Name+"?parseTime=true")
 	lib.CheckError(err, 0)
+
+	fmt.Println(databaseConfig.User + ":" + databaseConfig.Password +
+		"@tcp(" + databaseConfig.Host + ":" + strconv.Itoa(databaseConfig.Port) + ")" +
+		"/" + databaseConfig.Name + "?parseTime=true")
 
 	DB = db
 }

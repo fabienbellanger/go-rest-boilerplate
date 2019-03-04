@@ -61,15 +61,15 @@ var DatabaseCommand = &cobra.Command{
 			// _, err := fmt.Scanf("%s", &confirm)
 			// lib.CheckError(err, 0)
 
-			if confirm == "Y" {
-				fmt.Print("\n\n -> Database initialization:\t")
+			if confirm == "n" {
+				fmt.Print("\n\n -> Database initialization: ")
+				color.Yellow("Operation aborded\n\n")
+			} else {
+				fmt.Print("\n\n -> Database initialization: ")
 
 				database.InitDatabase()
 
 				color.Green("Success\n\n")
-			} else {
-				fmt.Print("\n\n -> Database initialization:\t")
-				color.Yellow("Operation aborded\n\n")
 			}
 		} else if Dump {
 			// Dump
