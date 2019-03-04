@@ -1,0 +1,5 @@
+debug
+vendor
+
+config.toml
+dump_*.sql

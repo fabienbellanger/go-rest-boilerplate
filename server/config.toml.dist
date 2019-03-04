@@ -1,0 +1,15 @@
+# Config file
+
+version = "0.0.1"
+environment = "development" # development | production
+
+[database]
+driver = "mysql"
+host = "localhost" # Pour docker : docker inspect <container name> | grep IPAddr
+port = 3306
+name = "apiticSellers"
+user = "myUser"
+password = "myPassword"
+
+[jwt]
+secret = "mysecretkey"
