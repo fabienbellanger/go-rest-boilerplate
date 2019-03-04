@@ -1,8 +1,11 @@
 package routes
 
 import (
+	"crypto/sha512"
+	"database/sql"
+	"encoding/hex"
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/modules/user"
 	"time"
 
 	"github.com/appleboy/gin-jwt"
@@ -15,6 +18,17 @@ type loginParametersType struct {
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
+// UserDB type
+type UserDB struct {
+	ID        uint64
+	Username  string
+	Password  string
+	Lastname  string
+	Firstname string
+	CreatedAt sql.RawBytes
+	DeletedAt sql.RawBytes
+}
+
 // initJWTMiddleware initialize JWT middleware
 func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 	authMiddleware = &jwt.GinJWTMiddleware{
@@ -23,13 +37,15 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 		Timeout:    time.Hour,
 		MaxRefresh: time.Hour,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			if v, ok := data.(*user.UserDB); ok {
+			// PayloadFunc maps the claims in the JWT
+			// --------------------------------------
+			if v, ok := data.(*UserDB); ok {
 				return jwt.MapClaims{
 					"id":        v.ID,
 					"username":  v.Username,
 					"lastname":  v.Lastname,
 					"firstname": v.Firstname,
-					"fullname":  v.GetFullname(),
+					"fullname":  v.getFullname(),
 				}
 			}
 			return jwt.MapClaims{}
@@ -46,7 +62,7 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 
 			// Vérification en base
 			// --------------------
-			userToCheck, err := user.CheckLogin(username, password)
+			userToCheck, err := checkLogin(username, password)
 
 			if err == nil && userToCheck.ID != 0 {
 				return &userToCheck, nil
@@ -55,8 +71,7 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			// data semble correspondre au claims["id"]
-			// fmt.Printf("Authorizator %v of type %v\n", data, reflect.TypeOf(data))
+			// INFO: data semble correspondre au claims["id"]
 
 			// Si un ID existe, l'utilisateur est autorisé à utiliser l'API
 			if v := uint64(data.(float64)); v > 0 {
@@ -78,4 +93,31 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 	}
 
 	return
+}
+
+// checkLogin checks if username and password are corrct
+func checkLogin(username, password string) (UserDB, error) {
+	encryptPassword := sha512.Sum512([]byte(password))
+	encryptPasswordStr := hex.EncodeToString(encryptPassword[:])
+	query := `
+		SELECT id, username, lastname, firstname, created_at, deleted_at
+		FROM user
+		WHERE username = ? AND password = ? AND deleted_at IS NULL
+		LIMIT 1`
+	rows, err := database.Select(query, username, encryptPasswordStr)
+
+	var user UserDB
+
+	for rows.Next() {
+		err = rows.Scan(&user.ID, &user.Username, &user.Lastname, &user.Firstname, &user.CreatedAt, &user.DeletedAt)
+
+		lib.CheckError(err, 0)
+	}
+
+	return user, err
+}
+
+// getFullname displays user fullname
+func (u UserDB) getFullname() string {
+	return u.Firstname + " " + u.Lastname
 }

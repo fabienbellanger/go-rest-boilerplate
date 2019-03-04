@@ -18,16 +18,17 @@ func InitDatabase() {
 	queries = append(queries, `
 		CREATE TABLE user (
 			id int(11) unsigned NOT NULL AUTO_INCREMENT,
-			username varchar(255) NOT NULL,
+			username varchar(191) NOT NULL,
 			password varchar(128) NOT NULL,
 			lastname varchar(100) NOT NULL,
 			firstname varchar(100) NOT NULL,
-			created_at timestamp NOT NULL,
-			deleted_at timestamp NULL DEFAULT NULL,
+			created_at datetime NOT NULL,
+			deleted_at datetime NULL DEFAULT NULL,
 			PRIMARY KEY (id)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`)
-
-	// TODO: Ajouter les index
+	queries = append(queries, "CREATE UNIQUE INDEX index_user_username ON user(username)")
+	queries = append(queries, "CREATE INDEX index_user_password ON user(password)")
+	queries = append(queries, "CREATE INDEX index_user_deleted_at ON user(deleted_at)")
 
 	transaction, err := DB.Begin()
 	lib.CheckError(err, 1)
@@ -63,7 +64,7 @@ func DumpDatabase() (string, int) {
 
 	// Création du fichier
 	// -------------------
-	dumpFileName := "dump_" + time.Now().Format("2006-01-02_150405") + ".sql"
+	dumpFileName := "dump_" + lib.Config.Database.Name + "_" + time.Now().Format("2006-01-02_150405") + ".sql"
 	file, err := os.Create(dumpFileName)
 	lib.CheckError(err, 2)
 

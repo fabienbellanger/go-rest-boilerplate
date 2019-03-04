@@ -16,11 +16,13 @@ func authRoutes(group *gin.RouterGroup, jwtMiddleware *jwt.GinJWTMiddleware) {
 
 	group.Use(jwtMiddleware.MiddlewareFunc())
 	{
-		group.GET("/hello", helloHandler)
+		group.GET("/users", getUserHandler)
 	}
 }
 
-func helloHandler(c *gin.Context) {
+// getUserHandler displays authenticated user information
+// TODO: Mettre dans un controleur
+func getUserHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
 
 	c.JSON(http.StatusOK, lib.GetHTTPResponse(
@@ -32,7 +34,6 @@ func helloHandler(c *gin.Context) {
 			"lastname":  claims["lastname"],
 			"firstname": claims["firstname"],
 			"fullname":  claims["fullname"],
-			"text":      "Hello World.",
 		}),
 	)
 }
