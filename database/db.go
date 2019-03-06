@@ -61,8 +61,16 @@ func Insert(query string, args ...interface{}) (int64, error) {
 	result, err := executeQuery(query, args...)
 	lib.CheckError(err, 0)
 
+	if err != nil {
+		return 0, err
+	}
+
 	id, err := result.LastInsertId()
 	lib.CheckError(err, 0)
+
+	if err != nil {
+		return 0, err
+	}
 
 	return id, err
 }
@@ -72,8 +80,16 @@ func Update(query string, args ...interface{}) (int64, error) {
 	result, err := executeQuery(query, args...)
 	lib.CheckError(err, 0)
 
+	if err != nil {
+		return 0, err
+	}
+
 	affect, err := result.RowsAffected()
 	lib.CheckError(err, 0)
+
+	if err != nil {
+		return 0, err
+	}
 
 	return affect, err
 }
@@ -83,8 +99,16 @@ func Delete(query string, args ...interface{}) (int64, error) {
 	result, err := executeQuery(query, args...)
 	lib.CheckError(err, 0)
 
+	if err != nil {
+		return 0, err
+	}
+
 	affect, err := result.RowsAffected()
 	lib.CheckError(err, 0)
+
+	if err != nil {
+		return 0, err
+	}
 
 	return affect, err
 }
