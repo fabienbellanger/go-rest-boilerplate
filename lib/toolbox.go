@@ -1,23 +1,57 @@
 package lib
 
 import (
+	"github.com/gin-gonic/gin"
 	"log"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 )
 
-// CheckError : Gestion des erreurs
+// CheckError manages errors
 func CheckError(err error, exitCode int) {
 	if err != nil {
 		if exitCode != 0 {
-			log.Println("Error (" + strconv.Itoa(exitCode) + "): " + err.Error() + "\n\n")
+			GLog("Error (" + strconv.Itoa(exitCode) + "): " + err.Error())
 
 			os.Exit(exitCode)
 		} else {
-			log.Println(err.Error() + "\n")
+			GLog(err.Error() + "\n")
 		}
+	}
+}
+
+// GLogln displays log in gin.DefaultWriter
+func GLog(v ...interface{}) {
+	// On redirige les logs vers le default writer de Gin
+	log.SetOutput(gin.DefaultWriter)
+
+	log.Printf("[%s] %+v\n", time.Now().Format("2006/01/02 - 15:04:05"), v)
+}
+
+// SqlLog displays SQL log in gin.DefaultWriter
+func SqlLog(queryTime time.Duration, query string, args ...interface{}) {
+	// On redirige les logs vers le default writer de Gin
+	log.SetOutput(gin.DefaultWriter)
+
+	if Config.SqlLog.Level == 1 {
+		// Time only
+		log.Printf("[SQL] %s | \t%s\n", time.Now().Format("2006/01/02 - 15:04:05"), queryTime)
+	} else if Config.SqlLog.Level == 2 {
+		// Time and query
+		log.Printf("[SQL] %s | \t%s | query: %s\n",
+			time.Now().Format("2006/01/02 - 15:04:05"),
+			queryTime,
+			query)
+	} else if Config.SqlLog.Level == 3 {
+		// Time, query and arguments
+		log.Printf("[SQL] %s | \t%s | query: %s | args: %v\n",
+			time.Now().Format("2006/01/02 - 15:04:05"),
+			queryTime,
+			query,
+			args)
 	}
 }
 

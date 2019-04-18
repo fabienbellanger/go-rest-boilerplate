@@ -8,11 +8,12 @@ import (
 type ConfigType struct {
 	Version     string
 	Environment string
-	Database    database `toml:"database"`
-	Jwt         jwt      `toml:"jwt"`
+	Database    databaseType `toml:"database"`
+	Jwt         jwtType      `toml:"jwt"`
+	SqlLog      sqlLogType   `toml:"sql_log"`
 }
 
-type database struct {
+type databaseType struct {
 	Driver   string
 	Host     string
 	Port     int
@@ -21,8 +22,13 @@ type database struct {
 	Password string
 }
 
-type jwt struct {
+type jwtType struct {
 	Secret string
+}
+
+type sqlLogType struct {
+	Level uint
+	Limit uint
 }
 
 // Config variable

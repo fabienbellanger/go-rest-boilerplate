@@ -5,6 +5,7 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	_ "github.com/go-sql-driver/mysql" // MySQL driver
 	"strconv"
+	"time"
 )
 
 var (
@@ -20,7 +21,7 @@ func Open() {
 		databaseConfig.Driver,
 		databaseConfig.User+":"+databaseConfig.Password+
 			"@tcp("+databaseConfig.Host+":"+strconv.Itoa(databaseConfig.Port)+")"+
-			"/"+databaseConfig.Name+"?parseTime=true")
+			"/"+databaseConfig.Name+"?parseTime=true&loc=Europe%2FParis")
 	lib.CheckError(err, 0)
 
 	DB = db
@@ -36,22 +37,46 @@ func prepareQuery(query string) *sql.Stmt {
 
 // executeQuery : Exécute une requête de type INSERT, UPDATE ou DELETE
 func executeQuery(query string, args ...interface{}) (sql.Result, error) {
+	var start time.Time
+
+	if lib.Config.SqlLog.Level >= 1 {
+		start = time.Now()
+	}
+
 	statement := prepareQuery(query)
 	defer statement.Close()
 
 	result, err := statement.Exec(args...)
 	lib.CheckError(err, 0)
 
+	if lib.Config.SqlLog.Level >= 1 {
+		// TODO: Gérer la variable limit du fichier de configuration
+		elapsed := time.Since(start)
+		lib.SqlLog(elapsed, query)
+	}
+
 	return result, err
 }
 
 // Select : Exécution d'une requête
 func Select(query string, args ...interface{}) (*sql.Rows, error) {
+	var start time.Time
+
+	if lib.Config.SqlLog.Level >= 1 {
+		start = time.Now()
+	}
+
 	statement := prepareQuery(query)
 	defer statement.Close()
 
 	rows, err := statement.Query(args...)
 	lib.CheckError(err, 0)
+
+	if lib.Config.SqlLog.Level >= 1 {
+		// TODO: Gérer la variable limit du fichier de configuration
+		elapsed := time.Since(start)
+		lib.SqlLog(elapsed, query, args)
+	}
 
 	return rows, err
 }
