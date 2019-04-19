@@ -32,24 +32,24 @@ func GLog(v ...interface{}) {
 }
 
 // SqlLog displays SQL log in gin.DefaultWriter
-func SqlLog(queryTime time.Duration, query string, args ...interface{}) {
+func SqlLog(latency time.Duration, query string, args ...interface{}) {
 	// On redirige les logs vers le default writer de Gin
 	log.SetOutput(gin.DefaultWriter)
 
 	if Config.SqlLog.Level == 1 {
 		// Time only
-		log.Printf("[SQL] %s | \t%s\n", time.Now().Format("2006/01/02 - 15:04:05"), queryTime)
+		log.Printf("[SQL] %s | %13v |\n", time.Now().Format("2006/01/02 - 15:04:05"), latency)
 	} else if Config.SqlLog.Level == 2 {
 		// Time and query
-		log.Printf("[SQL] %s | \t%s | query: %s\n",
+		log.Printf("[SQL] %s | %13v | query: %s\n",
 			time.Now().Format("2006/01/02 - 15:04:05"),
-			queryTime,
+			latency,
 			query)
 	} else if Config.SqlLog.Level == 3 {
 		// Time, query and arguments
-		log.Printf("[SQL] %s | \t%s | query: %s | args: %v\n",
+		log.Printf("[SQL] %s | %13v | query: %s | args: %v\n",
 			time.Now().Format("2006/01/02 - 15:04:05"),
-			queryTime,
+			latency,
 			query,
 			args)
 	}

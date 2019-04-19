@@ -37,11 +37,8 @@ func prepareQuery(query string) *sql.Stmt {
 
 // executeQuery : Exécute une requête de type INSERT, UPDATE ou DELETE
 func executeQuery(query string, args ...interface{}) (sql.Result, error) {
-	var start time.Time
-
-	if lib.Config.SqlLog.Level >= 1 {
-		start = time.Now()
-	}
+	// Start timer
+	start := time.Now()
 
 	statement := prepareQuery(query)
 	defer statement.Close()
@@ -57,11 +54,8 @@ func executeQuery(query string, args ...interface{}) (sql.Result, error) {
 
 // Select : Exécution d'une requête
 func Select(query string, args ...interface{}) (*sql.Rows, error) {
-	var start time.Time
-
-	if lib.Config.SqlLog.Level >= 1 {
-		start = time.Now()
-	}
+	// Start timer
+	start := time.Now()
 
 	statement := prepareQuery(query)
 	defer statement.Close()
@@ -133,10 +127,9 @@ func Delete(query string, args ...interface{}) (int64, error) {
 }
 
 // logRequest writes query log to Gin default writer
-func logRequest(startTime time.Time, query string, args ...interface{}) {
+func logRequest(start time.Time, query string, args ...interface{}) {
 	if lib.Config.SqlLog.Level >= 1 {
-		// TODO: Gérer la variable limit du fichier de configuration
-		elapsed := time.Since(startTime)
+		elapsed := time.Since(start)
 
 		if lib.Config.SqlLog.Limit == 0.0 || elapsed.Seconds() >= lib.Config.SqlLog.Limit {
 			lib.SqlLog(elapsed, query, args)
