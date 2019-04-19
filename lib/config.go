@@ -28,7 +28,7 @@ type jwtType struct {
 
 type sqlLogType struct {
 	Level uint
-	Limit uint
+	Limit float64
 }
 
 // Config variable
