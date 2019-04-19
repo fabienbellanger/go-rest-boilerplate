@@ -10,6 +10,7 @@ type ConfigType struct {
 	Environment string
 	Database    databaseType `toml:"database"`
 	Jwt         jwtType      `toml:"jwt"`
+	Server      server       `toml:"server"`
 	SqlLog      sqlLogType   `toml:"sql_log"`
 }
 
@@ -24,6 +25,11 @@ type databaseType struct {
 
 type jwtType struct {
 	Secret string
+}
+
+type server struct {
+	Port         int
+	AllowOrigins []string
 }
 
 type sqlLogType struct {
@@ -46,4 +52,9 @@ func InitConfig() {
 // IsDatabaseConfigCorrect : La configuration de la base de données est-elle correcte ?
 func IsDatabaseConfigCorrect() bool {
 	return Config.Database.Driver != "" && Config.Database.Name != "" && Config.Database.Host != ""
+}
+
+// IsServerConfigCorrect checks if server config is correct
+func IsServerConfigCorrect() bool {
+	return len(Config.Server.AllowOrigins) > 0
 }

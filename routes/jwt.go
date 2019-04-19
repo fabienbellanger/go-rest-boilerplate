@@ -48,6 +48,7 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 					"fullname":  v.getFullname(),
 				}
 			}
+
 			return jwt.MapClaims{}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {

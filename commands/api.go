@@ -38,6 +38,12 @@ var ServeCommand = &cobra.Command{
 
 		// Test du port
 		// ------------
+		if port == defaultPort && lib.Config.Server.Port != 0 {
+			// Si on n'a pas spécifié un port dans la commande, on prend celui du fichier de configuration
+			// -------------------------------------------------------------------------------------------
+			port = lib.Config.Server.Port
+		}
+
 		if port < 1000 || port > 10000 {
 			port = defaultPort
 		}

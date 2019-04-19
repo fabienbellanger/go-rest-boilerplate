@@ -2,12 +2,11 @@ package routes
 
 import (
 	"github.com/appleboy/gin-jwt"
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/fabienbellanger/go-rest-boilerplate/controllers"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
-// authRoutes : Partie authentification
+// authRoutes manages authentication routes
 func authRoutes(group *gin.RouterGroup, jwtMiddleware *jwt.GinJWTMiddleware) {
 	// Liste des routes
 	// ----------------
@@ -16,24 +15,6 @@ func authRoutes(group *gin.RouterGroup, jwtMiddleware *jwt.GinJWTMiddleware) {
 
 	group.Use(jwtMiddleware.MiddlewareFunc())
 	{
-		group.GET("/users", getUserHandler)
+		group.GET("/users", controllers.GetUserHandler)
 	}
-}
-
-// getUserHandler displays authenticated user information
-// TODO: Mettre dans un controleur
-func getUserHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-
-	c.JSON(http.StatusOK, lib.GetHTTPResponse(
-		http.StatusOK,
-		"Success",
-		gin.H{
-			"id":        claims["id"],
-			"username":  claims["username"],
-			"lastname":  claims["lastname"],
-			"firstname": claims["firstname"],
-			"fullname":  claims["fullname"],
-		}),
-	)
 }

@@ -1,7 +1,10 @@
 package routes
 
 import (
+	"errors"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -18,16 +21,19 @@ func StartServer(port int) {
 
 	// Version
 	// -------
-	versionGroup := router.Group("/v1");
+	versionGroup := router.Group("/v1")
 
 	// Initialisation JWT
 	// ------------------
 	jwtMiddleware := initJWTMiddleware()
 
-	// Liste des routes
-	// ----------------
-	authRoutes(versionGroup, jwtMiddleware)
+	// Liste des routes publiques (à mettre avant les routes protégées)
+	// ----------------------------------------------------------------
 	exampleRoutes(versionGroup)
+
+	// Liste des routes protégées
+	// --------------------------
+	authRoutes(versionGroup, jwtMiddleware)
 
 	// Lancement du serveur
 	// --------------------
@@ -36,22 +42,37 @@ func StartServer(port int) {
 
 // initServer initialize the server
 func initServer() *gin.Engine {
-	router := gin.New()
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
+	// La config pour le CORS est-elle correcte ?
+	// ------------------------------------------
+	if !lib.IsServerConfigCorrect() {
+		lib.CheckError(errors.New("no allow origins defined in config file"), 1)
+	}
 
 	// Définition de l'environnement
 	// -----------------------------
 	if lib.Config.Environment == "production" {
 		gin.SetMode(gin.ReleaseMode)
+
+		// Logs dans un fichier seulement en production
+		// --------------------------------------------
+		logsFile, _ := os.Create("gin.log")
+		gin.DisableConsoleColor()
+		gin.DefaultWriter = io.MultiWriter(logsFile)
 	}
+
+	// Création de l'instance de Gin
+	// -----------------------------
+	router := gin.New()
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
 
 	// CORS
 	// ----
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost"}, // TODO: Mettre dans le fichier de configuration
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
-		AllowHeaders:     []string{"Origin"},
+		// AllowAllOrigins:true,
+		AllowOrigins:     lib.Config.Server.AllowOrigins,
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,

@@ -78,3 +78,13 @@ func TestIsDatebaseConfigCorrect(t *testing.T) {
 		t.Errorf("IsDatabaseConfigCorrect - got: %t, want: %t.", !isCorrect, false)
 	}
 }
+
+// TestIsServerConfigCorrect : Test si la configuration du serveur est correcte
+func TestIsServerConfigCorrect(t *testing.T) {
+	Config.Server.AllowOrigins = []string{}
+	isCorrect := IsServerConfigCorrect()
+
+	if isCorrect {
+		t.Errorf("IsServerConfigCorrect - got: %t, want: %t.", isCorrect, false)
+	}
+}

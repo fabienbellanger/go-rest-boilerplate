@@ -13,7 +13,7 @@ var (
 	DB *sql.DB
 )
 
-// Open : Ouverture de la connexion
+// Open opens database connection
 func Open() {
 	databaseConfig := lib.Config.Database
 
@@ -27,7 +27,7 @@ func Open() {
 	DB = db
 }
 
-// prepareQuery : Préparation de la requête
+// prepareQuery prepares query
 func prepareQuery(query string) *sql.Stmt {
 	statement, err := DB.Prepare(query)
 	lib.CheckError(err, 0)
@@ -35,7 +35,7 @@ func prepareQuery(query string) *sql.Stmt {
 	return statement
 }
 
-// executeQuery : Exécute une requête de type INSERT, UPDATE ou DELETE
+// executeQuery executes request of type INSERT, UPDATE or DELETE
 func executeQuery(query string, args ...interface{}) (sql.Result, error) {
 	// Start timer
 	start := time.Now()
@@ -52,7 +52,7 @@ func executeQuery(query string, args ...interface{}) (sql.Result, error) {
 	return result, err
 }
 
-// Select : Exécution d'une requête
+// Select request
 func Select(query string, args ...interface{}) (*sql.Rows, error) {
 	// Start timer
 	start := time.Now()
@@ -69,7 +69,7 @@ func Select(query string, args ...interface{}) (*sql.Rows, error) {
 	return rows, err
 }
 
-// Insert : Requête d'insertion
+// Insert request
 func Insert(query string, args ...interface{}) (int64, error) {
 	result, err := executeQuery(query, args...)
 	lib.CheckError(err, 0)
@@ -88,7 +88,7 @@ func Insert(query string, args ...interface{}) (int64, error) {
 	return id, err
 }
 
-// Update : Requête de mise à jour
+// Update request
 func Update(query string, args ...interface{}) (int64, error) {
 	result, err := executeQuery(query, args...)
 	lib.CheckError(err, 0)
@@ -107,7 +107,7 @@ func Update(query string, args ...interface{}) (int64, error) {
 	return affect, err
 }
 
-// Delete : Requête de suppression
+// Delete request
 func Delete(query string, args ...interface{}) (int64, error) {
 	result, err := executeQuery(query, args...)
 	lib.CheckError(err, 0)
