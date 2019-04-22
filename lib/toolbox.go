@@ -31,34 +31,6 @@ func GLog(v ...interface{}) {
 	log.Printf("[%s] %+v\n", time.Now().Format("2006/01/02 - 15:04:05"), v)
 }
 
-// SqlLog displays SQL log in gin.DefaultWriter
-func SqlLog(latency time.Duration, query string, args ...interface{}) {
-	// On redirige les logs vers le default writer de Gin
-	log.SetOutput(gin.DefaultWriter)
-
-	// Traitement de la requête
-	// ------------------------
-	query = strings.Join(strings.Fields(query), " ")
-
-	if Config.SqlLog.Level == 1 {
-		// Time only
-		log.Printf("[SQL] %s | %13v |\n", time.Now().Format("2006/01/02 - 15:04:05"), latency)
-	} else if Config.SqlLog.Level == 2 {
-		// Time and query
-		log.Printf("[SQL] %s | %13v | %s\n",
-			time.Now().Format("2006/01/02 - 15:04:05"),
-			latency,
-			query)
-	} else if Config.SqlLog.Level == 3 {
-		// Time, query and arguments
-		log.Printf("[SQL] %s | %13v | %s | %v\n",
-			time.Now().Format("2006/01/02 - 15:04:05"),
-			latency,
-			query,
-			args)
-	}
-}
-
 // Ucfirst : Met la première lettre d'une chaîne de caractères en majuscule
 func Ucfirst(s string) string {
 	sToUnicode := []rune(s) // Tableau de caractères Unicode pour gérér les caractères accentués

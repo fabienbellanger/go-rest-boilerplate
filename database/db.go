@@ -130,8 +130,9 @@ func Delete(query string, args ...interface{}) (int64, error) {
 func logRequest(start time.Time, query string, args ...interface{}) {
 	if lib.Config.SqlLog.Level >= 1 {
 		elapsed := time.Since(start)
+		limit := lib.Config.SqlLog.Limit
 
-		if lib.Config.SqlLog.Limit == 0.0 || elapsed.Seconds() >= lib.Config.SqlLog.Limit {
+		if limit == 0.0 || lib.Config.SqlLog.DisplayOverLimit || elapsed.Seconds() >= limit {
 			lib.SqlLog(elapsed, query, args)
 		}
 	}

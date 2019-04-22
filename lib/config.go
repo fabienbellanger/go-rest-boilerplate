@@ -33,8 +33,9 @@ type server struct {
 }
 
 type sqlLogType struct {
-	Level uint
-	Limit float64
+	Level            uint
+	Limit            float64
+	DisplayOverLimit bool
 }
 
 // Config variable

@@ -22,4 +22,5 @@ allowOrigins = [
 
 [sql_log]
 level = 1 # 0: no log, 1: only time, 2: time and query, 3: time, query and arguments (int64)
-limit = 0.0 # 0.0: all requests, max query excecution time (float64)me
+limit = 0.0 # 0.0: all requests, max query excecution time (float64)
+displayOverLimit = false # Display log even if under limit
