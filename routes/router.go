@@ -55,7 +55,15 @@ func initServer() *gin.Engine {
 
 		// Logs dans un fichier seulement en production
 		// --------------------------------------------
-		logsFile, _ := os.Create("gin.log")
+
+		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
+		// -----------------------------------------------------------
+		logsFile, err := os.OpenFile("gin.log", os.O_RDWR|os.O_CREATE, 0644)
+
+		if err != nil {
+			lib.CheckError(err, -1)
+		}
+
 		gin.DisableConsoleColor()
 		gin.DefaultWriter = io.MultiWriter(logsFile)
 	}

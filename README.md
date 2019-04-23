@@ -1,16 +1,7 @@
-# go-rest-boilerplate
-
-Golang Rest API boilerplate 
-
-## TODO list
-- Passer aux modules introduits avec Go 1.11 :
-    - https://roberto.selbach.ca/intro-to-go-modules/
-    - https://www.melvinvivas.com/go-version-1-11-modules/
-    - https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d
-- Faire recover personnalisé
-- SQL logs
-    - afficher la requête sans retour à la ligne
-    - gérer la variable `limit` dans fichier de configuration
+# Golang Rest API boilerplate
+    
+## Commands list
+TODO :)
 
 ## Golang web server in production
 - [Systemd](https://jonathanmh.com/deploying-go-apps-systemd-10-minutes-without-docker/)
@@ -61,3 +52,15 @@ To stop:
 ```bash
 service <service name> stop
 ```
+
+## TODO list
+- [ ] Passer aux modules introduits avec Go 1.11 :
+    - https://roberto.selbach.ca/intro-to-go-modules/
+    - https://www.melvinvivas.com/go-version-1-11-modules/
+    - https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d
+- [ ] Faire recover personnalisé
+- SQL logs
+    - [x] Afficher la requête sans retour à la ligne
+    - [x] Gérer la variable `limit` dans fichier de configuration
+    - [ ] Gérer la rotation des logs
+    - [ ] Afficher les arguments directement dans la requête

@@ -26,6 +26,10 @@ runDbDump:
 	$(GORUN) main.go db --dump
 dbDump: install runDbDump
 
+runLogsRotation:
+	$(GORUN) main.go log
+log: install runLogsRotation
+
 build: 
 	$(GOBUILD) -o $(BINARY_NAME) -v
 

@@ -42,12 +42,14 @@ func SqlLog(latency time.Duration, query string, args ...interface{}) {
 	// ------------------
 	if Config.SqlLog.Level == 1 {
 		// Time only
+		// ---------
 		log.Printf("[SQL] %s | %3s |%s %13v %s|\n",
 			time.Now().Format("2006/01/02 - 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor)
 	} else if Config.SqlLog.Level == 2 {
 		// Time and query
+		// --------------
 		log.Printf("[SQL] %s | %3s |%s %13v %s| %s\n",
 			time.Now().Format("2006/01/02 - 15:04:05"),
 			requestType,
@@ -55,6 +57,7 @@ func SqlLog(latency time.Duration, query string, args ...interface{}) {
 			query)
 	} else if Config.SqlLog.Level == 3 {
 		// Time, query and arguments
+		// -------------------------
 		log.Printf("[SQL] %s | %3s |%s %13v %s| %s | %v\n",
 			time.Now().Format("2006/01/02 - 15:04:05"),
 			requestType,
