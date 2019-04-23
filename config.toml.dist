@@ -14,6 +14,9 @@ password = "myPassword"
 [jwt]
 secret = "mysecretkey"
 
+[log]
+filename = "gin.log"
+
 [server]
 port = 8888
 allowOrigins = [

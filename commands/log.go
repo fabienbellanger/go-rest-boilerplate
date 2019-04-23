@@ -22,11 +22,11 @@ var LogCommand = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		color.Yellow(`
 
-|--------------------|
-|                    |
-| Gin logs rotation  |
-|                    |
-|--------------------|
+|-------------------|
+|                   |
+| Gin logs rotation |
+|                   |
+|-------------------|
 
 		`)
 

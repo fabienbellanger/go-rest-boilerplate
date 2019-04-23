@@ -7,4 +7,4 @@ vendor
 config.toml
 dump_*.sql
 
-gin.log
+gin.log*

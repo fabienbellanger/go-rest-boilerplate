@@ -10,6 +10,7 @@ type ConfigType struct {
 	Environment string
 	Database    databaseType `toml:"database"`
 	Jwt         jwtType      `toml:"jwt"`
+	Log         logType      `toml:"log"`
 	Server      server       `toml:"server"`
 	SqlLog      sqlLogType   `toml:"sql_log"`
 }
@@ -25,6 +26,10 @@ type databaseType struct {
 
 type jwtType struct {
 	Secret string
+}
+
+type logType struct {
+	Filename string
 }
 
 type server struct {
