@@ -21,10 +21,10 @@ func SqlLog(latency time.Duration, query string, args ...interface{}) {
 	// ------------------------
 	query = strings.Join(strings.Fields(query), " ")
 
-	// Couleur
-	// -------
+	// Couleur (en environnement de développement)
+	// -------------------------------------------
 	latencyColor := resetColor
-	if latency.Seconds() >= Config.SqlLog.Limit {
+	if Config.Environment == "development" && latency.Seconds() >= Config.SqlLog.Limit {
 		latencyColor = redColor
 	}
 
