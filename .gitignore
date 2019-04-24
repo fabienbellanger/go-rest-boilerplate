@@ -8,3 +8,4 @@ config.toml
 dump_*.sql
 
 gin.log*
+/logs/*

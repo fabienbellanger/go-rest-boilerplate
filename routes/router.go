@@ -58,7 +58,7 @@ func initServer() *gin.Engine {
 
 		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
 		// -----------------------------------------------------------
-		logsFile, err := os.OpenFile("gin.log", os.O_RDWR|os.O_CREATE, 0644)
+		logsFile, err := os.OpenFile("./logs/"+lib.Config.Log.Filename, os.O_RDWR|os.O_CREATE, 0644)
 
 		if err != nil {
 			lib.CheckError(err, -1)

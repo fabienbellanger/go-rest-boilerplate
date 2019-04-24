@@ -4,6 +4,7 @@ import (
 	"apiticSellers/server/lib"
 	"archive/zip"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -21,13 +22,14 @@ type logFile struct {
 var logFileName string
 
 const NB_FILES_TO_ARCHIVE = 5
+const LOGS_DIR = "./logs/"
 
 // ExecuteLogsRotation launches logs rotation
 //
 // Description:
 // Every day at 00:00
 func ExecuteLogsRotation() {
-	logFileName = Config.Log.Filename
+	logFileName = LOGS_DIR + Config.Log.Filename
 
 	logFile, err := os.OpenFile(logFileName, os.O_RDONLY, 0755)
 
@@ -81,9 +83,9 @@ func findLogFile() ([]logFile, error) {
 	var fileNameWithoutSuffix string
 	var logFiles = make([]logFile, 0)
 
-	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
-		isLogFile, _ = regexp.Match(`^`+logFileName+`.[\d]+$`, []byte(path))
-
+	err := filepath.Walk("./logs", func(path string, info os.FileInfo, err error) error {
+		isLogFile, _ = regexp.Match(`^logs/`+logFileName+`.[\d]+$`, []byte(path))
+		funcName(path)
 		if isLogFile {
 			// On récupère les fichiers de log archivés uniquement
 			// ---------------------------------------------------
@@ -111,6 +113,50 @@ func findLogFile() ([]logFile, error) {
 	return logFiles, err
 }
 
+func funcName(path string) (int, error) {
+	return fmt.Println(path)
+}
+
+// findArchiveName returns the name of the next archive file
+func findArchiveName() (string, error) {
+	var fileName string
+	regex := regexp.MustCompile(`^logs/` + logFileName + `.([\d]+).zip$`)
+
+	err := filepath.Walk("./logs", func(path string, info os.FileInfo, err error) error {
+		regexResult := regex.FindAllSubmatch([]byte(path), -1)
+
+		for _, matchMessage := range regexResult {
+
+			fmt.Println(string(matchMessage[1]))
+		}
+
+		/*if regex {
+			// On récupère les fichiers d'archive uniquement
+			// ---------------------------------------------
+			lastPoint = strings.LastIndex(path, ".")
+
+			if lastPoint != -1 {
+				fileNameWithoutSuffix = path[:lastPoint]
+				fileNameSuffix, err = strconv.Atoi(path[lastPoint+1:])
+
+				if err == nil && fileNameWithoutSuffix == logFileName {
+					// Ajout du fichier à la liste des fichiers de logs archivés
+					// ---------------------------------------------------------
+					logFiles = append(logFiles, logFile{
+						fileNameWithoutSuffix,
+						fileNameSuffix,
+						fileNameWithoutSuffix + "." + strconv.Itoa(fileNameSuffix),
+					})
+				}
+			}
+		}*/
+
+		return nil
+	})
+
+	return fileName, err
+}
+
 // makeLogsRotation makes log rotation by renamming files
 func makeLogsRotation(logFiles []logFile) {
 	// Décalage des fichiers d'archivage
@@ -135,7 +181,8 @@ func makeLogsArchiving(logFiles []logFile) error {
 
 	// 0. Recherche du nom de la prochaine archive
 	// -------------------------------------------
-	// TODO
+	f, _ := findArchiveName()
+	fmt.Println(f)
 
 	// 1. Création de l'archive
 	// ------------------------
