@@ -16,6 +16,7 @@ secret = "mysecretkey"
 
 [log]
 filename = "gin.log"
+nbFilesToArchive = 7
 
 [server]
 port = 8888

@@ -13,6 +13,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const LOGS_PATH = "logs/"
+
 // StartServer starts the server
 func StartServer(port int) {
 	// Initialisation du serveur
@@ -58,7 +60,8 @@ func initServer() *gin.Engine {
 
 		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
 		// -----------------------------------------------------------
-		logsFile, err := os.OpenFile("./logs/"+lib.Config.Log.Filename, os.O_RDWR|os.O_CREATE, 0644)
+
+		logsFile, err := os.OpenFile("./"+LOGS_PATH+"/"+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE, 0644)
 
 		if err != nil {
 			lib.CheckError(err, -1)

@@ -9,3 +9,4 @@ dump_*.sql
 
 gin.log*
 /logs/*
+!/logs/.gitignore

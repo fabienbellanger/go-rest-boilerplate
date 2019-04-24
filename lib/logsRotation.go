@@ -3,8 +3,6 @@ package lib
 import (
 	"apiticSellers/server/lib"
 	"archive/zip"
-	"errors"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -21,15 +19,14 @@ type logFile struct {
 
 var logFileName string
 
-const NB_FILES_TO_ARCHIVE = 5
-const LOGS_DIR = "./logs/"
+const LOGS_PATH = "logs/"
 
 // ExecuteLogsRotation launches logs rotation
 //
 // Description:
 // Every day at 00:00
 func ExecuteLogsRotation() {
-	logFileName = LOGS_DIR + Config.Log.Filename
+	logFileName = LOGS_PATH + Config.Log.FileName
 
 	logFile, err := os.OpenFile(logFileName, os.O_RDONLY, 0755)
 
@@ -53,7 +50,11 @@ func ExecuteLogsRotation() {
 
 	// Archivage des fichiers
 	// ----------------------
-	makeLogsArchiving(logFiles)
+	err = makeLogsArchiving(logFiles)
+
+	if err != nil {
+		lib.CheckError(err, 0)
+	}
 
 	// Déplacement du fichier de log
 	// -----------------------------
@@ -64,7 +65,7 @@ func ExecuteLogsRotation() {
 	}
 
 	// Création du nouveau fichier logFileName
-	// ----------------------------------------
+	// ---------------------------------------
 	logFile, err = os.Create(logFileName)
 
 	if err != nil {
@@ -83,9 +84,9 @@ func findLogFile() ([]logFile, error) {
 	var fileNameWithoutSuffix string
 	var logFiles = make([]logFile, 0)
 
-	err := filepath.Walk("./logs", func(path string, info os.FileInfo, err error) error {
-		isLogFile, _ = regexp.Match(`^logs/`+logFileName+`.[\d]+$`, []byte(path))
-		funcName(path)
+	err := filepath.Walk(LOGS_PATH, func(path string, info os.FileInfo, err error) error {
+		isLogFile, _ = regexp.Match(`^`+logFileName+`.[\d]+$`, []byte(path))
+
 		if isLogFile {
 			// On récupère les fichiers de log archivés uniquement
 			// ---------------------------------------------------
@@ -113,46 +114,32 @@ func findLogFile() ([]logFile, error) {
 	return logFiles, err
 }
 
-func funcName(path string) (int, error) {
-	return fmt.Println(path)
-}
-
 // findArchiveName returns the name of the next archive file
 func findArchiveName() (string, error) {
-	var fileName string
-	regex := regexp.MustCompile(`^logs/` + logFileName + `.([\d]+).zip$`)
+	var fileSuffix int
+	fileName := logFileName
+	regex := regexp.MustCompile(`^` + logFileName + `.([\d]+).zip$`)
+	maxFileSuffix := 0
 
-	err := filepath.Walk("./logs", func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(LOGS_PATH, func(path string, info os.FileInfo, err error) error {
 		regexResult := regex.FindAllSubmatch([]byte(path), -1)
 
 		for _, matchMessage := range regexResult {
+			if len(matchMessage) == 2 {
+				fileSuffix, _ = strconv.Atoi(string(matchMessage[1]))
 
-			fmt.Println(string(matchMessage[1]))
-		}
-
-		/*if regex {
-			// On récupère les fichiers d'archive uniquement
-			// ---------------------------------------------
-			lastPoint = strings.LastIndex(path, ".")
-
-			if lastPoint != -1 {
-				fileNameWithoutSuffix = path[:lastPoint]
-				fileNameSuffix, err = strconv.Atoi(path[lastPoint+1:])
-
-				if err == nil && fileNameWithoutSuffix == logFileName {
-					// Ajout du fichier à la liste des fichiers de logs archivés
-					// ---------------------------------------------------------
-					logFiles = append(logFiles, logFile{
-						fileNameWithoutSuffix,
-						fileNameSuffix,
-						fileNameWithoutSuffix + "." + strconv.Itoa(fileNameSuffix),
-					})
+				if fileSuffix > maxFileSuffix {
+					maxFileSuffix = fileSuffix
 				}
 			}
-		}*/
+		}
 
 		return nil
 	})
+
+	// Nom de la future archive
+	// ------------------------
+	fileName = fileName + "." + strconv.Itoa(maxFileSuffix+1) + ".zip"
 
 	return fileName, err
 }
@@ -175,18 +162,29 @@ func makeLogsRotation(logFiles []logFile) {
 
 // makeLogsArchiving makes logs archiving
 func makeLogsArchiving(logFiles []logFile) error {
-	if len(logFiles) < NB_FILES_TO_ARCHIVE {
-		return errors.New("not enough files to archive")
+	// Nombre de fichiers à archiver
+	// -----------------------------
+	nbFilesToArchive := Config.Log.NbFilesToArchive
+
+	if nbFilesToArchive <= 0 {
+		nbFilesToArchive = 1
 	}
 
-	// 0. Recherche du nom de la prochaine archive
-	// -------------------------------------------
-	f, _ := findArchiveName()
-	fmt.Println(f)
+	if len(logFiles) < nbFilesToArchive {
+		return nil
+	}
 
-	// 1. Création de l'archive
+	// 1. Recherche du nom de la prochaine archive
+	// -------------------------------------------
+	archiveFileName, err := findArchiveName()
+
+	if err != nil {
+		return err
+	}
+
+	// 2. Création de l'archive
 	// ------------------------
-	newZipFile, err := os.Create("gin.log.1.zip")
+	newZipFile, err := os.Create(archiveFileName)
 
 	if err != nil {
 		return err
@@ -197,10 +195,10 @@ func makeLogsArchiving(logFiles []logFile) error {
 	zipWriter := zip.NewWriter(newZipFile)
 	defer zipWriter.Close()
 
-	// 2. Ajout des fichiers de log à l'archive
+	// 3. Ajout des fichiers de log à l'archive
 	// ----------------------------------------
 
-	// 2.1. Conversion en tableau de nom de fichier
+	// 3.1. Conversion en tableau de nom de fichier
 	// --------------------------------------------
 	var logFilesName = make([]string, 0)
 
@@ -208,7 +206,7 @@ func makeLogsArchiving(logFiles []logFile) error {
 		logFilesName = append(logFilesName, file.fullname)
 	}
 
-	// 2.2. Ajout à l'archive
+	// 3.2. Ajout à l'archive
 	// ----------------------
 	for _, file := range logFilesName {
 		if err = addFileToZip(zipWriter, file); err != nil {
@@ -216,7 +214,7 @@ func makeLogsArchiving(logFiles []logFile) error {
 		}
 	}
 
-	// 3. Supression des fichiers logs archivés
+	// 4. Supression des fichiers logs archivés
 	// ----------------------------------------
 	for _, file := range logFilesName {
 		err = os.Remove(file)

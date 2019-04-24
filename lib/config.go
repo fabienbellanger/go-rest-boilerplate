@@ -29,7 +29,8 @@ type jwtType struct {
 }
 
 type logType struct {
-	Filename string
+	FileName         string
+	NbFilesToArchive int
 }
 
 type server struct {
