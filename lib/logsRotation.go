@@ -22,9 +22,6 @@ var logFileName string
 const LOGS_PATH = "logs/"
 
 // ExecuteLogsRotation launches logs rotation
-//
-// Description:
-// Every day at 00:00
 func ExecuteLogsRotation() {
 	logFileName = LOGS_PATH + Config.Log.FileName
 
@@ -36,25 +33,17 @@ func ExecuteLogsRotation() {
 
 	defer logFile.Close()
 
-	// Recherche des fichiers de log archivés
-	// --------------------------------------
-	logFiles, err := findLogFile()
+	// Recherche des anciens fichiers de log non archivés
+	// --------------------------------------------------
+	logFiles := findLogFile()
 
-	if err != nil {
-		lib.CheckError(err, -2)
-	}
-
-	// Rotation des fichiers
-	// ---------------------
+	// Rotation des fichiers de log non archivés
+	// -----------------------------------------
 	makeLogsRotation(logFiles)
 
-	// Archivage des fichiers
-	// ----------------------
-	err = makeLogsArchiving(logFiles)
-
-	if err != nil {
-		lib.CheckError(err, 0)
-	}
+	// Archivage des fichiers de log
+	// -----------------------------
+	makeLogsArchiving(logFiles)
 
 	// Déplacement du fichier de log
 	// -----------------------------
@@ -78,7 +67,7 @@ func ExecuteLogsRotation() {
 }
 
 // findLogFile returns the list of log files
-func findLogFile() ([]logFile, error) {
+func findLogFile() []logFile {
 	var isLogFile bool
 	var lastPoint, fileNameSuffix int
 	var fileNameWithoutSuffix string
@@ -111,7 +100,9 @@ func findLogFile() ([]logFile, error) {
 		return nil
 	})
 
-	return logFiles, err
+	lib.CheckError(err, -2)
+
+	return logFiles
 }
 
 // findArchiveName returns the name of the next archive file
@@ -161,7 +152,7 @@ func makeLogsRotation(logFiles []logFile) {
 }
 
 // makeLogsArchiving makes logs archiving
-func makeLogsArchiving(logFiles []logFile) error {
+func makeLogsArchiving(logFiles []logFile) {
 	// Nombre de fichiers à archiver
 	// -----------------------------
 	nbFilesToArchive := Config.Log.NbFilesToArchive
@@ -171,7 +162,7 @@ func makeLogsArchiving(logFiles []logFile) error {
 	}
 
 	if len(logFiles) < nbFilesToArchive {
-		return nil
+		return
 	}
 
 	// 1. Recherche du nom de la prochaine archive
@@ -179,7 +170,7 @@ func makeLogsArchiving(logFiles []logFile) error {
 	archiveFileName, err := findArchiveName()
 
 	if err != nil {
-		return err
+		lib.CheckError(err, 0)
 	}
 
 	// 2. Création de l'archive
@@ -187,7 +178,7 @@ func makeLogsArchiving(logFiles []logFile) error {
 	newZipFile, err := os.Create(archiveFileName)
 
 	if err != nil {
-		return err
+		lib.CheckError(err, 0)
 	}
 
 	defer newZipFile.Close()
@@ -210,7 +201,7 @@ func makeLogsArchiving(logFiles []logFile) error {
 	// ----------------------
 	for _, file := range logFilesName {
 		if err = addFileToZip(zipWriter, file); err != nil {
-			return err
+			return
 		}
 	}
 
@@ -223,8 +214,6 @@ func makeLogsArchiving(logFiles []logFile) error {
 			lib.CheckError(err, 0)
 		}
 	}
-
-	return nil
 }
 
 // addFileToZip adds log file in file archive
