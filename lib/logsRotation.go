@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"apiticSellers/server/lib"
 	"archive/zip"
 	"io"
 	"os"
@@ -28,39 +27,39 @@ func ExecuteLogsRotation() {
 	logFile, err := os.OpenFile(logFileName, os.O_RDONLY, 0755)
 
 	if err != nil {
-		lib.CheckError(err, -1)
+		CheckError(err, -1)
 	}
 
 	defer logFile.Close()
 
-	// Recherche des anciens fichiers de log non archivés
-	// --------------------------------------------------
+	// 1. Recherche des anciens fichiers de log non archivés
+	// -----------------------------------------------------
 	logFiles := findLogFile()
 
-	// Rotation des fichiers de log non archivés
-	// -----------------------------------------
+	// 2. Rotation des fichiers de log non archivés
+	// --------------------------------------------
 	makeLogsRotation(logFiles)
 
-	// Archivage des fichiers de log
-	// -----------------------------
+	// 3. Archivage des fichiers de log
+	// --------------------------------
 	makeLogsArchiving(logFiles)
 
-	// Déplacement du fichier de log
-	// -----------------------------
+	// 4. Déplacement du fichier de log
+	// --------------------------------
 	err = os.Rename(logFileName, logFileName+".1")
 
 	if err != nil {
-		lib.CheckError(err, -3)
+		CheckError(err, -3)
 	}
 
-	// Création du nouveau fichier logFileName
-	// ---------------------------------------
+	// 5. Création du nouveau fichier logFileName
+	// ------------------------------------------
 	logFile, err = os.Create(logFileName)
 
 	if err != nil {
 		// Le fichier de log n'existe pas
 		// ------------------------------
-		lib.CheckError(err, -4)
+		CheckError(err, -4)
 	}
 
 	defer logFile.Close()
@@ -68,22 +67,21 @@ func ExecuteLogsRotation() {
 
 // findLogFile returns the list of log files
 func findLogFile() []logFile {
-	var isLogFile bool
-	var lastPoint, fileNameSuffix int
-	var fileNameWithoutSuffix string
-	var logFiles = make([]logFile, 0)
+	logFiles := make([]logFile, 0)
 
+	// On parcours tous les fichiers du dossier
+	// ----------------------------------------
 	err := filepath.Walk(LOGS_PATH, func(path string, info os.FileInfo, err error) error {
-		isLogFile, _ = regexp.Match(`^`+logFileName+`.[\d]+$`, []byte(path))
+		isLogFile, _ := regexp.Match(`^`+logFileName+`.[\d]+$`, []byte(path))
 
 		if isLogFile {
 			// On récupère les fichiers de log archivés uniquement
 			// ---------------------------------------------------
-			lastPoint = strings.LastIndex(path, ".")
+			lastPoint := strings.LastIndex(path, ".")
 
 			if lastPoint != -1 {
-				fileNameWithoutSuffix = path[:lastPoint]
-				fileNameSuffix, err = strconv.Atoi(path[lastPoint+1:])
+				fileNameWithoutSuffix := path[:lastPoint]
+				fileNameSuffix, err := strconv.Atoi(path[lastPoint+1:])
 
 				if err == nil && fileNameWithoutSuffix == logFileName {
 					// Ajout du fichier à la liste des fichiers de logs archivés
@@ -100,24 +98,25 @@ func findLogFile() []logFile {
 		return nil
 	})
 
-	lib.CheckError(err, -2)
+	CheckError(err, -2)
 
 	return logFiles
 }
 
 // findArchiveName returns the name of the next archive file
 func findArchiveName() (string, error) {
-	var fileSuffix int
 	fileName := logFileName
 	regex := regexp.MustCompile(`^` + logFileName + `.([\d]+).zip$`)
 	maxFileSuffix := 0
 
+	// On parcours tous les fichiers du dossier
+	// ----------------------------------------
 	err := filepath.Walk(LOGS_PATH, func(path string, info os.FileInfo, err error) error {
 		regexResult := regex.FindAllSubmatch([]byte(path), -1)
 
 		for _, matchMessage := range regexResult {
 			if len(matchMessage) == 2 {
-				fileSuffix, _ = strconv.Atoi(string(matchMessage[1]))
+				fileSuffix, _ := strconv.Atoi(string(matchMessage[1]))
 
 				if fileSuffix > maxFileSuffix {
 					maxFileSuffix = fileSuffix
@@ -170,7 +169,7 @@ func makeLogsArchiving(logFiles []logFile) {
 	archiveFileName, err := findArchiveName()
 
 	if err != nil {
-		lib.CheckError(err, 0)
+		CheckError(err, 0)
 	}
 
 	// 2. Création de l'archive
@@ -178,7 +177,7 @@ func makeLogsArchiving(logFiles []logFile) {
 	newZipFile, err := os.Create(archiveFileName)
 
 	if err != nil {
-		lib.CheckError(err, 0)
+		CheckError(err, 0)
 	}
 
 	defer newZipFile.Close()
@@ -211,7 +210,7 @@ func makeLogsArchiving(logFiles []logFile) {
 		err = os.Remove(file)
 
 		if err != nil {
-			lib.CheckError(err, 0)
+			CheckError(err, 0)
 		}
 	}
 }
@@ -242,8 +241,6 @@ func addFileToZip(zipWriter *zip.Writer, filename string) error {
 		return err
 	}
 
-	// Using FileInfoHeader() above only uses the basename of the file. If we want
-	// to preserve the folder structure we can overwrite this with the full path.
 	header.Name = filename
 
 	// Change to deflate to gain better compression

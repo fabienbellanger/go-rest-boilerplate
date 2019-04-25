@@ -1,7 +1,61 @@
 # Golang Rest API boilerplate
+
+## Install
+- Install the lastest Golang version ([Download page](https://golang.org/dl/))
+- TODO: Install dependencies
+- Copy file `config.toml.dist` to `config.toml` and fill it.
     
+
+
 ## Commands list
-TODO :)
+
+### Development
+
+#### Launch Web server
+```
+make serve
+```
+
+#### Launch logs rotation
+```
+make log
+```
+
+#### Launch database initilization
+```
+make dbInit
+```
+
+#### Launch database dump
+```
+make dbDump
+```
+
+### Production
+
+Compile binary `<binaire>` with `make build` and fill configuration file `config.toml`.
+
+#### Launch Web server
+```
+<binaire> serve
+```
+
+#### Launch logs rotation
+```
+<binaire> log
+```
+
+#### Launch database initilization
+```
+<binaire> db --init
+```
+
+#### Launch database dump
+```
+<binaire> db --dump
+```
+
+
 
 ## Golang web server in production
 - [Systemd](https://jonathanmh.com/deploying-go-apps-systemd-10-minutes-without-docker/)
@@ -53,6 +107,8 @@ To stop:
 service <service name> stop
 ```
 
+
+
 ## TODO list
 - [ ] Passer aux modules introduits avec Go 1.11 :
     - https://roberto.selbach.ca/intro-to-go-modules/
@@ -62,5 +118,5 @@ service <service name> stop
 - SQL logs
     - [x] Afficher la requête sans retour à la ligne
     - [x] Gérer la variable `limit` dans fichier de configuration
-    - [ ] Gérer la rotation des logs
+    - [x] Gérer la rotation des logs
     - [ ] Afficher les arguments directement dans la requête
