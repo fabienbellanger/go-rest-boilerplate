@@ -12,7 +12,7 @@ type ConfigType struct {
 	Jwt         jwtType      `toml:"jwt"`
 	Log         logType      `toml:"log"`
 	Server      server       `toml:"server"`
-	SqlLog      sqlLogType   `toml:"sql_log"`
+	SQLLog      SQLLogType   `toml:"sql_log"`
 }
 
 type databaseType struct {
@@ -38,7 +38,7 @@ type server struct {
 	AllowOrigins []string
 }
 
-type sqlLogType struct {
+type SQLLogType struct {
 	Level            uint
 	Limit            float64
 	DisplayOverLimit bool

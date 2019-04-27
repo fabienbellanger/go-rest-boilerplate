@@ -128,12 +128,12 @@ func Delete(query string, args ...interface{}) (int64, error) {
 
 // logRequest writes query log to Gin default writer
 func logRequest(start time.Time, query string, args ...interface{}) {
-	if lib.Config.SqlLog.Level >= 1 {
+	if lib.Config.SQLLog.Level >= 1 {
 		elapsed := time.Since(start)
-		limit := lib.Config.SqlLog.Limit
+		limit := lib.Config.SQLLog.Limit
 
-		if limit == 0.0 || lib.Config.SqlLog.DisplayOverLimit || elapsed.Seconds() >= limit {
-			lib.SqlLog(elapsed, query, args)
+		if limit == 0.0 || lib.Config.SQLLog.DisplayOverLimit || elapsed.Seconds() >= limit {
+			lib.SQLLog(elapsed, query, args)
 		}
 	}
 }

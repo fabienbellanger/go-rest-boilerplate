@@ -110,7 +110,7 @@ service <service name> stop
 
 
 ## TODO list
-- [ ] Passer aux modules introduits avec Go 1.11 :
+- [x] Passer aux modules introduits avec Go 1.11 :
     - https://roberto.selbach.ca/intro-to-go-modules/
     - https://www.melvinvivas.com/go-version-1-11-modules/
     - https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d

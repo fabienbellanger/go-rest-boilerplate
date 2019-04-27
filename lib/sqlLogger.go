@@ -1,10 +1,11 @@
 package lib
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -12,8 +13,8 @@ var (
 	resetColor = string([]byte{27, 91, 48, 109})
 )
 
-// SqlLog displays SQL log in gin.DefaultWriter
-func SqlLog(latency time.Duration, query string, args ...interface{}) {
+// SQLLog displays SQL log in gin.DefaultWriter
+func SQLLog(latency time.Duration, query string, args ...interface{}) {
 	// On redirige les logs vers le default writer de Gin
 	log.SetOutput(gin.DefaultWriter)
 
@@ -23,9 +24,17 @@ func SqlLog(latency time.Duration, query string, args ...interface{}) {
 
 	// Couleur (en environnement de développement)
 	// -------------------------------------------
-	latencyColor := resetColor
-	if Config.Environment == "development" && latency.Seconds() >= Config.SqlLog.Limit {
-		latencyColor = redColor
+	var latencyColor string
+
+	if Config.Environment == "production" {
+		latencyColor = ""
+		resetColor = ""
+	} else {
+		latencyColor = resetColor
+
+		if Config.Environment == "development" && latency.Seconds() >= Config.SQLLog.Limit {
+			latencyColor = redColor
+		}
 	}
 
 	// Type de requête
@@ -40,14 +49,14 @@ func SqlLog(latency time.Duration, query string, args ...interface{}) {
 
 	// Affichage des logs
 	// ------------------
-	if Config.SqlLog.Level == 1 {
+	if Config.SQLLog.Level == 1 {
 		// Time only
 		// ---------
 		log.Printf("[SQL] %s | %3s |%s %13v %s|\n",
 			time.Now().Format("2006/01/02 - 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor)
-	} else if Config.SqlLog.Level == 2 {
+	} else if Config.SQLLog.Level == 2 {
 		// Time and query
 		// --------------
 		log.Printf("[SQL] %s | %3s |%s %13v %s| %s\n",
@@ -55,7 +64,7 @@ func SqlLog(latency time.Duration, query string, args ...interface{}) {
 			requestType,
 			latencyColor, latency, resetColor,
 			query)
-	} else if Config.SqlLog.Level == 3 {
+	} else if Config.SQLLog.Level == 3 {
 		// Time, query and arguments
 		// -------------------------
 		log.Printf("[SQL] %s | %3s |%s %13v %s| %s | %v\n",

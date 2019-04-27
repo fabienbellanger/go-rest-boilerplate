@@ -15,7 +15,7 @@ install:
 	$(GOINSTALL) ./...
 
 runApi:
-	$(GORUN) main.go serve -p 8888
+	$(GORUN) main.go serve
 serve: install runApi
 
 runDbInit:
