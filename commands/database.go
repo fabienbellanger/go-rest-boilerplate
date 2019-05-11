@@ -1,9 +1,9 @@
 package commands
 
 import (
+	"code.cloudfoundry.org/bytefmt"
 	"errors"
 	"fmt"
-	"github.com/cloudfoundry/bytefmt"
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fatih/color"

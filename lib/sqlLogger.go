@@ -18,6 +18,9 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 	// On redirige les logs vers le default writer de Gin
 	log.SetOutput(gin.DefaultWriter)
 
+	// Remove logs timestamp
+	log.SetFlags(0)
+
 	// Traitement de la requête
 	// ------------------------
 	query = strings.Join(strings.Fields(query), " ")
