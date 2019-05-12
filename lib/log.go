@@ -1,12 +1,19 @@
 package lib
 
 import (
+	"github.com/gin-gonic/gin"
 	"log"
 	"strings"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
+
+// GLogln displays log in gin.DefaultWriter
+func GLog(v ...interface{}) {
+	// On redirige les logs vers le default writer de Gin
+	log.SetOutput(gin.DefaultWriter)
+
+	log.Printf("[%s] %+v\n", time.Now().Format("2006/01/02 - 15:04:05"), v)
+}
 
 var (
 	redColor   = string([]byte{27, 91, 57, 55, 59, 52, 49, 109})

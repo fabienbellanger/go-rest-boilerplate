@@ -14,6 +14,12 @@ all: test build
 install:
 	$(GOINSTALL) ./...
 
+update:
+	$(GOGET) -u
+
+updateAll:
+	$(GOGET) -u all
+
 runApi:
 	$(GORUN) main.go serve
 serve: install runApi
@@ -44,10 +50,3 @@ clean:
 run-prod:
 	$(GOBUILD) -o $(BINARY_NAME) -v ./...
 	./$(BINARY_NAME)
-
-deps:
-	$(GOGET) -u github.com/spf13/cobra/cobra
-	$(GOGET) -u github.com/labstack/echo/...
-	$(GOGET) -u github.com/go-sql-driver/mysql
-	$(GOGET) -u github.com/fatih/color
-	$(GOGET) -u github.com/dgrijalva/jwt-go

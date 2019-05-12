@@ -1,13 +1,10 @@
 package lib
 
 import (
-	"github.com/gin-gonic/gin"
-	"log"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
-	"time"
 )
 
 // CheckError manages errors
@@ -23,22 +20,15 @@ func CheckError(err error, exitCode int) {
 	}
 }
 
-// GLogln displays log in gin.DefaultWriter
-func GLog(v ...interface{}) {
-	// On redirige les logs vers le default writer de Gin
-	log.SetOutput(gin.DefaultWriter)
-
-	log.Printf("[%s] %+v\n", time.Now().Format("2006/01/02 - 15:04:05"), v)
-}
-
-// Ucfirst : Met la première lettre d'une chaîne de caractères en majuscule
+// Ucfirst makes a string's first character uppercase
 func Ucfirst(s string) string {
-	sToUnicode := []rune(s) // Tableau de caractères Unicode pour gérér les caractères accentués
+	// Tableau de caractères Unicode pour gérér les caractères accentués
+	sToUnicode := []rune(s)
 
 	return strings.ToUpper(string(sToUnicode[0])) + string(sToUnicode[1:])
 }
 
-// InArray : Recherche dans un tableau
+// InArray search an element in an array
 func InArray(value interface{}, array interface{}) (found bool, index int) {
 	index = -1
 	found = false
