@@ -24,6 +24,10 @@ runApi:
 	$(GORUN) main.go serve
 serve: install runApi
 
+runApiRace:
+	$(GORUN) -race main.go serve
+serveRace: install runApiRace
+
 runDbInit:
 	$(GORUN) main.go db --init
 dbInit: install runDbInit

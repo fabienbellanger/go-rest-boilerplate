@@ -9,7 +9,7 @@ import (
 
 // InitDatabase : Initialisation de la base de données
 func InitDatabase() {
-	// Requètes
+	// Requêtes
 	// --------
 	queries := make([]string, 0)
 
