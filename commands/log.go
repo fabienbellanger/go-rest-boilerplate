@@ -206,7 +206,6 @@ func makeLogsArchiving(logFiles []logFile) {
 	// 1. Recherche du nom de la prochaine archive
 	// -------------------------------------------
 	archiveFileName, err := findArchiveName()
-
 	if err != nil {
 		lib.CheckError(err, 0)
 	}
@@ -214,11 +213,9 @@ func makeLogsArchiving(logFiles []logFile) {
 	// 2. Création de l'archive
 	// ------------------------
 	newZipFile, err := os.Create(archiveFileName)
-
 	if err != nil {
 		lib.CheckError(err, 0)
 	}
-
 	defer newZipFile.Close()
 
 	zipWriter := zip.NewWriter(newZipFile)
@@ -247,7 +244,6 @@ func makeLogsArchiving(logFiles []logFile) {
 	// ----------------------------------------
 	for _, file := range logFilesName {
 		err = os.Remove(file)
-
 		if err != nil {
 			lib.CheckError(err, 0)
 		}
@@ -257,17 +253,14 @@ func makeLogsArchiving(logFiles []logFile) {
 // addFileToZip adds log file in file archive
 func addFileToZip(zipWriter *zip.Writer, filename string) error {
 	fileToZip, err := os.Open(filename)
-
 	if err != nil {
 		return err
 	}
-
 	defer fileToZip.Close()
 
 	// Get the file information
 	// ------------------------
 	info, err := fileToZip.Stat()
-
 	if err != nil {
 		return err
 	}
@@ -275,7 +268,6 @@ func addFileToZip(zipWriter *zip.Writer, filename string) error {
 	// Get the file header
 	// -------------------
 	header, err := zip.FileInfoHeader(info)
-
 	if err != nil {
 		return err
 	}

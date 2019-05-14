@@ -39,7 +39,8 @@ func StartServer(port int) {
 
 	// Lancement du serveur
 	// --------------------
-	router.Run(":" + strconv.Itoa(port))
+	err := router.Run(":" + strconv.Itoa(port))
+	lib.CheckError(err, -1)
 }
 
 // initServer initialize the server
