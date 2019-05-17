@@ -2,8 +2,10 @@ package routes
 
 import (
 	"fmt"
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/gorilla/websocket"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -14,27 +16,34 @@ var ws = websocket.Upgrader{
 	HandshakeTimeout: time.Duration(time.Second * 5),
 }
 
-// WebsocketsServerStart starts websockets server
-func WebsocketsServerStart() {
-	http.HandleFunc("", func(w http.ResponseWriter, r *http.Request) {
-		conn, _ := ws.Upgrade(w, r, nil) // error ignored for sake of simplicity
+// WebSocketServerStart starts websockets server
+func WebSocketServerStart(port int) {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		conn, err := ws.Upgrade(w, r, nil)
+		lib.CheckError(err, -1)
+
+		fmt.Println("Connexion au client...")
 
 		for {
 			// Read message from browser
 			msgType, msg, err := conn.ReadMessage()
 			if err != nil {
-				return
+				// La connexion est perdue
+				// -----------------------
+				lib.CheckError(err, 0)
+
+				break
 			}
 
 			// Print the message to the console
 			fmt.Printf("%s sent: %s\n", conn.RemoteAddr(), string(msg))
 
 			// Write message back to browser
-			if err = conn.WriteMessage(msgType, msg); err != nil {
-				return
-			}
+			err = conn.WriteMessage(msgType, msg)
+			lib.CheckError(err, 0)
 		}
 	})
 
-	http.ListenAndServe(":8082", nil)
+	err := http.ListenAndServe(":"+strconv.Itoa(port), nil)
+	lib.CheckError(err, -1)
 }

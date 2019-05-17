@@ -15,7 +15,7 @@ var port, defaultPort int
 func init() {
 	// Flag
 	// ----
-	defaultPort = 8080
+	defaultPort = 8888
 	ServeCommand.Flags().IntVarP(&port, "port", "p", defaultPort, "listened port")
 
 	// Ajout de la commande à la commande racine

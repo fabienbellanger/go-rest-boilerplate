@@ -6,13 +6,14 @@ import (
 
 // ConfigType type
 type ConfigType struct {
-	Version     string
-	Environment string
-	Database    databaseType `toml:"database"`
-	Jwt         jwtType      `toml:"jwt"`
-	Log         logType      `toml:"log"`
-	Server      server       `toml:"server"`
-	SQLLog      SQLLogType   `toml:"sql_log"`
+	Version         string
+	Environment     string
+	Database        databaseType    `toml:"database"`
+	Jwt             jwtType         `toml:"jwt"`
+	Log             logType         `toml:"log"`
+	Server          server          `toml:"server"`
+	WebSocketServer webSocketServer `toml:"webSocketServer"`
+	SQLLog          SQLLogType      `toml:"sql_log"`
 }
 
 type databaseType struct {
@@ -36,6 +37,10 @@ type logType struct {
 type server struct {
 	Port         int
 	AllowOrigins []string
+}
+
+type webSocketServer struct {
+	Port int
 }
 
 type SQLLogType struct {

@@ -2,7 +2,9 @@ package routes
 
 import (
 	"fmt"
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -27,35 +29,14 @@ func exampleRoutes(group *gin.RouterGroup) {
 		})
 	})
 
-	// Websockets
-	// ----------
-	group.GET("echo", func(c *gin.Context) {
-		conn, _ := upgrader.Upgrade(c.Writer, c.Request, nil) // error ignored for sake of simplicity
-		// lib.CheckError(err, -1)
-		for {
-			// Read message from browser
-			msgType, msg, err := conn.ReadMessage()
-			if err != nil {
-				return
-			}
-
-			// Print the message to the console
-			fmt.Printf("%s sent: %s\n", conn.RemoteAddr(), string(msg))
-
-			// Write message back to browser
-			if err = conn.WriteMessage(msgType, msg); err != nil {
-				return
-			}
-		}
-	})
-
 	// This handler will match /user/john but will not match /user/ or /user
 	group.GET("/websockets", func(c *gin.Context) {
+		fmt.Println(strconv.Itoa(lib.Config.WebSocketServer.Port))
 		c.HTML(http.StatusOK, "example/websockets.ghtml", gin.H{
-			"title": "Websockets example",
+			"title":        "Websockets example",
+			"webSocketUrl": strconv.Itoa(lib.Config.WebSocketServer.Port),
 		})
 	})
-	// ---------
 
 	// However, this one will match /user/john/ and also /user/john/send
 	// If no other routers match /user/john, it will redirect to /user/john/
