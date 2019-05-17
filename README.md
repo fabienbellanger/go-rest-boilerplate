@@ -1,11 +1,13 @@
 # Golang Rest API boilerplate
 
-## Install
+## Content
+- [Installation](#-installation)
+- [Commands list](#-commands-list)
+
+## Installation
 - Install the lastest Golang version ([Download page](https://golang.org/dl/))
 - TODO: Install dependencies
 - Copy file `config.toml.dist` to `config.toml` and fill it.
-    
-
 
 ## Commands list
 
