@@ -3,6 +3,10 @@
 ## Content
 - [Installation](#installation)
 - [Commands list](#commands-list)
+   - [Development](#development)
+   - [Production](#production)
+- [Golang web server in production](#golang-web-server-in-production)
+- [TODO list](#todo-list)
 
 ## Installation
 - Install the lastest Golang version ([Download page](https://golang.org/dl/))
