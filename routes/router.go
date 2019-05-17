@@ -96,5 +96,9 @@ func initServer() *gin.Engine {
 		c.JSON(http.StatusNotFound, gin.H{"code": http.StatusNotFound, "message": "Page not found"})
 	})
 
+	// Templates HTML
+	// --------------
+	router.LoadHTMLGlob("templates/**/*")
+
 	return router
 }

@@ -1,0 +1,5 @@
+{{- define "example/index.ghtml" }}
+    {{- template "layout/header.ghtml" . }}
+    <div>Hello <b>{{ .name }}</b></div>
+    {{- template "layout/footer.ghtml" }}
+{{- end }}
