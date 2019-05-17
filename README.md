@@ -1,8 +1,8 @@
 # Golang Rest API boilerplate
 
 ## Content
-- [Installation](#-installation)
-- [Commands list](#-commands-list)
+- [Installation](#installation)
+- [Commands list](#commands-list)
 
 ## Installation
 - Install the lastest Golang version ([Download page](https://golang.org/dl/))
