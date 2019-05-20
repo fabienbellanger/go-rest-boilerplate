@@ -3,8 +3,8 @@ package commands
 import (
 	"fmt"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/routes"
 	"github.com/spf13/cobra"
 )
 
@@ -48,6 +48,6 @@ var WebSocketCommand = &cobra.Command{
 
 		// Lancement du serveur websocket
 		// ------------------------------
-		routes.WebSocketServerStart(webSocketPort)
+		websockets.ServerStart(webSocketPort)
 	},
 }
