@@ -8,8 +8,13 @@ import (
 
 // ServerStart starts websockets server
 func ServerStart(port int) {
+	// Starting Hub
+	// ------------
+	hub := newHub()
+	go hub.run()
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		ClientConnection(w, r)
+		ClientConnection(hub, w, r)
 	})
 
 	err := http.ListenAndServe(":"+strconv.Itoa(port), nil)
