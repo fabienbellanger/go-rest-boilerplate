@@ -43,7 +43,11 @@ func ClientConnection(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	// Connexion
 	// ---------
 	conn, err := ws.Upgrade(w, r, nil)
-	lib.CheckError(err, -1)
+	if err != nil {
+		lib.CheckError(err, 0)
+		return
+	}
+
 	fmt.Println("Connexion du client...")
 
 	// Création du client
@@ -86,6 +90,9 @@ func (c *Client) readMessages() {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				lib.CheckError(err, 0)
 			}
+
+			fmt.Println("Déconnexion du client...")
+
 			break
 		}
 
