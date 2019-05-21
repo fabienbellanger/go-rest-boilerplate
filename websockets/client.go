@@ -1,25 +1,13 @@
 package websockets
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/gorilla/websocket"
+	"log"
 	"net/http"
 	"time"
-)
-
-const (
-	// Time allowed to write a message to the peer.
-	writeWait = 10 * time.Second
-
-	// Time allowed to read the next pong message from the peer.
-	pongWait = 60 * time.Second
-
-	// Send pings to peer with this period. Must be less than pongWait.
-	pingPeriod = (pongWait * 9) / 10
-
-	// Maximum message size allowed from peer.
-	maxMessageSize = 512
 )
 
 // Connection parameters
@@ -40,10 +28,10 @@ type Message struct {
 type Client struct {
 	hub *Hub
 
-	// The websocket connection.
+	// The websocket connection
 	conn *websocket.Conn
 
-	// Buffered channel of outbound messages.
+	// Buffered channel of outbound messages
 	sendBroadcast chan []byte
 
 	// Id of the client (type of client: account, terminal, etc.)
@@ -56,7 +44,7 @@ func ClientConnection(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	// ---------
 	conn, err := ws.Upgrade(w, r, nil)
 	lib.CheckError(err, -1)
-	fmt.Println("Connexion au client...")
+	fmt.Println("Connexion du client...")
 
 	// Création du client
 	// ------------------
@@ -85,18 +73,6 @@ func (c *Client) readMessages() {
 		lib.CheckError(err, 0)
 	}()
 
-	// Paramètres de la connexion
-	// --------------------------
-	c.conn.SetReadLimit(maxMessageSize)
-	err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
-	lib.CheckError(err, 0)
-	c.conn.SetPongHandler(func(string) error {
-		err := c.conn.SetReadDeadline(time.Now().Add(pongWait))
-		lib.CheckError(err, 0)
-
-		return nil
-	})
-
 	// Ecoute des messages
 	// -------------------
 	// TODO: Faire une fonction d'aiguillage
@@ -104,7 +80,7 @@ func (c *Client) readMessages() {
 		// Read JSON message from browser
 		// ------------------------------
 		var message Message
-		err = c.conn.ReadJSON(&message)
+		err := c.conn.ReadJSON(&message)
 
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
@@ -114,7 +90,7 @@ func (c *Client) readMessages() {
 		}
 
 		// Print the message to the console
-		fmt.Printf("2 -> %s - Message: %s with data %+v\n",
+		fmt.Printf("%s - Message: %s with data %+v\n",
 			c.conn.RemoteAddr(),
 			message.Message,
 			message.Data.(map[string]interface{})["text"])
@@ -126,15 +102,16 @@ func (c *Client) readMessages() {
 
 		// Broadcast example
 		// -----------------
-		// _, message, err := c.conn.ReadMessage()
-		// if err != nil {
-		// 	if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-		// 		log.Printf("error: %v", err)
-		//	}
-		//	break
-		//}
-		// message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		// c.hub.broadcast <- message
+		_, messageB, err := c.conn.ReadMessage()
+		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				log.Printf("error: %v", err)
+			}
+			break
+		}
+
+		messageB = bytes.TrimSpace(messageB)
+		c.hub.broadcast <- messageB
 	}
 }
 
@@ -149,7 +126,28 @@ func (c *Client) broadcastMessage() {
 
 	// Envoi des messages
 	// ------------------
-	/*for {
+	for {
+		select {
+		case message, ok := <-c.sendBroadcast:
+			if !ok {
+				// The hub closed the channel
+				err := c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				lib.CheckError(err, 0)
 
-	}*/
+				return
+			}
+
+			w, err := c.conn.NextWriter(websocket.TextMessage)
+			if err != nil {
+				return
+			}
+
+			_, err = w.Write(message)
+			lib.CheckError(err, 0)
+
+			if err := w.Close(); err != nil {
+				return
+			}
+		}
+	}
 }

@@ -14,12 +14,18 @@
         };
 
         socket.onmessage = function (e) {
-            output.innerHTML += "Server: " + e.data + "\n";
+            readMessage(e);
         };
 
         function send() {
             socket.send(JSON.stringify({message: "send", data : {text: input.value}}));
             input.value = "";
+        }
+
+        function readMessage(e)
+        {
+            console.log(e.data);
+            output.innerHTML += "Server: " + e.data + "\n";
         }
     </script>
     {{- template "layout/footer.ghtml" }}
