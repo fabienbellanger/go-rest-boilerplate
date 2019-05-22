@@ -2,10 +2,10 @@ package websockets
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/gorilla/websocket"
-	"log"
 	"net/http"
 	"time"
 )
@@ -77,48 +77,60 @@ func (c *Client) readMessages() {
 		lib.CheckError(err, 0)
 	}()
 
-	// Ecoute des messages
-	// -------------------
-	// TODO: Faire une fonction d'aiguillage
-	for {
-		// Read JSON message from browser
-		// ------------------------------
-		var message Message
-		err := c.conn.ReadJSON(&message)
+	// Gestion des messages
+	// --------------------
+	c.manageMessages()
+}
 
+// manageMessages manages sending and writing messages
+func (c *Client) manageMessages() {
+	for {
+		// Read message from browser
+		// -------------------------
+		_, messageStr, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				// Déconnexion du client
+				// ---------------------
 				lib.CheckError(err, 0)
 			}
 
-			fmt.Println("Déconnexion du client...")
-
 			break
 		}
 
-		// Print the message to the console
-		fmt.Printf("%s - Message: %s with data %+v\n",
-			c.conn.RemoteAddr(),
-			message.Message,
-			message.Data.(map[string]interface{})["text"])
-
-		// Write message back to browser
-		// -----------------------------
-		err = c.conn.WriteMessage(1, []byte(message.Message))
-		lib.CheckError(err, 0)
-
-		// Broadcast example
+		// Trim de la chaîne
 		// -----------------
-		_, messageB, err := c.conn.ReadMessage()
-		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("error: %v", err)
-			}
-			break
-		}
+		messageStr = bytes.TrimSpace(messageStr)
 
-		messageB = bytes.TrimSpace(messageB)
-		c.hub.broadcast <- messageB
+		// Est-ce un JSON ?
+		// ----------------
+		var messageJSON Message
+		err = json.Unmarshal(messageStr, &messageJSON)
+
+		if err != nil {
+			// Not a JSON message
+			// ------------------
+
+			// Par exemple, on broadcast le message
+			messageStr = bytes.TrimSpace(messageStr)
+			c.hub.broadcast <- messageStr
+
+		} else {
+			// JSON message
+			// ------------
+
+			// Par exemple
+			// Print the message to the console
+			fmt.Printf("%s - Message: %s with data %+v\n",
+				c.conn.RemoteAddr(),
+				messageJSON.Message,
+				messageJSON.Data.(map[string]interface{})["text"])
+
+			// Write message back to browser
+			// -----------------------------
+			err = c.conn.WriteMessage(1, []byte(messageJSON.Message))
+			lib.CheckError(err, 0)
+		}
 	}
 }
 
