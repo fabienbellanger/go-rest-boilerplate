@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/gorilla/websocket"
 	"github.com/mitchellh/mapstructure"
-	"net/http"
-	"time"
 )
 
 // Connection parameters
@@ -118,33 +119,9 @@ func (c *Client) manageMessages() {
 		} else {
 			// JSON message
 			// ------------
-
 			switch messageJSON.Message {
 			case "test":
-				// Print the message to the console
-				fmt.Printf("%s - Message: %s with data %+v\n",
-					c.conn.RemoteAddr(),
-					messageJSON.Message,
-					messageJSON.Data.(map[string]interface{})["text"])
-
-				// Write message back to browser
-				// -----------------------------
-				err = c.conn.WriteMessage(1, []byte(messageJSON.Message))
-				lib.CheckError(err, 0)
-
-				type testType struct {
-					Text struct {
-						Toto string
-					}
-				}
-
-				var t testType
-				err = mapstructure.Decode(messageJSON.Data, &t)
-				if err != nil {
-					lib.CheckError(err, 0)
-				}
-
-				fmt.Printf("%#v - %s\n", t, t.Text.Toto)
+				c.test(messageJSON)
 			}
 		}
 	}
@@ -174,6 +151,8 @@ func (c *Client) broadcastMessage() {
 
 			w, err := c.conn.NextWriter(websocket.TextMessage)
 			if err != nil {
+				lib.CheckError(err, 0)
+
 				return
 			}
 
@@ -181,8 +160,36 @@ func (c *Client) broadcastMessage() {
 			lib.CheckError(err, 0)
 
 			if err := w.Close(); err != nil {
+				lib.CheckError(err, 0)
+
 				return
 			}
 		}
 	}
+}
+
+// test is a test of weboskcets
+func (c *Client) test(message Message) {
+	// Write message back to browser
+	// -----------------------------
+	err := c.conn.WriteMessage(1, []byte(message.Message))
+	lib.CheckError(err, 0)
+
+	type testType struct {
+		Text struct {
+			Toto string
+		}
+	}
+
+	var t testType
+	err = mapstructure.Decode(message.Data, &t)
+	if err != nil {
+		lib.CheckError(err, 0)
+	}
+
+	fmt.Printf("%#v - %s\n", t, t.Text.Toto)
+
+	// Broadcast du message
+	// --------------------
+	c.hub.broadcast <- []byte(message.Message)
 }

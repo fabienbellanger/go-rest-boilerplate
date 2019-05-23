@@ -2,10 +2,11 @@ package routes
 
 import (
 	"fmt"
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -23,7 +24,7 @@ func exampleRoutes(group *gin.RouterGroup) {
 	group.GET("/user/:name", func(c *gin.Context) {
 		name := c.Param("name")
 
-		c.HTML(http.StatusOK, "example/index.ghtml", gin.H{
+		c.HTML(http.StatusOK, "example/index.gohtml", gin.H{
 			"title": "Example page",
 			"name":  name,
 		})
@@ -32,7 +33,7 @@ func exampleRoutes(group *gin.RouterGroup) {
 	// This handler will match /user/john but will not match /user/ or /user
 	group.GET("/websockets", func(c *gin.Context) {
 		fmt.Println(strconv.Itoa(lib.Config.WebSocketServer.Port))
-		c.HTML(http.StatusOK, "example/websockets.ghtml", gin.H{
+		c.HTML(http.StatusOK, "example/websockets.gohtml", gin.H{
 			"title":        "Websockets example",
 			"webSocketUrl": strconv.Itoa(lib.Config.WebSocketServer.Port),
 		})

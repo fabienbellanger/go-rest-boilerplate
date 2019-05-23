@@ -1,5 +1,5 @@
-{{- define "example/websockets.ghtml" }}
-    {{- template "layout/header.ghtml" . }}
+{{- define "example/websockets.gohtml" }}
+    {{- template "layout/header.gohtml" . }}
     <h1>Websockets</h1>
     <input id="input" type="text" />
     <button onclick="send(socket)">Send</button>
@@ -48,5 +48,5 @@
 
         socket = wsConnect();
     </script>
-    {{- template "layout/footer.ghtml" }}
+    {{- template "layout/footer.gohtml" }}
 {{- end }}

@@ -25,7 +25,7 @@ runApi:
 serve: install runApi
 
 runWebSocket:
-	$(GORUN) main.go websocket
+	$(GORUN) -race main.go websocket
 ws: install runWebSocket
 
 runApiRace:
