@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestGetHTTPInternalServerError : Test de la fonction GetHTTPResponse
+// TestGetHTTPInternalServerError
 func TestGetHTTPResponse(t *testing.T) {
 	response := GetHTTPResponse(200, "Success", nil)
 	responseValid := HTTPResponse{200, "Success", nil}
@@ -21,7 +21,14 @@ func TestGetHTTPResponse(t *testing.T) {
 	}
 }
 
-// TestGetHTTPInternalServerError : Test de la fonction GetHTTPInternalServerError
+// BenchmarkGetHTTPResponse
+func BenchmarkGetHTTPResponse(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		GetHTTPResponse(200, "Success", nil)
+	}
+}
+
+// TestGetHTTPInternalServerError
 func TestGetHTTPInternalServerError(t *testing.T) {
 	response := GetHTTPInternalServerError("Database Error")
 	responseValid := HTTPResponse{500, "Database Error", nil}

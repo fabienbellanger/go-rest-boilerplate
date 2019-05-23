@@ -13,7 +13,12 @@ type ConfigType struct {
 	Log             logType         `toml:"log"`
 	Server          server          `toml:"server"`
 	WebSocketServer webSocketServer `toml:"webSocketServer"`
-	SQLLog          SQLLogType      `toml:"sql_log"`
+	SQLLog          sqlLog          `toml:"sql_log"`
+	// SSL             ssl             `toml:"ssl"`
+	SSL struct {
+		CertPath string
+		KeyPath  string
+	} `toml:"ssl"`
 }
 
 type databaseType struct {
@@ -43,7 +48,12 @@ type webSocketServer struct {
 	Port int
 }
 
-type SQLLogType struct {
+type ssl struct {
+	certPath string
+	keyPath  string
+}
+
+type sqlLog struct {
 	Level            uint
 	Limit            float64
 	DisplayOverLimit bool

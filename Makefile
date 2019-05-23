@@ -49,6 +49,9 @@ build:
 
 test: 
 	$(GOTEST) -cover ./...
+	
+bench: 
+	$(GOTEST) -bench=. ./...
 
 clean: 
 	$(GOCLEAN)

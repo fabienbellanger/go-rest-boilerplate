@@ -4,12 +4,12 @@ import (
 	"testing"
 )
 
-// TestCheckError : Test de la fonction CheckError
+// TestCheckError
 func TestCheckError(t *testing.T) {
 	// TODO
 }
 
-// TestUcfirst : Test de la fonction Ucfirst
+// TestUcfirst
 func TestUcfirst(t *testing.T) {
 	s1 := "test chaîne Avec et sans majuscule"
 	s1u := Ucfirst(s1)
@@ -33,6 +33,7 @@ func TestUcfirst(t *testing.T) {
 	}
 }
 
+// TestInArray
 func TestInArray(t *testing.T) {
 	tInt := []int{10, 56, 23, 85}
 	found, index := InArray(56, tInt)

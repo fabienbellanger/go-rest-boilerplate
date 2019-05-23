@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestIsDatebaseConfigCorrect : Test si la configuration de la base de données est correcte
+// TestIsDatebaseConfigCorrect
 func TestIsDatebaseConfigCorrect(t *testing.T) {
 	Config.Database.Driver = ""
 	Config.Database.Name = ""
@@ -79,7 +79,7 @@ func TestIsDatebaseConfigCorrect(t *testing.T) {
 	}
 }
 
-// TestIsServerConfigCorrect : Test si la configuration du serveur est correcte
+// TestIsServerConfigCorrect
 func TestIsServerConfigCorrect(t *testing.T) {
 	Config.Server.AllowOrigins = []string{}
 	isCorrect := IsServerConfigCorrect()

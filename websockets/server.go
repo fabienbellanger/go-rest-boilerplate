@@ -1,9 +1,10 @@
 package websockets
 
 import (
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"net/http"
 	"strconv"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 // ServerStart starts websockets server
@@ -19,4 +20,9 @@ func ServerStart(port int) {
 
 	err := http.ListenAndServe(":"+strconv.Itoa(port), nil)
 	lib.CheckError(err, -1)
+
+	// Pour utiliser les wss (WebSocket Secure)
+	// ----------------------------------------
+	// err := http.ListenAndServeTLS(":8443", lib.Config.SSL.CertPath, lib.Config.SSL.KeyPath, nil)
+	// lib.CheckError(err, -1)
 }

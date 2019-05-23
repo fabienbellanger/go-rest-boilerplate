@@ -5,28 +5,31 @@ environment = "production" # development | production
 
 [database]
 driver = "mysql"
-host = "localhost" # Pour docker : docker inspect <container name> | grep IPAddr
+host = "" # Pour docker : docker inspect mariadb | grep IPAddr
 port = 3306
-name = "myDatabase"
-user = "myUser"
-password = "myPassword"
+name = ""
+user = ""
+password = ""
 
 [jwt]
 secret = "mysecretkey"
 
-[log]
-filename = "gin.log"
-nbFilesToArchive = 7
+[ssl]
+certPath = 'cert.pem'
+keyPath = 'key.pem'
 
 [server]
 port = 8888
 allowOrigins = [
-    "http://localhost:8081",
     "http://localhost:8889",
 ]
 
 [webSocketServer]
 port = 8889
+
+[log]
+filename = "gin.log"
+nbFilesToArchive = 7
 
 [sql_log]
 level = 1 # 0: no log, 1: only time, 2: time and query, 3: time, query and arguments (int64)
