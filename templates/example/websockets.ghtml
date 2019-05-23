@@ -28,7 +28,7 @@
                 output.innerHTML += "Status: Disconnected\n";
                 setTimeout(function() {
                     socket = wsConnect();
-                }, 1000);
+                }, 5000);
             };
 
             return socket;
@@ -36,7 +36,7 @@
 
         function send(socket) {
             socket.send(input.value);
-            socket.send(JSON.stringify({message: "test", data : {text: input.value}}));
+            socket.send(JSON.stringify({message: "test", data : {text: {toto: input.value}}}));
             input.value = "";
         }
 

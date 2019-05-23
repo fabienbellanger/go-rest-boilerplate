@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/gorilla/websocket"
+	"github.com/mitchellh/mapstructure"
 	"net/http"
 	"time"
 )
@@ -110,26 +111,41 @@ func (c *Client) manageMessages() {
 		if err != nil {
 			// Not a JSON message
 			// ------------------
+			messageStr = bytes.TrimSpace(messageStr)
 
 			// Par exemple, on broadcast le message
-			messageStr = bytes.TrimSpace(messageStr)
 			c.hub.broadcast <- messageStr
-
 		} else {
 			// JSON message
 			// ------------
 
-			// Par exemple
-			// Print the message to the console
-			fmt.Printf("%s - Message: %s with data %+v\n",
-				c.conn.RemoteAddr(),
-				messageJSON.Message,
-				messageJSON.Data.(map[string]interface{})["text"])
+			switch messageJSON.Message {
+			case "test":
+				// Print the message to the console
+				fmt.Printf("%s - Message: %s with data %+v\n",
+					c.conn.RemoteAddr(),
+					messageJSON.Message,
+					messageJSON.Data.(map[string]interface{})["text"])
 
-			// Write message back to browser
-			// -----------------------------
-			err = c.conn.WriteMessage(1, []byte(messageJSON.Message))
-			lib.CheckError(err, 0)
+				// Write message back to browser
+				// -----------------------------
+				err = c.conn.WriteMessage(1, []byte(messageJSON.Message))
+				lib.CheckError(err, 0)
+
+				type testType struct {
+					Text struct {
+						Toto string
+					}
+				}
+
+				var t testType
+				err = mapstructure.Decode(messageJSON.Data, &t)
+				if err != nil {
+					lib.CheckError(err, 0)
+				}
+
+				fmt.Printf("%#v - %s\n", t, t.Text.Toto)
+			}
 		}
 	}
 }
