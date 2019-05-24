@@ -87,11 +87,6 @@ func (c *Client) readMessages() {
 
 	// Gestion des messages
 	// --------------------
-	c.manageMessages()
-}
-
-// manageMessages manages sending and writing messages
-func (c *Client) manageMessages() {
 	for {
 		// Read message from browser
 		// -------------------------
@@ -106,14 +101,10 @@ func (c *Client) manageMessages() {
 			break
 		}
 
-		// Trim de la chaîne
-		// -----------------
-		messageStr = bytes.TrimSpace(messageStr)
-
-		// Est-ce un JSON ?
-		// ----------------
+		// Est-ce un JSON valide ?
+		// -----------------------
 		var messageJSON Message
-		err = json.Unmarshal(messageStr, &messageJSON)
+		err = json.Unmarshal(bytes.TrimSpace(messageStr), &messageJSON)
 
 		if err != nil {
 			// Not a valid JSON message
