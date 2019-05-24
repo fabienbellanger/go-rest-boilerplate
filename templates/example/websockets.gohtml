@@ -4,11 +4,22 @@
     <input id="input" type="text" />
     <button onclick="send(socket)">Send</button>
     <pre id="output"></pre>
+    
     <script>
-        var input = document.getElementById("input");
-        var output = document.getElementById("output");
-        var socket;
+        const maxConnectionsAttempts = 5;
+        const timeBeforeNewAttempt   = 5000;
+        
+        let input               = document.getElementById("input");
+        let output              = document.getElementById("output");
+        let connectionsAttempts = 0;
+        let socket;
 
+        /**
+         * Connexion au serveur
+         *
+         * @author Fabien Bellanger
+         * @return WebSocket
+         */
         function wsConnect() {
             socket = new WebSocket("ws://localhost:" + {{ .webSocketUrl }});
 
@@ -25,15 +36,29 @@
             };
 
             socket.onclose = function () {
-                output.innerHTML += "Status: Disconnected\n";
-                setTimeout(function() {
-                    socket = wsConnect();
-                }, 5000);
+                output.innerHTML += `Status: Disconnected (${connectionsAttempts} / ${maxConnectionsAttempts})\n`;
+
+                if (connectionsAttempts < maxConnectionsAttempts)
+                {
+                    // On retente une connexion au serveur
+                    // -----------------------------------
+                    setTimeout(function() {
+                        socket = wsConnect();
+                    }, timeBeforeNewAttempt);
+                }
             };
+            
+            connectionsAttempts++;
 
             return socket;
         }
 
+        /**
+         * Envoi d'un message au serveur
+         *
+         * @author Fabien Bellanger
+         * @param Socket socket
+         */
         function send(socket) {
             socket.send(JSON.stringify({message: "test", data : {text: {toto: input.value}}}));
             socket.send(JSON.stringify({m: "t", d : {text: {toto: input.value}}}));
@@ -42,11 +67,19 @@
             input.value = "";
         }
 
-        function readMessage(e)
+        /**
+         * Lecture d'un message
+         *
+         * @author Fabien Bellanger
+         * @param Event event
+         */
+        function readMessage(event)
         {
-            output.innerHTML += "Server: " + e.data + "\n";
+            output.innerHTML += "Server: " + event.data + "\n";
         }
 
+        // Connexion au serveur
+        // --------------------
         socket = wsConnect();
     </script>
     {{- template "layout/footer.gohtml" }}

@@ -9,8 +9,8 @@ import (
 
 // ServerStart starts websockets server
 func ServerStart(port int) {
-	// Starting Hub
-	// ------------
+	// Lancement du hub
+	// ----------------
 	hub := newHub()
 	go hub.run()
 

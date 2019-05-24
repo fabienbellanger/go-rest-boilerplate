@@ -36,6 +36,7 @@ type Client struct {
 	// Buffered channel of outbound messages
 	sendBroadcast chan []byte
 
+	// Buffered channel of message
 	sendMessage chan Message
 
 	// Id of the client (type of client: account, terminal, etc.)
@@ -56,7 +57,12 @@ func ClientConnection(hub *Hub, w http.ResponseWriter, r *http.Request) {
 
 	// Création du client
 	// ------------------
-	client := &Client{hub: hub, conn: conn, sendBroadcast: make(chan []byte, 256), sendMessage: make(chan Message), id: "message"}
+	client := &Client{
+		hub:           hub,
+		conn:          conn,
+		sendBroadcast: make(chan []byte, 256),
+		sendMessage:   make(chan Message),
+		id:            "message"}
 	client.hub.register <- client
 
 	// Envoi des messages
@@ -88,8 +94,8 @@ func (c *Client) readMessages() {
 	// Gestion des messages
 	// --------------------
 	for {
-		// Read message from browser
-		// -------------------------
+		// Lecture du message provenant du navigateur
+		// ------------------------------------------
 		_, messageStr, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
@@ -107,12 +113,12 @@ func (c *Client) readMessages() {
 		err = json.Unmarshal(bytes.TrimSpace(messageStr), &messageJSON)
 
 		if err != nil {
-			// Not a valid JSON message
-			// ------------------------
+			// JSON non valide
+			// ---------------
 			lib.CheckError(err, 0)
 		} else {
-			// Correct JSON message
-			// --------------------
+			// JSON valide
+			// -----------
 			if messageJSON.Message != "" {
 				c.sendMessage <- messageJSON
 			}
@@ -135,7 +141,7 @@ func (c *Client) broadcastMessage() {
 		select {
 		case message, ok := <-c.sendBroadcast:
 			if !ok {
-				// The hub closed the channel
+				// Le hub ferme le channel
 				err := c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				lib.CheckError(err, 0)
 
