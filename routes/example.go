@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -32,7 +31,6 @@ func exampleRoutes(group *gin.RouterGroup) {
 
 	// This handler will match /user/john but will not match /user/ or /user
 	group.GET("/websockets", func(c *gin.Context) {
-		fmt.Println(strconv.Itoa(lib.Config.WebSocketServer.Port))
 		c.HTML(http.StatusOK, "example/websockets.gohtml", gin.H{
 			"title":        "Websockets example",
 			"webSocketUrl": strconv.Itoa(lib.Config.WebSocketServer.Port),

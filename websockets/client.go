@@ -36,6 +36,8 @@ type Client struct {
 	// Buffered channel of outbound messages
 	sendBroadcast chan []byte
 
+	sendMessage chan Message
+
 	// Id of the client (type of client: account, terminal, etc.)
 	id string
 }
@@ -54,8 +56,12 @@ func ClientConnection(hub *Hub, w http.ResponseWriter, r *http.Request) {
 
 	// Création du client
 	// ------------------
-	client := &Client{hub: hub, conn: conn, sendBroadcast: make(chan []byte, 256), id: "message"}
+	client := &Client{hub: hub, conn: conn, sendBroadcast: make(chan []byte, 256), sendMessage: make(chan Message), id: "message"}
 	client.hub.register <- client
+
+	// Envoi des messages
+	// ------------------
+	go client.writeMessage()
 
 	// Ecoute des messages
 	// -------------------
@@ -110,18 +116,14 @@ func (c *Client) manageMessages() {
 		err = json.Unmarshal(messageStr, &messageJSON)
 
 		if err != nil {
-			// Not a JSON message
-			// ------------------
-			messageStr = bytes.TrimSpace(messageStr)
-
-			// Par exemple, on broadcast le message
-			c.hub.broadcast <- messageStr
+			// Not a valid JSON message
+			// ------------------------
+			lib.CheckError(err, 0)
 		} else {
-			// JSON message
-			// ------------
-			switch messageJSON.Message {
-			case "test":
-				c.test(messageJSON)
+			// Correct JSON message
+			// --------------------
+			if messageJSON.Message != "" {
+				c.sendMessage <- messageJSON
 			}
 		}
 	}
@@ -168,11 +170,28 @@ func (c *Client) broadcastMessage() {
 	}
 }
 
-// test is a test of weboskcets
+// writeMessage writes message to socket connection
+func (c *Client) writeMessage() {
+	defer func() {
+		c.conn.Close()
+	}()
+
+	for {
+		select {
+		case message := <-c.sendMessage:
+			switch message.Message {
+			case "test":
+				c.test(message)
+			}
+		}
+	}
+}
+
+// test is a test of websockets
 func (c *Client) test(message Message) {
 	// Write message back to browser
 	// -----------------------------
-	err := c.conn.WriteMessage(1, []byte(message.Message))
+	err := c.conn.WriteMessage(websocket.TextMessage, []byte(message.Message))
 	lib.CheckError(err, 0)
 
 	type testType struct {
@@ -189,7 +208,7 @@ func (c *Client) test(message Message) {
 
 	fmt.Printf("%#v - %s\n", t, t.Text.Toto)
 
-	// Broadcast du message
-	// --------------------
-	c.hub.broadcast <- []byte(message.Message)
+	// Broadcast du message (attention problème de concurrence, ne pas faire plusieurs write en même temps)
+	// ----------------------------------------------------------------------------------------------------
+	// c.hub.broadcast <- []byte(message.Message)
 }

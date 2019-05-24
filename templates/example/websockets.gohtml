@@ -35,14 +35,15 @@
         }
 
         function send(socket) {
-            socket.send(input.value);
             socket.send(JSON.stringify({message: "test", data : {text: {toto: input.value}}}));
+            socket.send(JSON.stringify({m: "t", d : {text: {toto: input.value}}}));
+            socket.send("klklklklkll");
+
             input.value = "";
         }
 
         function readMessage(e)
         {
-            console.log(e.data);
             output.innerHTML += "Server: " + e.data + "\n";
         }
 
