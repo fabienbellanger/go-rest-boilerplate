@@ -6,57 +6,39 @@ import (
 
 // ConfigType type
 type ConfigType struct {
-	Version         string
-	Environment     string
-	Database        databaseType    `toml:"database"`
-	Jwt             jwtType         `toml:"jwt"`
-	Log             logType         `toml:"log"`
-	Server          server          `toml:"server"`
-	WebSocketServer webSocketServer `toml:"webSocketServer"`
-	SQLLog          sqlLog          `toml:"sql_log"`
-	// SSL             ssl             `toml:"ssl"`
+	Version     string
+	Environment string
+	Database    struct {
+		Driver   string
+		Host     string
+		Port     int
+		Name     string
+		User     string
+		Password string
+	} `toml:"database"`
+	Jwt struct {
+		Secret string
+	} `toml:"jwt"`
 	SSL struct {
 		CertPath string
 		KeyPath  string
 	} `toml:"ssl"`
-}
-
-type databaseType struct {
-	Driver   string
-	Host     string
-	Port     int
-	Name     string
-	User     string
-	Password string
-}
-
-type jwtType struct {
-	Secret string
-}
-
-type logType struct {
-	FileName         string
-	NbFilesToArchive int
-}
-
-type server struct {
-	Port         int
-	AllowOrigins []string
-}
-
-type webSocketServer struct {
-	Port int
-}
-
-type ssl struct {
-	certPath string
-	keyPath  string
-}
-
-type sqlLog struct {
-	Level            uint
-	Limit            float64
-	DisplayOverLimit bool
+	Server struct {
+		Port         int
+		AllowOrigins []string
+	} `toml:"server"`
+	WebSocketServer struct {
+		Port int
+	} `toml:"webSocketServer"`
+	Log struct {
+		FileName         string
+		NbFilesToArchive int
+	} `toml:"log"`
+	SQLLog struct {
+		Level            uint
+		Limit            float64
+		DisplayOverLimit bool
+	} `toml:"sql_log"`
 }
 
 // Config variable
