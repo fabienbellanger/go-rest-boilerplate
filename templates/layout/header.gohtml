@@ -8,9 +8,12 @@
 
         <title>
             {{- .title }}
-            {{- if or (not .name) (ne .name "") }}
+            {{- if .name }}
+                {{ if ne .name "" }}
                  - {{- .name }}
-            {{- end }}</title>
+                {{- end }}
+            {{- end }}
+        </title>
     </head>
 
     <body>
