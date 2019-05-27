@@ -6,6 +6,7 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
+GOMOD=$(GOCMD) mod
 BINARY_NAME=goRestBoilerplate
 BINARY_UNIX=$(BINARY_NAME)_unix
 
@@ -15,10 +16,10 @@ install:
 	$(GOINSTALL) ./...
 
 update:
-	$(GOGET) -u
+	$(GOGET) -u && $(GOMOD) tidy
 
 updateAll:
-	$(GOGET) -u all
+	$(GOGET) -u all && $(GOMOD) tidy
 
 runApi:
 	$(GORUN) main.go serve
