@@ -1,13 +1,14 @@
 package lib
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
-// GLogln displays log in gin.DefaultWriter
+// GLog displays log in gin.DefaultWriter
 func GLog(v ...interface{}) {
 	// On redirige les logs vers le default writer de Gin
 	log.SetOutput(gin.DefaultWriter)

@@ -3,15 +3,16 @@ package commands
 import (
 	"archive/zip"
 	"errors"
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fatih/color"
-	"github.com/spf13/cobra"
 	"io"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/fatih/color"
+	"github.com/spf13/cobra"
 )
 
 type logFile struct {
@@ -21,8 +22,6 @@ type logFile struct {
 }
 
 var logFileName string
-
-const LOGS_PATH = "logs/"
 
 func init() {
 	// Ajout de la commande à la commande racine
@@ -54,11 +53,11 @@ var LogCommand = &cobra.Command{
 func executeLogsRotation() {
 	// Le répertoire existe t-il ?
 	// ---------------------------
-	if _, err := os.Stat(LOGS_PATH); os.IsNotExist(err) {
-		lib.CheckError(errors.New(LOGS_PATH+" directory does not exist"), -1)
+	if _, err := os.Stat(lib.Config.Log.DirPath); os.IsNotExist(err) {
+		lib.CheckError(errors.New(lib.Config.Log.DirPath+" directory does not exist"), -1)
 	}
 
-	logFileName = LOGS_PATH + lib.Config.Log.FileName
+	logFileName = lib.Config.Log.DirPath + lib.Config.Log.FileName
 
 	logFile, err := os.OpenFile(logFileName, os.O_RDONLY, 0755)
 	if err != nil {
@@ -110,7 +109,7 @@ func findLogFile() []logFile {
 
 	// On parcours tous les fichiers du dossier
 	// ----------------------------------------
-	err := filepath.Walk(LOGS_PATH, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(lib.Config.Log.DirPath, func(path string, info os.FileInfo, err error) error {
 		isLogFile, _ := regexp.Match(`^`+logFileName+`.[\d]+$`, []byte(path))
 
 		if isLogFile {
@@ -150,7 +149,7 @@ func findArchiveName() (string, error) {
 
 	// On parcours tous les fichiers du dossier
 	// ----------------------------------------
-	err := filepath.Walk(LOGS_PATH, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(lib.Config.Log.DirPath, func(path string, info os.FileInfo, err error) error {
 		regexResult := regex.FindAllSubmatch([]byte(path), -1)
 
 		for _, matchMessage := range regexResult {

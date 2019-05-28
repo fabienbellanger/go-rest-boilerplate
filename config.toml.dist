@@ -28,6 +28,7 @@ allowOrigins = [
 port = 8889
 
 [log]
+dirPath = "logs/" # Inside project dir
 filename = "gin.log"
 nbFilesToArchive = 7
 

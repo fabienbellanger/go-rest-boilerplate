@@ -31,6 +31,7 @@ type ConfigType struct {
 		Port int
 	} `toml:"webSocketServer"`
 	Log struct {
+		DirPath          string
 		FileName         string
 		NbFilesToArchive int
 	} `toml:"log"`
