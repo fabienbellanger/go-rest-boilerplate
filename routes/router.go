@@ -1,11 +1,16 @@
 package routes
 
 import (
+	"context"
 	"errors"
 	"io"
+	"net"
 	"net/http"
 	"os"
+	"os/signal"
+	"runtime"
 	"strconv"
+	"syscall"
 	"time"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
@@ -44,9 +49,36 @@ func StartServer(port int) {
 		WriteTimeout:   time.Duration(lib.Config.Server.WriteTimeout) * time.Second,
 		MaxHeaderBytes: 1 << 20, // 1 MB
 	}
-	server.ListenAndServe()
-	/*err := router.Run(":" + strconv.Itoa(port))
-	lib.CheckError(err, -1)*/
+
+	go func() {
+		err := server.ListenAndServe()
+		if isErrorAddressAlreadyInUse(err) {
+			lib.CheckError(err, -1)
+		}
+		lib.CheckError(err, 0)
+	}()
+
+	// Grace shutdown
+	// --------------
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	lib.GLog("Shutdown Server...")
+
+	// Timeout (5s)
+	// ------------
+	timeout := 5 * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	select {
+	case <-ctx.Done():
+		lib.GLog("timeout of " + timeout.String())
+	}
+
+	if err := server.Shutdown(ctx); err != nil {
+		lib.CheckError(err, 0)
+	}
 }
 
 // initServer initialize the server
@@ -114,4 +146,33 @@ func initServer() *gin.Engine {
 	router.StaticFile("/favicon.ico", "./assets/favicon.ico")
 
 	return router
+}
+
+// isErrorAddressAlreadyInUse checks if error is "address already in use"
+func isErrorAddressAlreadyInUse(err error) bool {
+	errOpError, ok := err.(*net.OpError)
+	if !ok {
+		return false
+	}
+
+	errSyscallError, ok := errOpError.Err.(*os.SyscallError)
+	if !ok {
+		return false
+	}
+
+	errErrno, ok := errSyscallError.Err.(syscall.Errno)
+	if !ok {
+		return false
+	}
+
+	if errErrno == syscall.EADDRINUSE {
+		return true
+	}
+
+	const WSAEADDRINUSE = 10048
+	if runtime.GOOS == "windows" && errErrno == WSAEADDRINUSE {
+		return true
+	}
+
+	return false
 }

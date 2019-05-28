@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,7 @@ func exampleRoutes(group *gin.RouterGroup) {
 
 	// This handler will match /user/john but will not match /user/ or /user
 	group.GET("/websockets", func(c *gin.Context) {
+		time.Sleep(10 * time.Second)
 		c.HTML(http.StatusOK, "example/websockets.gohtml", gin.H{
 			"title":        "Websockets example",
 			"webSocketUrl": strconv.Itoa(lib.Config.WebSocketServer.Port),
