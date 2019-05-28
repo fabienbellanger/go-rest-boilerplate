@@ -100,6 +100,9 @@ func initServer() *gin.Engine {
 
 	// Fichiers statiques
 	// ------------------
+	router.Static("/js", "./assets/js")
+	router.Static("/css", "./assets/css")
+	router.Static("/images", "./assets/images")
 	router.StaticFile("/favicon.ico", "./assets/favicon.ico")
 
 	return router
