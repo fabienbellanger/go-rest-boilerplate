@@ -25,6 +25,8 @@ type ConfigType struct {
 	} `toml:"ssl"`
 	Server struct {
 		Port         int
+		ReadTimeout  int
+		WriteTimeout int
 		AllowOrigins []string
 	} `toml:"server"`
 	WebSocketServer struct {

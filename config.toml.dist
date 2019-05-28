@@ -20,6 +20,8 @@ keyPath = 'key.pem'
 
 [server]
 port = 8888
+readTimeout = 10 # In seconds
+writeTimeout = 10 # In seconds
 allowOrigins = [
     "http://localhost:8889",
 ]

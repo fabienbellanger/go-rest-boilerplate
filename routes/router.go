@@ -37,8 +37,16 @@ func StartServer(port int) {
 
 	// Lancement du serveur
 	// --------------------
-	err := router.Run(":" + strconv.Itoa(port))
-	lib.CheckError(err, -1)
+	server := &http.Server{
+		Addr:           ":" + strconv.Itoa(port),
+		Handler:        router,
+		ReadTimeout:    time.Duration(lib.Config.Server.ReadTimeout) * time.Second,
+		WriteTimeout:   time.Duration(lib.Config.Server.WriteTimeout) * time.Second,
+		MaxHeaderBytes: 1 << 20, // 1 MB
+	}
+	server.ListenAndServe()
+	/*err := router.Run(":" + strconv.Itoa(port))
+	lib.CheckError(err, -1)*/
 }
 
 // initServer initialize the server
