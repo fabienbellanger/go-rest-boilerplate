@@ -3,20 +3,10 @@ package routes
 import (
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 )
-
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:   1024,
-	WriteBufferSize:  1024,
-	CheckOrigin:      func(r *http.Request) bool { return true },
-	HandshakeTimeout: time.Duration(time.Second * 5),
-}
 
 func exampleRoutes(group *gin.RouterGroup) {
 	// This handler will match /user/john but will not match /user/ or /user
