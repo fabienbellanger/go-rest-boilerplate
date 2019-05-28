@@ -60,14 +60,20 @@ func StartServer(port int) {
 
 	// Grace shutdown
 	// --------------
+
+	// Interception du signal
+	// ----------------------
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	lib.GLog("Shutdown Server...")
 
+	// Do something if you want !
+
+	// Example
+	// -------
 	// Timeout (5s)
-	// ------------
-	timeout := 5 * time.Second
+	timeout := 10 * time.Second
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
@@ -75,7 +81,10 @@ func StartServer(port int) {
 	case <-ctx.Done():
 		lib.GLog("timeout of " + timeout.String())
 	}
+	// End exammple
 
+	// Shutdown the server
+	// -------------------
 	if err := server.Shutdown(ctx); err != nil {
 		lib.CheckError(err, 0)
 	}
