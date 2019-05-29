@@ -22,6 +22,7 @@ keyPath = 'key.pem'
 port = 8888
 readTimeout = 10 # In seconds
 writeTimeout = 10 # In seconds
+ShutdownTimeout = 5 # In seconds
 allowOrigins = [
     "http://localhost:8889",
 ]
@@ -33,6 +34,7 @@ port = 8889
 dirPath = "logs/" # Inside project dir
 filename = "gin.log"
 nbFilesToArchive = 7
+enableAccessLog = true
 
 [sql_log]
 level = 1 # 0: no log, 1: only time, 2: time and query, 3: time, query and arguments (int64)

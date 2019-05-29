@@ -73,7 +73,7 @@ func StartServer(port int) {
 	// Example
 	// -------
 	// Timeout (5s)
-	timeout := 10 * time.Second
+	timeout := time.Duration(lib.Config.Server.ShutdownTimeout) * time.Second
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
@@ -122,7 +122,10 @@ func initServer() *gin.Engine {
 	// Création de l'instance de Gin
 	// -----------------------------
 	router := gin.New()
-	router.Use(gin.Logger())
+
+	if lib.Config.Log.EnableAccessLog {
+		router.Use(gin.Logger())
+	}
 	router.Use(gin.Recovery())
 
 	// CORS

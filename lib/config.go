@@ -24,10 +24,11 @@ type ConfigType struct {
 		KeyPath  string
 	} `toml:"ssl"`
 	Server struct {
-		Port         int
-		ReadTimeout  int
-		WriteTimeout int
-		AllowOrigins []string
+		Port            int
+		ReadTimeout     int
+		WriteTimeout    int
+		ShutdownTimeout int
+		AllowOrigins    []string
 	} `toml:"server"`
 	WebSocketServer struct {
 		Port int
@@ -36,6 +37,7 @@ type ConfigType struct {
 		DirPath          string
 		FileName         string
 		NbFilesToArchive int
+		EnableAccessLog  bool
 	} `toml:"log"`
 	SQLLog struct {
 		Level            uint
