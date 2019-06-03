@@ -19,11 +19,18 @@ func exampleRoutes(group *gin.RouterGroup) {
 		})
 	})
 
-	// This handler will match /user/john but will not match /user/ or /user
+	// Test page for websockets
 	group.GET("/websockets", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "example/websockets.gohtml", gin.H{
 			"title":        "Websockets example",
 			"webSocketUrl": strconv.Itoa(lib.Config.WebSocketServer.Port),
+		})
+	})
+
+	// Test page for VueJS
+	group.GET("/vuejs", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "example/vuejs.gohtml", gin.H{
+			"title": "VueJS example",
 		})
 	})
 
