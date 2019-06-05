@@ -24,22 +24,6 @@ func StartServer(port int) {
 	// -------------------------
 	router := initServer()
 
-	// Version
-	// -------
-	versionGroup := router.Group("/v1")
-
-	// Initialisation JWT
-	// ------------------
-	jwtMiddleware := initJWTMiddleware()
-
-	// Liste des routes publiques (à mettre avant les routes protégées)
-	// ----------------------------------------------------------------
-	exampleRoutes(versionGroup)
-
-	// Liste des routes protégées
-	// --------------------------
-	authRoutes(versionGroup, jwtMiddleware)
-
 	// Lancement du serveur
 	// --------------------
 	server := &http.Server{
@@ -100,24 +84,7 @@ func initServer() *gin.Engine {
 
 	// Définition de l'environnement
 	// -----------------------------
-	if lib.Config.Environment == "production" {
-		gin.SetMode(gin.ReleaseMode)
-
-		// Logs dans un fichier seulement en production
-		// --------------------------------------------
-
-		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
-		// -----------------------------------------------------------
-
-		logsFile, err := os.OpenFile("./"+lib.Config.Log.DirPath+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE, 0644)
-
-		if err != nil {
-			lib.CheckError(err, -1)
-		}
-
-		gin.DisableConsoleColor()
-		gin.DefaultWriter = io.MultiWriter(logsFile)
-	}
+	initServerEnvironment()
 
 	// Création de l'instance de Gin
 	// -----------------------------
@@ -128,8 +95,27 @@ func initServer() *gin.Engine {
 	}
 	router.Use(gin.Recovery())
 
+	// Templates HTML
+	// --------------
+	router.LoadHTMLGlob("templates/**/*")
+
 	// CORS
 	// ----
+	initServerCORS(router)
+
+	// Fichiers statiques
+	// ------------------
+	initServerStaticFiles(router)
+
+	// Initialisation du routing
+	// -------------------------
+	initServerRouting(router)
+
+	return router
+}
+
+// initServerCORS initializes CORS
+func initServerCORS(router *gin.Engine) *gin.Engine {
 	router.Use(cors.New(cors.Config{
 		// AllowAllOrigins: true,
 		AllowOrigins:     lib.Config.Server.AllowOrigins,
@@ -140,22 +126,57 @@ func initServer() *gin.Engine {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	return router
+}
+
+// initServerStaticFiles initializes static files
+func initServerStaticFiles(router *gin.Engine) *gin.Engine {
+	router.Static("/js", "./assets/js")
+	router.Static("/css", "./assets/css")
+	router.Static("/images", "./assets/images")
+	router.StaticFile("/favicon.ico", "./assets/favicon.ico")
+
+	return router
+}
+
+// initServerEnvironment initializes environment
+func initServerEnvironment() {
+	if lib.Config.Environment == "production" {
+		// Logs dans un fichier seulement en production
+		// --------------------------------------------
+		gin.SetMode(gin.ReleaseMode)
+
+		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
+		// -----------------------------------------------------------
+		logsFile, err := os.OpenFile("./"+lib.Config.Log.DirPath+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE, 0644)
+
+		if err != nil {
+			lib.CheckError(err, -1)
+		}
+
+		gin.DisableConsoleColor()
+		gin.DefaultWriter = io.MultiWriter(logsFile)
+	}
+}
+
+// initServerRouting initializes routing
+func initServerRouting(router *gin.Engine) *gin.Engine {
 	// Gestion des routes inconnues
 	// ----------------------------
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"code": http.StatusNotFound, "message": "Page not found"})
 	})
 
-	// Templates HTML
-	// --------------
-	router.LoadHTMLGlob("templates/**/*")
+	versionGroup := router.Group("/v1")
+	jwtMiddleware := initJWTMiddleware()
 
-	// Fichiers statiques
-	// ------------------
-	router.Static("/js", "./assets/js")
-	router.Static("/css", "./assets/css")
-	router.Static("/images", "./assets/images")
-	router.StaticFile("/favicon.ico", "./assets/favicon.ico")
+	// Liste des routes publiques (à mettre avant les routes protégées)
+	// ----------------------------------------------------------------
+	exampleRoutes(versionGroup)
+
+	// Liste des routes protégées
+	// --------------------------
+	authRoutes(versionGroup, jwtMiddleware)
 
 	return router
 }
