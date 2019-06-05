@@ -56,9 +56,9 @@ var DatabaseCommand = &cobra.Command{
 
 			fmt.Println("If a database already exists, data will be deleted")
 			fmt.Print("Do you really want to initalize database (Y/n): ")
-			fmt.Scanf("%s", &confirm)
+			_, err := fmt.Scanf("%s", &confirm)
 
-			if confirm == "n" {
+			if err != nil || confirm == "n" {
 				fmt.Print("\n\n -> Database initialization: ")
 				color.Yellow("Operation aborded\n\n")
 			} else {

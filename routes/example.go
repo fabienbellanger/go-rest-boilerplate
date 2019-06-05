@@ -19,6 +19,18 @@ func exampleRoutes(group *gin.RouterGroup) {
 		})
 	})
 
+	// However, this one will match /user/john/ and also /user/john/send
+	// If no other routers match /user/john, it will redirect to /user/john/
+	// :param : Paramètre obligatoire
+	// *param : Paramètre optionnel
+	group.GET("/user/:name/*action", func(c *gin.Context) {
+		name := c.Param("name")
+		action := c.Param("action")
+		message := name + " is " + action
+
+		c.String(http.StatusOK, message)
+	})
+
 	// Test page for websockets
 	group.GET("/websockets", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "example/websockets.gohtml", gin.H{
@@ -32,16 +44,5 @@ func exampleRoutes(group *gin.RouterGroup) {
 		c.HTML(http.StatusOK, "example/vuejs.gohtml", gin.H{
 			"title": "VueJS example",
 		})
-	})
-
-	// However, this one will match /user/john/ and also /user/john/send
-	// If no other routers match /user/john, it will redirect to /user/john/
-	// :param : Paramètre obligatoire
-	// *param : Paramètre optionnel
-	group.GET("/user/:name/*action", func(c *gin.Context) {
-		name := c.Param("name")
-		action := c.Param("action")
-		message := name + " is " + action
-		c.String(http.StatusOK, message)
 	})
 }
