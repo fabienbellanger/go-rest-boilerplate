@@ -1,10 +1,11 @@
 package database
 
 import (
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"os"
 	"os/exec"
 	"time"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 // InitDatabase : Initialisation de la base de données
@@ -51,13 +52,32 @@ func InitDatabase() {
 }
 
 // DumpDatabase : Dump de la base de données
-func DumpDatabase() (string, int) {
+func DumpDatabase(structureOnly bool, dataOnly bool) (string, int) {
 	// Exécution de la commande
 	// ------------------------
-	dumpCommand := exec.Command("mysqldump",
-		"-u"+lib.Config.Database.User,
-		"-p"+lib.Config.Database.Password,
-		lib.Config.Database.Name)
+	var dumpCommand *exec.Cmd
+
+	if !structureOnly && dataOnly {
+		dumpCommand = exec.Command("mysqldump",
+			"-u"+lib.Config.Database.User,
+			"-p"+lib.Config.Database.Password,
+			"--no-create-info",
+			"--single-transaction",
+			lib.Config.Database.Name)
+	} else if structureOnly && !dataOnly {
+		dumpCommand = exec.Command("mysqldump",
+			"-u"+lib.Config.Database.User,
+			"-p"+lib.Config.Database.Password,
+			"--no-data",
+			"--single-transaction",
+			lib.Config.Database.Name)
+	} else {
+		dumpCommand = exec.Command("mysqldump",
+			"-u"+lib.Config.Database.User,
+			"-p"+lib.Config.Database.Password,
+			"--single-transaction",
+			lib.Config.Database.Name)
+	}
 	dumpCommand.Dir = "."
 	dumpOutput, err := dumpCommand.Output()
 	lib.CheckError(err, 1)

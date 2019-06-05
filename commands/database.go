@@ -1,24 +1,23 @@
 package commands
 
 import (
-	"code.cloudfoundry.org/bytefmt"
 	"errors"
 	"fmt"
+
+	"code.cloudfoundry.org/bytefmt"
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
-// Init : Initialisation de la base de données
-var Init bool
-
-// Dump : Dump de la base de données
-var Dump bool
+var isInit, isDump, dumpDataOnly, dumpStructureOnly bool
 
 func init() {
-	DatabaseCommand.Flags().BoolVarP(&Init, "init", "i", false, "Database initialization")
-	DatabaseCommand.Flags().BoolVarP(&Dump, "dump", "d", false, "Database dump")
+	DatabaseCommand.Flags().BoolVarP(&isInit, "init", "i", false, "Database initialization")
+	DatabaseCommand.Flags().BoolVarP(&isDump, "dump", "d", false, "Database dump structure and data")
+	DatabaseCommand.Flags().BoolVarP(&dumpDataOnly, "data-only", "o", false, "Database dump data only")
+	DatabaseCommand.Flags().BoolVarP(&dumpStructureOnly, "structure-only", "s", false, "Database dump structure only")
 
 	// Ajout de la commande à la commande racine
 	rootCommand.AddCommand(DatabaseCommand)
@@ -50,7 +49,7 @@ var DatabaseCommand = &cobra.Command{
 		database.Open()
 		defer database.DB.Close()
 
-		if Init {
+		if isInit {
 			// Initialisation
 			// --------------
 			var confirm = "Y"
@@ -69,12 +68,12 @@ var DatabaseCommand = &cobra.Command{
 
 				color.Green("Success\n\n")
 			}
-		} else if Dump {
+		} else if isDump {
 			// Dump
 			// ----
 			fmt.Print(" -> Database dump: ")
 
-			fileName, fileSize := database.DumpDatabase()
+			fileName, fileSize := database.DumpDatabase(dumpStructureOnly, dumpDataOnly)
 
 			color.Green(fileName + " (" + bytefmt.ByteSize(uint64(fileSize)) + ") successfully created\n\n")
 		}
