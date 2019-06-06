@@ -22,16 +22,16 @@ updateAll:
 	$(GOGET) -u all && $(GOMOD) tidy
 
 runApi:
-	$(GORUN) main.go serve
-serve: install runApi
+	$(GORUN) main.go api
+api: install runApi
 
 runWebSocket:
 	$(GORUN) -race main.go websocket
 ws: install runWebSocket
 
 runApiRace:
-	$(GORUN) -race main.go serve
-serveRace: install runApiRace
+	$(GORUN) -race main.go api
+apiRace: install runApiRace
 
 runDbInit:
 	$(GORUN) main.go db --init

@@ -16,25 +16,25 @@ func init() {
 	// Flag
 	// ----
 	defaultPort = 8888
-	ServeCommand.Flags().IntVarP(&port, "port", "p", defaultPort, "listened port")
+	APICommand.Flags().IntVarP(&port, "port", "p", defaultPort, "listened port")
 
 	// Ajout de la commande à la commande racine
-	rootCommand.AddCommand(ServeCommand)
+	rootCommand.AddCommand(APICommand)
 }
 
-// ServeCommand : Web command
-var ServeCommand = &cobra.Command{
-	Use:   "serve",
-	Short: "Launch the web server",
+// APICommand : API command
+var APICommand = &cobra.Command{
+	Use:   "api",
+	Short: "Launch the web server API",
 
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(`
 
-|--------------------------|
-|                          |
-| Lancement du serveur Web |
-|                          |
-|--------------------------|`)
+|--------------------------------|
+|                                |
+| Lancement du serveur Web (API) |
+|                                |
+|--------------------------------|`)
 
 		// Test du port
 		// ------------
