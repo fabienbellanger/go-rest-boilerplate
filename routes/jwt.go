@@ -4,11 +4,11 @@ import (
 	"crypto/sha512"
 	"database/sql"
 	"encoding/hex"
-	"github.com/fabienbellanger/go-rest-boilerplate/database"
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"time"
 
-	"github.com/appleboy/gin-jwt"
+	jwt "github.com/appleboy/gin-jwt"
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/gin-gonic/gin"
 )
 

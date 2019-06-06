@@ -2,9 +2,9 @@ package commands
 
 import (
 	"fmt"
+
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
-
 	"github.com/spf13/cobra"
 )
 

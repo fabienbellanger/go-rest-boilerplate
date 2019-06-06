@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/appleboy/gin-jwt"
+	jwt "github.com/appleboy/gin-jwt"
 	"github.com/fabienbellanger/go-rest-boilerplate/controllers"
 	"github.com/gin-gonic/gin"
 )

@@ -1,10 +1,11 @@
 package controllers
 
 import (
+	"net/http"
+
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // GetUserHandler displays authenticated user information

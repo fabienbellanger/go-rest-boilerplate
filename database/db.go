@@ -2,10 +2,11 @@ package database
 
 import (
 	"database/sql"
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	_ "github.com/go-sql-driver/mysql" // MySQL driver
 	"strconv"
 	"time"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	_ "github.com/go-sql-driver/mysql" // MySQL driver
 )
 
 var (
