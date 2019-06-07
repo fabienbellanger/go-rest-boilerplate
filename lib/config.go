@@ -23,6 +23,12 @@ type ConfigType struct {
 	Jwt struct {
 		Secret string
 	} `toml:"jwt"`
+	ORM struct {
+		EnabledLogs           bool
+		MaxIdleConnections    int
+		MaxOpenConnections    int
+		MaxLifetimeConnection int
+	} `toml:"orm"`
 	SSL struct {
 		CertPath string
 		KeyPath  string

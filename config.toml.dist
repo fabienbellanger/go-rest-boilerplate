@@ -16,6 +16,12 @@ charset = "utf8mb4"
 [jwt]
 secret = "mysecretkey"
 
+[orm]
+enabledLogs = true
+maxIdleConnections = 10
+maxOpenConnections = 100
+maxLifetimeConnection = 60 # In minutes
+
 [ssl]
 certPath = 'cert.pem'
 keyPath = 'key.pem'

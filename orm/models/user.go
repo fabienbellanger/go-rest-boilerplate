@@ -1,11 +1,10 @@
 package models
 
-import "github.com/jinzhu/gorm"
-
 // User describes users table
 type User struct {
-	gorm.Model
-	Lastname  string
-	Firstname string
-	Username  string
+	Model
+	Username  string `gorm:"type:varchar(191);unique_index:index_user_username"`
+	Password  string `gorm:"type:varchar(128;not null"`
+	Lastname  string `gorm:"type:varchar(100);not null"`
+	Firstname string `gorm:"type:varchar(100);not null"`
 }
