@@ -22,7 +22,8 @@ func Open() {
 		databaseConfig.Driver,
 		databaseConfig.User+":"+databaseConfig.Password+
 			"@tcp("+databaseConfig.Host+":"+strconv.Itoa(databaseConfig.Port)+")"+
-			"/"+databaseConfig.Name+"?parseTime=true&loc=Europe%2FParis")
+			"/"+databaseConfig.Name+"?parseTime=true&loc="+databaseConfig.Timezone+
+			"&charset="+databaseConfig.Charset)
 	lib.CheckError(err, 0)
 
 	DB = db

@@ -1,6 +1,8 @@
 package lib
 
 import (
+	"strings"
+
 	"github.com/BurntSushi/toml"
 )
 
@@ -15,6 +17,8 @@ type ConfigType struct {
 		Name     string
 		User     string
 		Password string
+		Timezone string
+		Charset  string
 	} `toml:"database"`
 	Jwt struct {
 		Secret string
@@ -56,6 +60,10 @@ func InitConfig() {
 	if _, err := toml.DecodeFile("config.toml", &Config); err != nil {
 		CheckError(err, -1)
 	}
+
+	// On converti le / du timezone de la base de donnée en %2F
+	// --------------------------------------------------------
+	Config.Database.Timezone = strings.Replace(Config.Database.Timezone, "/", "%2F", -1)
 }
 
 // IsDatabaseConfigCorrect : La configuration de la base de données est-elle correcte ?

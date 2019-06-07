@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/fabienbellanger/go-rest-boilerplate/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
 	"github.com/spf13/cobra"
 )
@@ -45,6 +46,8 @@ var WebSocketCommand = &cobra.Command{
 		if webSocketPort < 1000 || webSocketPort > 10000 {
 			webSocketPort = webSocketDefaultPort
 		}
+
+		orm.Connect()
 
 		// Lancement du serveur websocket
 		// ------------------------------

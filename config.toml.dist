@@ -10,6 +10,8 @@ port = 3306
 name = ""
 user = ""
 password = ""
+timezone = "Europe/Paris"
+charset = "utf8mb4"
 
 [jwt]
 secret = "mysecretkey"

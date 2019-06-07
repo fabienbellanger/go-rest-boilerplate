@@ -13,6 +13,7 @@ require (
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gorilla/websocket v1.4.0
+	github.com/jinzhu/gorm v1.9.8
 	github.com/mattn/go-colorable v0.1.2 // indirect
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/onsi/ginkgo v1.8.0 // indirect
@@ -22,10 +23,9 @@ require (
 	github.com/tidwall/match v1.0.1 // indirect
 	github.com/tidwall/pretty v0.0.0-20190325153808-1166b9ac2b65 // indirect
 	github.com/ugorji/go v1.1.5-pre // indirect
-	golang.org/x/net v0.0.0-20190603091049-60506f45cf65 // indirect
-	golang.org/x/sys v0.0.0-20190602015325-4c4f7f33c9ed // indirect
-	golang.org/x/text v0.3.2 // indirect
-	google.golang.org/appengine v1.6.0 // indirect
+	golang.org/x/net v0.0.0-20190606173856-1492cefac77f // indirect
+	golang.org/x/sys v0.0.0-20190606203320-7fc4e5ec1444 // indirect
+	google.golang.org/appengine v1.6.1 // indirect
 	gopkg.in/dgrijalva/jwt-go.v3 v3.2.0 // indirect
 )
 
