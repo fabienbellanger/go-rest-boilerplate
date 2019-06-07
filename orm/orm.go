@@ -13,8 +13,8 @@ import (
 // DB is the connection handle
 var DB *gorm.DB
 
-// Connect connects to the database and links to the ORM
-func Connect() {
+// Open connects to the database and links to the ORM
+func Open() {
 	databaseConfig := lib.Config.Database
 
 	db, err := gorm.Open(databaseConfig.Driver,

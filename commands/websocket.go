@@ -48,7 +48,7 @@ var WebSocketCommand = &cobra.Command{
 			webSocketPort = webSocketDefaultPort
 		}
 
-		orm.Connect()
+		orm.Open()
 		defer orm.DB.Close()
 
 		var user models.User

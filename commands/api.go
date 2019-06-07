@@ -6,6 +6,7 @@ import (
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/fabienbellanger/go-rest-boilerplate/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes"
 	"github.com/spf13/cobra"
 )
@@ -57,6 +58,11 @@ var APICommand = &cobra.Command{
 
 		database.Open()
 		defer database.DB.Close()
+
+		// Connexion à l'ORM
+		// -----------------
+		orm.Open()
+		defer orm.DB.Close()
 
 		// Lancement du serveur web
 		// ------------------------

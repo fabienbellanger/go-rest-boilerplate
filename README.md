@@ -120,7 +120,7 @@ service <service name> stop
     - https://roberto.selbach.ca/intro-to-go-modules/
     - https://www.melvinvivas.com/go-version-1-11-modules/
     - https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d
-- [ ] Faire recover personnalisé
+- [ ] Mettre en place un système de migration avec GORM
 - SQL logs
     - [x] Afficher la requête sans retour à la ligne
     - [x] Gérer la variable `limit` dans fichier de configuration
