@@ -18,7 +18,7 @@ var rootCommand = &cobra.Command{
 func Execute() {
 	// Initialisation de la configuration
 	// ----------------------------------
-	lib.InitConfig()
+	lib.InitConfig("config.toml")
 
 	// Lancement de la commande racine
 	// -------------------------------

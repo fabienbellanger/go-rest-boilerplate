@@ -2,6 +2,7 @@ package commands
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"time"
 
@@ -76,5 +77,8 @@ func Migration` + timePrefix + "_" + migrationFileName + `(db *gorm.DB) {
 			lib.CheckError(err, -5)
 		}
 		lib.CheckError(err, -4)
+
+		color.New(color.FgGreen).Print("[✔️] ")
+		fmt.Println("File " + timePrefix + "_" + migrationFileName + ".go created\n")
 	},
 }

@@ -121,8 +121,9 @@ service <service name> stop
     - https://www.melvinvivas.com/go-version-1-11-modules/
     - https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d
 - [ ] Mettre en place un système de migration avec GORM
+- [ ] Utiliser [Viper](https://github.com/spf13/viper) pour gérer la config
 - SQL logs
     - [x] Afficher la requête sans retour à la ligne
     - [x] Gérer la variable `limit` dans fichier de configuration
     - [x] Gérer la rotation des logs
-    - [ ] Afficher les arguments directement dans la requête
+    - [ ] Afficher les arguments directement dans la requête ou dans un tableau

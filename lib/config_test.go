@@ -4,6 +4,15 @@ import (
 	"testing"
 )
 
+func TestInitConfig(t *testing.T) {
+	InitConfig("../config.toml")
+
+	timezone := Config.Database.Timezone != "" && Config.Database.Timezone != "Europe%2FParis"
+	if timezone {
+		t.Errorf("InitConfig - got: %t, want: %t.", timezone, false)
+	}
+}
+
 // TestIsDatebaseConfigCorrect
 func TestIsDatebaseConfigCorrect(t *testing.T) {
 	Config.Database.Driver = ""

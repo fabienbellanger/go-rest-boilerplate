@@ -60,12 +60,11 @@ type ConfigType struct {
 var Config ConfigType
 
 // InitConfig : Lecture du fichier de configuration
-func InitConfig() {
+func InitConfig(file string) {
 	// Lecture du fichier de configuration
 	// -----------------------------------
-	if _, err := toml.DecodeFile("config.toml", &Config); err != nil {
-		CheckError(err, -1)
-	}
+	_, err := toml.DecodeFile(file, &Config)
+	CheckError(err, -1)
 
 	// On converti le / du timezone de la base de donnée en %2F
 	// --------------------------------------------------------
