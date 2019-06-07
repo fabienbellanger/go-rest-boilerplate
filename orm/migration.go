@@ -9,5 +9,5 @@ import (
 func Migrate(db *gorm.DB) {
 	db.Set("gorm:table_options", "ENGINE=InnoDB")
 
-	migrations.Migration_20190607_1(db)
+	migrations.Migration20190607000000_CreateUserTable(db)
 }

@@ -45,6 +45,10 @@ runLogsRotation:
 	$(GORUN) main.go log
 log: install runLogsRotation
 
+runMigration:
+	$(GORUN) main.go migrate
+migration: install runMigration
+
 build: 
 	$(GOBUILD) -o $(BINARY_NAME) -v
 

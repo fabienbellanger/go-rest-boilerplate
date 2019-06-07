@@ -5,7 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// Migration20190607_1 migration
-func Migration20190607_1(db *gorm.DB) {
+// Migration20190607000000_CreateUserTable migration
+func Migration20190607000000_CreateUserTable(db *gorm.DB) {
 	db.AutoMigrate(&models.User{})
 }
