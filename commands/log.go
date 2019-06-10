@@ -42,7 +42,7 @@ var LogCommand = &cobra.Command{
 |                   |
 |-------------------|
 
-		`)
+`)
 
 		// Launches logs rotation
 		executeLogsRotation()

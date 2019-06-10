@@ -1,7 +1,7 @@
 package orm
 
 import (
-	"github.com/fabienbellanger/go-rest-boilerplate/database/migrations"
+	"github.com/fabienbellanger/go-rest-boilerplate/orm/migrations"
 	"github.com/jinzhu/gorm"
 )
 

@@ -2,13 +2,13 @@ package routes
 
 import (
 	"crypto/sha512"
-	"database/sql"
 	"encoding/hex"
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,17 +16,6 @@ import (
 type loginParametersType struct {
 	Username string `form:"username" json:"username" binding:"required"`
 	Password string `form:"password" json:"password" binding:"required"`
-}
-
-// UserDB type
-type UserDB struct {
-	ID        uint64
-	Username  string
-	Password  string
-	Lastname  string
-	Firstname string
-	CreatedAt sql.RawBytes
-	DeletedAt sql.RawBytes
 }
 
 // initJWTMiddleware initialize JWT middleware
@@ -39,13 +28,13 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			// PayloadFunc maps the claims in the JWT
 			// --------------------------------------
-			if v, ok := data.(*UserDB); ok {
+			if v, ok := data.(*models.User); ok {
 				return jwt.MapClaims{
 					"id":        v.ID,
 					"username":  v.Username,
 					"lastname":  v.Lastname,
 					"firstname": v.Firstname,
-					"fullname":  v.getFullname(),
+					"fullname":  v.GetFullname(),
 				}
 			}
 
@@ -97,7 +86,7 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 }
 
 // checkLogin checks if username and password are corrct
-func checkLogin(username, password string) (UserDB, error) {
+func checkLogin(username, password string) (models.User, error) {
 	encryptPassword := sha512.Sum512([]byte(password))
 	encryptPasswordStr := hex.EncodeToString(encryptPassword[:])
 	query := `
@@ -107,7 +96,7 @@ func checkLogin(username, password string) (UserDB, error) {
 		LIMIT 1`
 	rows, err := database.Select(query, username, encryptPasswordStr)
 
-	var user UserDB
+	var user models.User
 
 	for rows.Next() {
 		err = rows.Scan(&user.ID, &user.Username, &user.Lastname, &user.Firstname, &user.CreatedAt, &user.DeletedAt)
@@ -116,9 +105,4 @@ func checkLogin(username, password string) (UserDB, error) {
 	}
 
 	return user, err
-}
-
-// getFullname displays user fullname
-func (u UserDB) getFullname() string {
-	return u.Firstname + " " + u.Lastname
 }

@@ -37,7 +37,7 @@ var DatabaseCommand = &cobra.Command{
 |                     |
 |---------------------|
 
-		`)
+`)
 
 		// Connexion à MySQL
 		// -----------------

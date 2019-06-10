@@ -7,6 +7,7 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
 	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -28,13 +29,15 @@ var WebSocketCommand = &cobra.Command{
 	Short: "Launch the websocket server",
 
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(`
+		color.Yellow(`
 
 |--------------------------------|
 |                                |
 | Lancement du serveur WebSocket |
 |                                |
-|--------------------------------|`)
+|--------------------------------|
+
+`)
 
 		// Test du port
 		// ------------

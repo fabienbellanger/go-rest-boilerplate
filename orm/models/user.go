@@ -8,3 +8,8 @@ type User struct {
 	Lastname  string `gorm:"type:varchar(100);not null"`
 	Firstname string `gorm:"type:varchar(100);not null"`
 }
+
+// GetFullname returns user fullname
+func (u *User) GetFullname() string {
+	return u.Firstname + " " + u.Lastname
+}

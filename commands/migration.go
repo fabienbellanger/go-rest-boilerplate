@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const migrationsPath = "./database/migrations/"
+const migrationsPath = "./orm/migrations/"
 
 var migrationFileName string
 
@@ -36,7 +36,7 @@ var MigratationCommand = &cobra.Command{
 |                    |
 |--------------------|
 
-		`)
+`)
 
 		timePrefix := time.Now().Format("20060201150405")
 		migrationFileNamePath := migrationsPath + timePrefix + "_" + migrationFileName + ".go"

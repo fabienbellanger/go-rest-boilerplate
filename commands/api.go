@@ -2,12 +2,12 @@ package commands
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -29,13 +29,15 @@ var APICommand = &cobra.Command{
 	Short: "Launch the web server API",
 
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(`
+		color.Yellow(`
 
 |--------------------------------|
 |                                |
 | Lancement du serveur Web (API) |
 |                                |
-|--------------------------------|`)
+|--------------------------------|
+
+`)
 
 		// Test du port
 		// ------------
