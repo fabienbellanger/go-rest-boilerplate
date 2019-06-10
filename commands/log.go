@@ -61,13 +61,8 @@ func executeLogsRotation() {
 
 	logFile, err := os.OpenFile(logFileName, os.O_RDONLY, 0755)
 	if err != nil {
-		lib.CheckError(errors.New("log file "+lib.Config.Log.FileName+" does not exists"), -1)
+		lib.CheckError(errors.New("log file "+lib.Config.Log.FileName+" does not exists"), -2)
 	}
-
-	if err != nil {
-		lib.CheckError(err, -2)
-	}
-
 	defer logFile.Close()
 
 	// 1. Recherche des anciens fichiers de log non archivés
@@ -85,22 +80,15 @@ func executeLogsRotation() {
 	// 4. Déplacement du fichier de log
 	// --------------------------------
 	err = os.Rename(logFileName, logFileName+".1")
-
-	if err != nil {
-		lib.CheckError(err, -4)
-	}
+	lib.CheckError(err, -4)
 
 	// 5. Création du nouveau fichier logFileName
 	// ------------------------------------------
 	logFile, err = os.Create(logFileName)
-
-	if err != nil {
-		// Le fichier de log n'existe pas
-		// ------------------------------
-		lib.CheckError(err, -5)
-	}
-
+	lib.CheckError(err, -5) // Le fichier de log n'existe pas
 	defer logFile.Close()
+
+	lib.DisplaySuccessMessage("Logs rotation DONE\n")
 }
 
 // findLogFile returns the list of log files
@@ -205,16 +193,12 @@ func makeLogsArchiving(logFiles []logFile) {
 	// 1. Recherche du nom de la prochaine archive
 	// -------------------------------------------
 	archiveFileName, err := findArchiveName()
-	if err != nil {
-		lib.CheckError(err, 0)
-	}
+	lib.CheckError(err, 0)
 
 	// 2. Création de l'archive
 	// ------------------------
 	newZipFile, err := os.Create(archiveFileName)
-	if err != nil {
-		lib.CheckError(err, 0)
-	}
+	lib.CheckError(err, 0)
 	defer newZipFile.Close()
 
 	zipWriter := zip.NewWriter(newZipFile)
@@ -235,7 +219,7 @@ func makeLogsArchiving(logFiles []logFile) {
 	// ----------------------
 	for _, file := range logFilesName {
 		if err = addFileToZip(zipWriter, file); err != nil {
-			return
+			lib.CheckError(err, 0)
 		}
 	}
 
@@ -243,9 +227,7 @@ func makeLogsArchiving(logFiles []logFile) {
 	// ----------------------------------------
 	for _, file := range logFilesName {
 		err = os.Remove(file)
-		if err != nil {
-			lib.CheckError(err, 0)
-		}
+		lib.CheckError(err, 0)
 	}
 }
 
@@ -277,7 +259,6 @@ func addFileToZip(zipWriter *zip.Writer, filename string) error {
 	header.Method = zip.Deflate
 
 	writer, err := zipWriter.CreateHeader(header)
-
 	if err != nil {
 		return err
 	}
