@@ -1,8 +1,9 @@
 package commands
 
 import (
+	"bufio"
 	"errors"
-	"fmt"
+	"io/ioutil"
 	"os"
 	"time"
 
@@ -40,45 +41,83 @@ var MigratationCommand = &cobra.Command{
 
 		timePrefix := time.Now().Format("20060201150405")
 		migrationFileNamePath := migrationsPath + timePrefix + "_" + migrationFileName + ".go"
+		functionName := "Migration" + timePrefix + "_" + migrationFileName
 
-		// Le répertoire existe t-il ?
-		// ---------------------------
-		if _, err := os.Stat(migrationsPath); os.IsNotExist(err) {
-			lib.CheckError(errors.New(migrationsPath+" directory does not exist"), -1)
-		}
+		// Création du fichier de migration
+		// --------------------------------
+		createMigrationFile(migrationsPath, migrationFileNamePath, functionName, timePrefix)
 
-		// Le fichier existe t-il ?
-		// ------------------------
-		if _, err := os.Stat(migrationFileNamePath); err == nil {
-			lib.CheckError(errors.New(migrationFileNamePath+" file already exists"), -2)
-		}
+		// Ajout de la fonction à fin du fichier orm/migration.go
+		// ------------------------------------------------------
+		updateMigrationsFile(functionName)
+	},
+}
 
-		// Création du fichier
-		// -------------------
-		file, err := os.Create(migrationFileNamePath)
-		lib.CheckError(err, -3)
-		defer file.Close()
+// createMigrationFile creates migration file
+func createMigrationFile(migrationsPath string, migrationFileNamePath string, functionName string, timePrefix string) {
+	// Le répertoire existe t-il ?
+	// ---------------------------
+	if _, err := os.Stat(migrationsPath); os.IsNotExist(err) {
+		lib.CheckError(errors.New(migrationsPath+" directory does not exist"), -1)
+	}
 
-		// Ecriture dans le fichier
-		// ------------------------
-		content := []byte(`package migrations
+	// Le fichier existe t-il ?
+	// ------------------------
+	if _, err := os.Stat(migrationFileNamePath); err == nil {
+		lib.CheckError(errors.New(migrationFileNamePath+" file already exists"), -2)
+	}
+
+	// Création du fichier
+	// -------------------
+	file, err := os.Create(migrationFileNamePath)
+	lib.CheckError(err, -3)
+	defer file.Close()
+
+	// Ecriture dans le fichier
+	// ------------------------
+	content := []byte(`package migrations
 
 import "github.com/jinzhu/gorm"
 
-//  Migration` + timePrefix + "_" + migrationFileName + ` migration
-func Migration` + timePrefix + "_" + migrationFileName + `(db *gorm.DB) {
+// ` + functionName + ` migration
+func ` + functionName + `(db *gorm.DB) {
 	
 }
 `)
-		_, err = file.Write(content)
-		if err != nil {
-			// Suppression du fichier
-			err := os.Remove(migrationFileNamePath)
-			lib.CheckError(err, -5)
-		}
-		lib.CheckError(err, -4)
+	_, err = file.Write(content)
+	if err != nil {
+		// Suppression du fichier
+		err := os.Remove(migrationFileNamePath)
+		lib.CheckError(err, -5)
+	}
+	lib.CheckError(err, -4)
 
-		color.New(color.FgGreen).Print("[✔️] ")
-		fmt.Println("File " + timePrefix + "_" + migrationFileName + ".go created\n")
-	},
+	lib.DisplaySuccessMessage("File " + timePrefix + "_" + migrationFileName + ".go created\n")
+}
+
+// updateMigrationsFile inserts line into migrations file with the commented function
+func updateMigrationsFile(functionName string) {
+	migrationsFile, err := os.Open("orm/migration.go")
+	lib.CheckError(err, -6)
+	defer migrationsFile.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(migrationsFile)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+
+	fileContent := ""
+	fileIndex := len(lines) - 1
+	for i, line := range lines {
+		if i == fileIndex {
+			fileContent += "	// migrations." + functionName + "(db)\n"
+		}
+		fileContent += line + "\n"
+	}
+
+	err = ioutil.WriteFile("orm/migration.go", []byte(fileContent), 0644)
+	lib.CheckError(err, -7)
+
+	lib.DisplaySuccessMessage("File orm/migration.go updated (just uncomment to apply)\n")
 }

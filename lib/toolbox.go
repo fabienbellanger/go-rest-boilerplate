@@ -1,10 +1,13 @@
 package lib
 
 import (
+	"fmt"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 // CheckError manages errors
@@ -17,6 +20,14 @@ func CheckError(err error, exitCode int) {
 		} else {
 			GLog(err.Error())
 		}
+	}
+}
+
+// DisplaySuccessMessage displays success message to output
+func DisplaySuccessMessage(msg string) {
+	if len(msg) > 0 {
+		color.New(color.FgGreen).Print("[✔️] ")
+		fmt.Println(msg)
 	}
 }
 

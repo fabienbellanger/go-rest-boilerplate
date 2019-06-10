@@ -12,6 +12,7 @@ user = ""
 password = ""
 timezone = "Europe/Paris"
 charset = "utf8mb4"
+engine = "InnoDB"
 
 [jwt]
 secret = "mysecretkey"

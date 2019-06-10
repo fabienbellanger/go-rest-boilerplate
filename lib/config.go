@@ -19,6 +19,7 @@ type ConfigType struct {
 		Password string
 		Timezone string
 		Charset  string
+		Engine   string
 	} `toml:"database"`
 	Jwt struct {
 		Secret string
