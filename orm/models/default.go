@@ -13,7 +13,7 @@ type TimestampModel struct {
 	UpdatedAt time.Time `gorm:"not null"`
 }
 
-// SolfDeleteModel type
-type SolfDeleteModel struct {
+// SoftDeleteModel type
+type SoftDeleteModel struct {
 	DeletedAt *time.Time
 }

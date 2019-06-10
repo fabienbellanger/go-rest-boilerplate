@@ -8,4 +8,7 @@ import (
 // Migration20191006175832_AddRolesTable migration
 func Migration20191006175832_AddRolesTable(db *gorm.DB) {
 	db.AutoMigrate(&models.Role{})
+	db.Model(&models.Role{}).AddForeignKey("parent_id", "roles(id)", "CASCADE", "RESTRICT")
+	db.Model(&models.Role{}).AddIndex("idx_created_at", "created_at")
+	db.Model(&models.Role{}).AddIndex("idx_deleted_at", "deleted_at")
 }
