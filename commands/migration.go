@@ -25,17 +25,17 @@ func init() {
 
 // MigratationCommand create database migration
 var MigratationCommand = &cobra.Command{
-	Use:   "migrate",
-	Short: "Database migration",
-	Long:  "Database migration",
+	Use:   "make:migration",
+	Short: "Create a database migration",
+	Long:  "Create a database migration",
 	Run: func(cmd *cobra.Command, args []string) {
 		color.Yellow(`
 
-|--------------------|
-|                    |
-| Database migration |
-|                    |
-|--------------------|
+|-----------------------------|
+|                             |
+| Database migration creation |
+|                             |
+|-----------------------------|
 
 `)
 

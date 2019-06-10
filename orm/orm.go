@@ -34,13 +34,13 @@ func Open() {
 	db.DB().SetConnMaxLifetime(time.Duration(lib.Config.ORM.MaxLifetimeConnection) * time.Minute)
 
 	// Disable table name's pluralization, if set to true, `User`'s table name will be `user`
-	db.SingularTable(true)
+	db.SingularTable(false)
 
 	// Enable Logger, show detailed log
 	db.LogMode(lib.Config.ORM.EnabledLogs)
 
 	// Migrate the schema
-	// TODO: pluôt mettre dans une commande
+	// TODO: Pluôt mettre dans une commande ?
 	Migrate(db)
 
 	DB = db

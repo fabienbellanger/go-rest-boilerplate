@@ -2,9 +2,9 @@ package models
 
 // User describes users table
 type User struct {
-	Model
-	Username  string `gorm:"type:varchar(191);unique_index:index_user_username"`
-	Password  string `gorm:"type:varchar(128;not null"`
+	DefaultModel
+	Username  string `gorm:"type:varchar(191);unique_index:index_users_username"`
+	Password  string `gorm:"type:varchar(128;not null"` // SHA-512
 	Lastname  string `gorm:"type:varchar(100);not null"`
 	Firstname string `gorm:"type:varchar(100);not null"`
 }
