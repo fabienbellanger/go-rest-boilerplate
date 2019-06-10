@@ -2,22 +2,18 @@ package models
 
 import "time"
 
-// DefaultModel overrights gorm.Model definition
-type DefaultModel struct {
-	ID        uint `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time
+// PrimaryModel type
+type PrimaryModel struct {
+	ID uint `gorm:"primary_key"`
 }
 
 // TimestampModel type
 type TimestampModel struct {
-	ID        uint `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt time.Time `gorm:"not null"`
+	UpdatedAt time.Time `gorm:"not null"`
 }
 
-// IDModel type
-type IDModel struct {
-	ID uint `gorm:"primary_key"`
+// SolfDeleteModel type
+type SolfDeleteModel struct {
+	DeletedAt *time.Time
 }
