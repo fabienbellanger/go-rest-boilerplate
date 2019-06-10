@@ -65,25 +65,25 @@ func executeLogsRotation() {
 	}
 	defer logFile.Close()
 
-	// 1. Recherche des anciens fichiers de log non archivés
-	// -----------------------------------------------------
+	// Recherche des anciens fichiers de log non archivés
+	// --------------------------------------------------
 	logFiles := findLogFile()
 
-	// 2. Rotation des fichiers de log non archivés
-	// --------------------------------------------
+	// Rotation des fichiers de log non archivés
+	// -----------------------------------------
 	makeLogsRotation(logFiles)
 
-	// 3. Archivage des fichiers de log
-	// --------------------------------
+	// Archivage des fichiers de log
+	// -----------------------------
 	makeLogsArchiving(logFiles)
 
-	// 4. Déplacement du fichier de log
-	// --------------------------------
+	// Déplacement du fichier de log
+	// -----------------------------
 	err = os.Rename(logFileName, logFileName+".1")
 	lib.CheckError(err, -4)
 
-	// 5. Création du nouveau fichier logFileName
-	// ------------------------------------------
+	// Création du nouveau fichier logFileName
+	// ---------------------------------------
 	logFile, err = os.Create(logFileName)
 	lib.CheckError(err, -5) // Le fichier de log n'existe pas
 	defer logFile.Close()
@@ -190,13 +190,13 @@ func makeLogsArchiving(logFiles []logFile) {
 		return
 	}
 
-	// 1. Recherche du nom de la prochaine archive
-	// -------------------------------------------
+	// Recherche du nom de la prochaine archive
+	// ----------------------------------------
 	archiveFileName, err := findArchiveName()
 	lib.CheckError(err, 0)
 
-	// 2. Création de l'archive
-	// ------------------------
+	// Création de l'archive
+	// ---------------------
 	newZipFile, err := os.Create(archiveFileName)
 	lib.CheckError(err, 0)
 	defer newZipFile.Close()
@@ -204,27 +204,27 @@ func makeLogsArchiving(logFiles []logFile) {
 	zipWriter := zip.NewWriter(newZipFile)
 	defer zipWriter.Close()
 
-	// 3. Ajout des fichiers de log à l'archive
-	// ----------------------------------------
+	// Ajout des fichiers de log à l'archive
+	// -------------------------------------
 
-	// 3.1. Conversion en tableau de nom de fichier
-	// --------------------------------------------
+	// Conversion en tableau de nom de fichier
+	// ---------------------------------------
 	var logFilesName = make([]string, 0)
 
 	for _, file := range logFiles {
 		logFilesName = append(logFilesName, file.fullname)
 	}
 
-	// 3.2. Ajout à l'archive
-	// ----------------------
+	// Ajout à l'archive
+	// -----------------
 	for _, file := range logFilesName {
 		if err = addFileToZip(zipWriter, file); err != nil {
 			lib.CheckError(err, 0)
 		}
 	}
 
-	// 4. Supression des fichiers logs archivés
-	// ----------------------------------------
+	// Supression des fichiers logs archivés
+	// -------------------------------------
 	for _, file := range logFilesName {
 		err = os.Remove(file)
 		lib.CheckError(err, 0)

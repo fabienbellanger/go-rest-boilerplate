@@ -11,5 +11,11 @@ type User struct {
 
 // GetFullname returns user fullname
 func (u *User) GetFullname() string {
+	if u.Firstname == "" {
+		return u.Lastname
+	} else if u.Lastname == "" {
+		return u.Firstname
+	}
+
 	return u.Firstname + " " + u.Lastname
 }
