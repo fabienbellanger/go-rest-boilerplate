@@ -85,13 +85,14 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 	return
 }
 
-// checkLogin checks if username and password are corrct
+// checkLogin checks if username and password are correct
+// TODO: Utiliser GORM
 func checkLogin(username, password string) (models.User, error) {
 	encryptPassword := sha512.Sum512([]byte(password))
 	encryptPasswordStr := hex.EncodeToString(encryptPassword[:])
 	query := `
 		SELECT id, username, lastname, firstname, created_at, deleted_at
-		FROM user
+		FROM users
 		WHERE username = ? AND password = ? AND deleted_at IS NULL
 		LIMIT 1`
 	rows, err := database.Select(query, username, encryptPasswordStr)

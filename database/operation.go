@@ -17,7 +17,7 @@ func InitDatabase() {
 	// User
 	queries = append(queries, "DROP TABLE IF EXISTS user")
 	queries = append(queries, `
-		CREATE TABLE user (
+		CREATE TABLE users (
 			id int(11) unsigned NOT NULL AUTO_INCREMENT,
 			username varchar(191) NOT NULL,
 			password varchar(128) NOT NULL,
@@ -27,9 +27,9 @@ func InitDatabase() {
 			deleted_at datetime NULL DEFAULT NULL,
 			PRIMARY KEY (id)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`)
-	queries = append(queries, "CREATE UNIQUE INDEX index_user_username ON user(username)")
-	queries = append(queries, "CREATE INDEX index_user_password ON user(password)")
-	queries = append(queries, "CREATE INDEX index_user_deleted_at ON user(deleted_at)")
+	queries = append(queries, "CREATE UNIQUE INDEX index_users_username ON users(username)")
+	queries = append(queries, "CREATE INDEX index_users_password ON users(password)")
+	queries = append(queries, "CREATE INDEX index_users_deleted_at ON users(deleted_at)")
 
 	transaction, err := DB.Begin()
 	lib.CheckError(err, 1)

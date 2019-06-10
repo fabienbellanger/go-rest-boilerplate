@@ -127,3 +127,5 @@ service <service name> stop
     - [x] Gérer la variable `limit` dans fichier de configuration
     - [x] Gérer la rotation des logs
     - [ ] Afficher les arguments directement dans la requête ou dans un tableau
+    - [ ] Logger GORM
+    - [ ] Faire une interface graphique pour afficher et filter les logs

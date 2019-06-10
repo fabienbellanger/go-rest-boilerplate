@@ -40,7 +40,7 @@ func Open() {
 	db.LogMode(lib.Config.ORM.EnabledLogs)
 
 	// Migrate the schema
-	// TODO: Pluôt mettre dans une commande ?
+	// TODO: Pluôt mettre dans une commande ? Peut-être long si la base de données contient beaucoup de tables
 	Migrate(db)
 
 	DB = db
