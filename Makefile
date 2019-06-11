@@ -49,6 +49,10 @@ runMakeMigration:
 	$(GORUN) main.go make:migration
 make-migration: install runMakeMigration
 
+runMigrate:
+	$(GORUN) main.go migrate --force
+migrate: install runMigrate
+
 build: 
 	$(GOBUILD) -o $(BINARY_NAME) -v
 

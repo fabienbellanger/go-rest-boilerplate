@@ -8,10 +8,12 @@
 - [Golang web server in production](#golang-web-server-in-production)
 - [TODO list](#todo-list)
 
+
 ## Installation
 - Install the lastest Golang version ([Download page](https://golang.org/dl/))
 - TODO: Install dependencies
 - Copy file `config.toml.dist` to `config.toml` and fill it.
+
 
 ## Commands list
 
@@ -19,7 +21,7 @@
 
 #### Launch Web server
 ```
-make serve
+make api
 ```
 
 #### Launch logs rotation
@@ -37,13 +39,28 @@ make dbInit
 make dbDump
 ```
 
+#### Create migration
+```
+make make-migration
+```
+
+#### Make migrations
+```
+make migrate
+```
+
+#### Launch WebSockets server
+```
+make ws
+```
+
 ### Production
 
 Compile binary `<binaire>` with `make build` and fill configuration file `config.toml`.
 
 #### Launch Web server
 ```
-<binaire> serve
+<binaire> api
 ```
 
 #### Launch logs rotation
@@ -61,6 +78,20 @@ Compile binary `<binaire>` with `make build` and fill configuration file `config
 <binaire> db --dump
 ```
 
+#### Create migration
+```
+<binaire> make-migration -n <Name in CamelCase>
+```
+
+#### Make migrations
+```
+<binaire> migrate
+```
+
+#### Make migrations
+```
+<binaire> websocket
+```
 
 
 ## Golang web server in production
@@ -112,7 +143,6 @@ To stop:
 ```bash
 service <service name> stop
 ```
-
 
 
 ## TODO list

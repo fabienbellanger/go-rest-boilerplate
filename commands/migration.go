@@ -17,14 +17,14 @@ const migrationsPath = "./orm/migrations/"
 var migrationFileName string
 
 func init() {
-	MigratationCommand.Flags().StringVarP(&migrationFileName, "name", "n", "", "Migration file name")
+	MigrationCommand.Flags().StringVarP(&migrationFileName, "name", "n", "", "Migration file name")
 
 	// Ajout de la commande à la commande racine
-	rootCommand.AddCommand(MigratationCommand)
+	rootCommand.AddCommand(MigrationCommand)
 }
 
-// MigratationCommand create database migration
-var MigratationCommand = &cobra.Command{
+// MigrationCommand create database migration
+var MigrationCommand = &cobra.Command{
 	Use:   "make:migration",
 	Short: "Create a database migration",
 	Long:  "Create a database migration",
