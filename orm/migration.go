@@ -10,6 +10,6 @@ import (
 func Migrate(db *gorm.DB) {
 	db.Set("gorm:table_options", "ENGINE="+lib.Config.Database.Engine)
 
-	migrations.Migration20190607000000_CreateUserTable(db)
-	migrations.Migration20191006175832_AddRolesTable(db)
+	migrations.Migration20190607000000CreateUserTable(db)
+	migrations.Migration20191006175832AddRolesTable(db)
 }

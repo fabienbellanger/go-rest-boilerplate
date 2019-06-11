@@ -40,8 +40,8 @@ var MigratationCommand = &cobra.Command{
 `)
 
 		timePrefix := time.Now().Format("20060201150405")
-		migrationFileNamePath := migrationsPath + timePrefix + "_" + migrationFileName + ".go"
-		functionName := "Migration" + timePrefix + "_" + migrationFileName
+		migrationFileNamePath := migrationsPath + timePrefix + migrationFileName + ".go"
+		functionName := "Migration" + timePrefix + migrationFileName
 
 		// Création du fichier de migration
 		// --------------------------------
@@ -92,7 +92,7 @@ func ` + functionName + `(db *gorm.DB) {
 	}
 	lib.CheckError(err, -4)
 
-	lib.DisplaySuccessMessage("File " + timePrefix + "_" + migrationFileName + ".go created\n")
+	lib.DisplaySuccessMessage("File " + timePrefix + migrationFileName + ".go created\n")
 }
 
 // updateMigrationsFile inserts line into migrations file with the commented function

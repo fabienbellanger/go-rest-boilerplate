@@ -6,7 +6,7 @@ type Role struct {
 	Label    string `gorm:"type:varchar(63);not null;"`
 	ParentID uint
 	Parent   *Role
-	// Users    []User `gorm:"many2many:users_roles;"`
+	Users    []User `gorm:"many2many:users_roles;"`
 	TimestampModel
 	SoftDeleteModel
 }
