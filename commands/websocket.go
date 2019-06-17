@@ -1,11 +1,8 @@
 package commands
 
 import (
-	"fmt"
-
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/orm"
-	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
 	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -54,12 +51,12 @@ var WebSocketCommand = &cobra.Command{
 		orm.Open()
 		defer orm.DB.Close()
 
-		var user models.User
-		orm.DB.First(&user)
-		fmt.Printf("%#v\n", user.Lastname)
-		user = models.User{}
-		orm.DB.First(&user, 2)
-		fmt.Printf("%#v\n", user)
+		// var user models.User
+		// orm.DB.First(&user)
+		// fmt.Printf("%#v\n", user.Lastname)
+		// user = models.User{}
+		// orm.DB.First(&user, 2)
+		// fmt.Printf("%#v\n", user)
 
 		// Lancement du serveur websocket
 		// ------------------------------

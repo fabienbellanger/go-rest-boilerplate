@@ -3,25 +3,33 @@ package lib
 import (
 	"log"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/fatih/color"
 	"github.com/gin-gonic/gin"
 )
 
-// GLog displays log in gin.DefaultWriter
-func GLog(v ...interface{}) {
-	// On redirige les logs vers le default writer de Gin
-	log.SetOutput(gin.DefaultWriter)
-
-	color.New(color.FgRed).Print("[❌] ")
-	log.Printf("[%s] %+v\n", time.Now().Format("2006/01/02 - 15:04:05"), v)
-}
-
 var (
 	redColor   = string([]byte{27, 91, 57, 55, 59, 52, 49, 109})
 	resetColor = string([]byte{27, 91, 48, 109})
 )
+
+// GLog displays log in gin.DefaultWriter
+func GLog(v ...interface{}) {
+	mutex := new(sync.Mutex)
+
+	// On redirige les logs vers le default writer de Gin
+	log.SetOutput(gin.DefaultWriter)
+
+	mutex.Lock()
+	go func(v ...interface{}) {
+		color.New(color.FgRed).Print("[❌] ")
+		log.Printf("%+v\n", v)
+		color.Unset()
+		mutex.Unlock()
+	}(v)
+}
 
 // SQLLog displays SQL log in gin.DefaultWriter
 func SQLLog(latency time.Duration, query string, args ...interface{}) {
