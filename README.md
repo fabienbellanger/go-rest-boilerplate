@@ -159,3 +159,4 @@ service <service name> stop
     - [ ] Afficher les arguments directement dans la requête ou dans un tableau
     - [ ] Logger GORM
     - [ ] Faire une interface graphique pour afficher et filter les logs
+- [ ] Gestion des timezones
