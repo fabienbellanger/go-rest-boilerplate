@@ -37,7 +37,7 @@ func StartServer(port int) {
 	go func() {
 		err := server.ListenAndServe()
 		if isErrorAddressAlreadyInUse(err) {
-			lib.CheckError(err, -1)
+			lib.CheckError(err, 1)
 		}
 		lib.CheckError(err, 0)
 	}()
@@ -151,7 +151,7 @@ func initServerEnvironment() {
 		logsFile, err := os.OpenFile("./"+lib.Config.Log.DirPath+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE, 0644)
 
 		if err != nil {
-			lib.CheckError(err, -1)
+			lib.CheckError(err, 1)
 		}
 
 		gin.DisableConsoleColor()

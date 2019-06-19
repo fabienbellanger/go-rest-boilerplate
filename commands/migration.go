@@ -58,19 +58,19 @@ func createMigrationFile(migrationsPath string, migrationFileNamePath string, fu
 	// Le répertoire existe t-il ?
 	// ---------------------------
 	if _, err := os.Stat(migrationsPath); os.IsNotExist(err) {
-		lib.CheckError(errors.New(migrationsPath+" directory does not exist"), -1)
+		lib.CheckError(errors.New(migrationsPath+" directory does not exist"), 1)
 	}
 
 	// Le fichier existe t-il ?
 	// ------------------------
 	if _, err := os.Stat(migrationFileNamePath); err == nil {
-		lib.CheckError(errors.New(migrationFileNamePath+" file already exists"), -2)
+		lib.CheckError(errors.New(migrationFileNamePath+" file already exists"), 2)
 	}
 
 	// Création du fichier
 	// -------------------
 	file, err := os.Create(migrationFileNamePath)
-	lib.CheckError(err, -3)
+	lib.CheckError(err, 3)
 	defer file.Close()
 
 	// Ecriture dans le fichier
@@ -88,9 +88,9 @@ func ` + functionName + `(db *gorm.DB) {
 	if err != nil {
 		// Suppression du fichier
 		err := os.Remove(migrationFileNamePath)
-		lib.CheckError(err, -5)
+		lib.CheckError(err, 5)
 	}
-	lib.CheckError(err, -4)
+	lib.CheckError(err, 4)
 
 	lib.DisplaySuccessMessage("File " + timePrefix + migrationFileName + ".go created\n")
 }
@@ -98,7 +98,7 @@ func ` + functionName + `(db *gorm.DB) {
 // updateMigrationsFile inserts line into migrations file with the commented function
 func updateMigrationsFile(functionName string) {
 	migrationsFile, err := os.Open("orm/migration.go")
-	lib.CheckError(err, -6)
+	lib.CheckError(err, 6)
 	defer migrationsFile.Close()
 
 	var lines []string
@@ -117,7 +117,7 @@ func updateMigrationsFile(functionName string) {
 	}
 
 	err = ioutil.WriteFile("orm/migration.go", []byte(fileContent), 0644)
-	lib.CheckError(err, -7)
+	lib.CheckError(err, 7)
 
 	lib.DisplaySuccessMessage("File orm/migration.go updated (just uncomment to apply)\n")
 }

@@ -54,14 +54,14 @@ func executeLogsRotation() {
 	// Le répertoire existe t-il ?
 	// ---------------------------
 	if _, err := os.Stat(lib.Config.Log.DirPath); os.IsNotExist(err) {
-		lib.CheckError(errors.New(lib.Config.Log.DirPath+" directory does not exist"), -1)
+		lib.CheckError(errors.New(lib.Config.Log.DirPath+" directory does not exist"), 1)
 	}
 
 	logFileName = lib.Config.Log.DirPath + lib.Config.Log.FileName
 
 	logFile, err := os.OpenFile(logFileName, os.O_RDONLY, 0755)
 	if err != nil {
-		lib.CheckError(errors.New("log file "+lib.Config.Log.FileName+" does not exists"), -2)
+		lib.CheckError(errors.New("log file "+lib.Config.Log.FileName+" does not exists"), 2)
 	}
 	defer logFile.Close()
 
@@ -80,12 +80,12 @@ func executeLogsRotation() {
 	// Déplacement du fichier de log
 	// -----------------------------
 	err = os.Rename(logFileName, logFileName+".1")
-	lib.CheckError(err, -4)
+	lib.CheckError(err, 4)
 
 	// Création du nouveau fichier logFileName
 	// ---------------------------------------
 	logFile, err = os.Create(logFileName)
-	lib.CheckError(err, -5) // Le fichier de log n'existe pas
+	lib.CheckError(err, 5) // Le fichier de log n'existe pas
 	defer logFile.Close()
 
 	lib.DisplaySuccessMessage("Logs rotation DONE\n")
@@ -124,7 +124,7 @@ func findLogFile() []logFile {
 		return nil
 	})
 
-	lib.CheckError(err, -3)
+	lib.CheckError(err, 3)
 
 	return logFiles
 }

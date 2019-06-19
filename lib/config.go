@@ -65,7 +65,7 @@ func InitConfig(file string) {
 	// Lecture du fichier de configuration
 	// -----------------------------------
 	_, err := toml.DecodeFile(file, &Config)
-	CheckError(err, -1)
+	CheckError(err, 1)
 
 	// On converti le / du timezone de la base de donnée en %2F
 	// --------------------------------------------------------
