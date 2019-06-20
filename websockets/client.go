@@ -53,8 +53,6 @@ func ClientConnection(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Connexion du client...")
-
 	// Création du client
 	// ------------------
 	client := &Client{

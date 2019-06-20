@@ -1,6 +1,9 @@
 package commands
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
@@ -28,11 +31,11 @@ var WebSocketCommand = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		color.Yellow(`
 
-|--------------------------------|
-|                                |
-| Lancement du serveur WebSocket |
-|                                |
-|--------------------------------|
+|------------------------------------|
+|                                    |
+| Lancement du serveur de WebSockets |
+|                                    |
+|------------------------------------|
 
 `)
 
@@ -48,8 +51,14 @@ var WebSocketCommand = &cobra.Command{
 			webSocketPort = webSocketDefaultPort
 		}
 
+		fmt.Print("Listening on port  ")
+		color.Green(strconv.Itoa(webSocketPort) + "\n")
+
 		orm.Open()
 		defer orm.DB.Close()
+
+		fmt.Print("Connection to ORM  ")
+		color.Green("✔️\n\n")
 
 		// var user models.User
 		// orm.DB.First(&user)

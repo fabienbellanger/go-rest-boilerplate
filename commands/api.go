@@ -2,6 +2,8 @@ package commands
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
@@ -51,6 +53,9 @@ var APICommand = &cobra.Command{
 			port = defaultPort
 		}
 
+		fmt.Print("Listening on port \t")
+		color.Green(strconv.Itoa(port) + "\n")
+
 		// Connexion à MySQL
 		// -----------------
 		if !lib.IsDatabaseConfigCorrect() {
@@ -61,10 +66,16 @@ var APICommand = &cobra.Command{
 		database.Open()
 		defer database.DB.Close()
 
+		fmt.Print("Connection to database \t")
+		color.Green("✔️\n")
+
 		// Connexion à l'ORM
 		// -----------------
 		orm.Open()
 		defer orm.DB.Close()
+
+		fmt.Print("Connection to ORM \t")
+		color.Green("✔️\n\n")
 
 		// Lancement du serveur web
 		// ------------------------
