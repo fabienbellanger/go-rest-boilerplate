@@ -4,11 +4,45 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/fabienbellanger/go-rest-boilerplate/orm"
+	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
 	"github.com/gin-gonic/gin"
 )
 
 func exampleRoutes(group *gin.RouterGroup) {
+	group.GET("/benchmark", func(c *gin.Context) {
+		users := make([]models.User, 0)
+		orm.DB.Find(&users)
+
+		c.JSON(http.StatusOK, lib.GetHTTPResponse(
+			http.StatusOK,
+			"Success",
+			users,
+		))
+	})
+
+	group.GET("/benchmark2", func(c *gin.Context) {
+		users := make([]models.User, 0)
+		var user models.User
+
+		query := "SELECT * FROM users"
+		rows, _ := database.Select(query)
+
+		for rows.Next() {
+			rows.Scan(&user.ID, &user.Username, &user.Lastname, &user.Firstname, &user.CreatedAt, &user.DeletedAt)
+
+			users = append(users, user)
+		}
+
+		c.JSON(http.StatusOK, lib.GetHTTPResponse(
+			http.StatusOK,
+			"Success",
+			users,
+		))
+	})
+
 	// This handler will match /user/john but will not match /user/ or /user
 	group.GET("/user/:name", func(c *gin.Context) {
 		name := c.Param("name")
