@@ -23,10 +23,10 @@ require (
 	github.com/tidwall/gjson v1.2.1 // indirect
 	github.com/tidwall/match v1.0.1 // indirect
 	github.com/tidwall/pretty v1.0.0 // indirect
-	github.com/ugorji/go v1.1.5-pre // indirect
-	golang.org/x/crypto v0.0.0-20190617133340-57b3e21c3d56 // indirect
-	golang.org/x/net v0.0.0-20190613194153-d28f0bde5980 // indirect
-	golang.org/x/sys v0.0.0-20190616124812-15dcb6c0061f // indirect
+	github.com/ugorji/go/codec v1.1.5-pre // indirect
+	golang.org/x/crypto v0.0.0-20190618222545-ea8f1a30c443 // indirect
+	golang.org/x/net v0.0.0-20190619014844-b5b0513f8c1b // indirect
+	golang.org/x/sys v0.0.0-20190620070143-6f217b454f45 // indirect
 	google.golang.org/appengine v1.6.1 // indirect
 	gopkg.in/dgrijalva/jwt-go.v3 v3.2.0 // indirect
 )
