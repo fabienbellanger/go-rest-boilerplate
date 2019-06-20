@@ -54,18 +54,13 @@ var WebSocketCommand = &cobra.Command{
 		fmt.Print("Listening on port  ")
 		color.Green(strconv.Itoa(webSocketPort) + "\n")
 
+		// Connexion à l'ORM
+		// -----------------
 		orm.Open()
 		defer orm.DB.Close()
 
 		fmt.Print("Connection to ORM  ")
 		color.Green("✔️\n\n")
-
-		// var user models.User
-		// orm.DB.First(&user)
-		// fmt.Printf("%#v\n", user.Lastname)
-		// user = models.User{}
-		// orm.DB.First(&user, 2)
-		// fmt.Printf("%#v\n", user)
 
 		// Lancement du serveur websocket
 		// ------------------------------
