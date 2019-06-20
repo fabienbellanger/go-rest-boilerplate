@@ -2,9 +2,10 @@
 
 ## Content
 - [Installation](#installation)
-- [Commands list](#commands-list)
+- [Liste des commandes](#liste-des-commandes)
    - [Development](#development)
    - [Production](#production)
+- [Architecture du projet](#architecture-du-projet)
 - [Golang web server in production](#golang-web-server-in-production)
 - [TODO list](#todo-list)
 
@@ -15,7 +16,7 @@
 - Copy file `config.toml.dist` to `config.toml` and fill it.
 
 
-## Commands list
+## Liste des commandes
 
 ### Development
 
@@ -92,6 +93,37 @@ Compile binary `<binaire>` with `make build` and fill configuration file `config
 ```
 <binaire> websocket
 ```
+
+
+## Architecture du projet
+```
+\_ assets
+   \_ js
+\_ commands
+\_ controllers
+\_ database
+\_ lib
+\_ logs
+\_ orm
+   \_ migrations
+   \_ models
+\_ routes
+\_ templates
+   \_ example
+   \_ layout
+\_ websockets
+```
+
+- Le dossier `assets` contient les fichiers multimédia (images, vidéos, etc.), JavaScript ou encore CSS.
+- Le dossier `commands` contient toutes les commandes que l'on peut lancer depuis un terminal.
+- Le dossier `controllers` contient toutes les controleurs du serveur Web.
+- Le dossier `database` contient tous les fichiers relatifs à l'utilisation de MySQL ainsi que l'initialisation et le dump de la base.
+- Le dossier `lib` contient des fonctions globales à l'application.
+- Le dossier `logs` contient les logs du serveur Web.
+- Le dossier `orm` contient les fichiers de migrations ainsi que les modèles.
+- Le dossier `routes` contient les fichiers relatifs au routing.
+- Le dossier `templates` contient les templates des différentes page Web.
+- Le dossier `websockets` contient les fichiers relatifs au serveur de WebSockets.
 
 
 ## Golang web server in production
