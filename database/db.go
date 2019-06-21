@@ -28,7 +28,7 @@ func Open() {
 
 	// TODO: A mettre dans le fin de config
 	db.SetMaxOpenConns(5)
-	db.SetMaxIdleConns(1)
+	db.SetMaxIdleConns(5)
 	db.SetConnMaxLifetime(time.Hour)
 
 	DB = db

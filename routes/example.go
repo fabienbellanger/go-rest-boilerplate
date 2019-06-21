@@ -15,7 +15,7 @@ func exampleRoutes(group *gin.RouterGroup) {
 	// Benchmark large query with Gorm
 	group.GET("/benchmark", func(c *gin.Context) {
 		users := make([]models.User, 0)
-		orm.DB.Find(&users)
+		orm.DB.Limit(1000).Find(&users)
 
 		c.JSON(http.StatusOK, lib.GetHTTPResponse(
 			http.StatusOK,
@@ -26,7 +26,7 @@ func exampleRoutes(group *gin.RouterGroup) {
 
 	// Benchmark large query with pure mysql
 	group.GET("/benchmark2", func(c *gin.Context) {
-		query := "SELECT * FROM users"
+		query := "SELECT * FROM users LIMIT 1000"
 		rows, _ := database.Select(query)
 
 		users := make([]models.User, 0)
@@ -36,6 +36,7 @@ func exampleRoutes(group *gin.RouterGroup) {
 			rows.Scan(
 				&user.ID,
 				&user.Username,
+				&user.Password,
 				&user.Lastname,
 				&user.Firstname,
 				&user.CreatedAt,
@@ -44,12 +45,6 @@ func exampleRoutes(group *gin.RouterGroup) {
 
 			users = append(users, user)
 		}
-
-		// defer func() {
-		// 	users = nil
-		// 	rows = nil
-		// 	println("free users and rows")
-		// }()
 
 		c.JSON(http.StatusOK, lib.GetHTTPResponse(
 			http.StatusOK,
