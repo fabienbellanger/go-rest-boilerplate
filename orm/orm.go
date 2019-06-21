@@ -41,20 +41,20 @@ func Open() {
 
 	// Migrate the schema
 	// TODO: Pluôt mettre dans une commande ? Peut-être long si la base de données contient beaucoup de tables
-	/*Migrate(db)
+	// Migrate(db)
 
-	var user models.User
+	// var user models.User
 
-	for i := 0; i < 100000; i++ {
-		user = models.User{
-			Username:  "ffgfgfghhfghfhgfgfhgfghfghfhgfhgfh" + strconv.Itoa(i),
-			Password:  "gjgjghjgjhgjhghjfrserhkhjhklljjkbhjvftxersgdghjjkhkljkbhftd",
-			Lastname:  "njuftydfhgjkjlkjlkjlkhjkhu",
-			Firstname: "jkggkjkl,,lm,kljkvgf"}
+	// for i := 0; i < 100000; i++ {
+	// 	user = models.User{
+	// 		Username:  "ffgfgfghhfghfhgfgfhgfghfghfhgfhgfh" + strconv.Itoa(i),
+	// 		Password:  "gjgjghjgjhgjhghjfrserhkhjhklljjkbhjvftxersgdghjjkhkljkbhftd",
+	// 		Lastname:  "njuftydfhgjkjlkjlkjlkhjkhu",
+	// 		Firstname: "jkggkjkl,,lm,kljkvgf"}
 
-		db.NewRecord(user)
-		db.Create(&user)
-	}*/
+	// 	db.NewRecord(user)
+	// 	db.Create(&user)
+	// }
 
 	DB = db
 }

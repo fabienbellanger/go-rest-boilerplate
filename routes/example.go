@@ -12,6 +12,7 @@ import (
 )
 
 func exampleRoutes(group *gin.RouterGroup) {
+	// Benchmark large query with Gorm
 	group.GET("/benchmark", func(c *gin.Context) {
 		users := make([]models.User, 0)
 		orm.DB.Find(&users)
@@ -23,15 +24,23 @@ func exampleRoutes(group *gin.RouterGroup) {
 		))
 	})
 
+	// Benchmark large query with pure mysql
 	group.GET("/benchmark2", func(c *gin.Context) {
-		users := make([]models.User, 0)
-		var user models.User
-
 		query := "SELECT * FROM users"
 		rows, _ := database.Select(query)
 
+		users := make([]models.User, 0)
+		var user models.User
+
 		for rows.Next() {
-			rows.Scan(&user.ID, &user.Username, &user.Lastname, &user.Firstname, &user.CreatedAt, &user.DeletedAt)
+			rows.Scan(
+				&user.ID,
+				&user.Username,
+				&user.Lastname,
+				&user.Firstname,
+				&user.CreatedAt,
+				&user.UpdatedAt,
+				&user.DeletedAt)
 
 			users = append(users, user)
 		}
