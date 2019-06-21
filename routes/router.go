@@ -15,6 +15,7 @@ import (
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,6 +24,8 @@ func StartServer(port int) {
 	// Initialisation du serveur
 	// -------------------------
 	router := initServer()
+
+	pprof.Register(router)
 
 	// Lancement du serveur
 	// --------------------

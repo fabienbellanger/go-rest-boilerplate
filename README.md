@@ -193,3 +193,6 @@ service <service name> stop
     - [ ] Faire une interface graphique pour afficher et filter les logs
 - [ ] Gestion des timezones
 - [ ] Facade pour les datetimes
+- [ ] Problème de consommation mémoire
+    - [https://github.com/gin-contrib/pprof](https://github.com/gin-contrib/pprof)
+    - [https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d](https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d)

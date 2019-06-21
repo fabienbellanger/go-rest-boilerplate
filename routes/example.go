@@ -45,6 +45,12 @@ func exampleRoutes(group *gin.RouterGroup) {
 			users = append(users, user)
 		}
 
+		// defer func() {
+		// 	users = nil
+		// 	rows = nil
+		// 	println("free users and rows")
+		// }()
+
 		c.JSON(http.StatusOK, lib.GetHTTPResponse(
 			http.StatusOK,
 			"Success",

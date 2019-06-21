@@ -26,6 +26,11 @@ func Open() {
 			"&charset="+databaseConfig.Charset)
 	lib.CheckError(err, 0)
 
+	// TODO: A mettre dans le fin de config
+	db.SetMaxOpenConns(5)
+	db.SetMaxIdleConns(1)
+	db.SetConnMaxLifetime(time.Hour)
+
 	DB = db
 }
 

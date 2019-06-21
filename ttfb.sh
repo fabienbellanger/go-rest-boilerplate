@@ -9,7 +9,7 @@ start=`date +%s`
 
 function launchCurl()
 {
-    curl -o /dev/null \
+    curl  \
          -H 'Cache-Control: no-cache' \
          -s \
          -w "Connect: %{time_connect} | TTFB: %{time_starttransfer} | Total time: %{time_total} \n" \
