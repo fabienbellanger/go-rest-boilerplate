@@ -10,6 +10,7 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
 	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 )
 
 func exampleRoutes(group *gin.RouterGroup) {
@@ -106,4 +107,10 @@ func exampleRoutes(group *gin.RouterGroup) {
 			"title": "VueJS example",
 		})
 	})
+}
+
+func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
+	// Routes
+	// ------
+	g.GET("/hello", hello)
 }

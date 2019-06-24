@@ -79,6 +79,6 @@ var APICommand = &cobra.Command{
 
 		// Lancement du serveur web
 		// ------------------------
-		routes.StartServer(port)
+		routes.StartEchoServer(port)
 	},
 }
