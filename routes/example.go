@@ -50,14 +50,17 @@ func exampleRoutes(group *gin.RouterGroup) {
 		if len(users) == 0 {
 			c.JSON(http.StatusNotFound, users)
 		} else {
-			c.Writer.WriteHeader(200)
+			res := lib.GetHTTPResponse(
+				http.StatusOK,
+				"Success",
+				&users,
+			)
 
-			for _, user := range users {
-				if err := json.NewEncoder(c.Writer).Encode(user); err != nil {
-					lib.CheckError(err, 0)
-				}
-				c.Writer.Flush()
+			c.Writer.WriteHeader(200)
+			if err := json.NewEncoder(c.Writer).Encode(res); err != nil {
+				lib.CheckError(err, 0)
 			}
+			c.Writer.Flush()
 
 			// c.JSON(http.StatusOK, lib.GetHTTPResponse(
 			// 	http.StatusOK,
