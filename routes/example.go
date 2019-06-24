@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -26,7 +27,7 @@ func exampleRoutes(group *gin.RouterGroup) {
 
 	// Benchmark large query with pure mysql
 	group.GET("/benchmark2", func(c *gin.Context) {
-		query := "SELECT * FROM users LIMIT 1000"
+		query := "SELECT * FROM users"
 		rows, _ := database.Select(query)
 
 		users := make([]models.User, 0)
@@ -46,11 +47,24 @@ func exampleRoutes(group *gin.RouterGroup) {
 			users = append(users, user)
 		}
 
-		c.JSON(http.StatusOK, lib.GetHTTPResponse(
-			http.StatusOK,
-			"Success",
-			users,
-		))
+		if len(users) == 0 {
+			c.JSON(http.StatusNotFound, users)
+		} else {
+			c.Writer.WriteHeader(200)
+
+			for _, user := range users {
+				if err := json.NewEncoder(c.Writer).Encode(user); err != nil {
+					lib.CheckError(err, 0)
+				}
+				c.Writer.Flush()
+			}
+
+			// c.JSON(http.StatusOK, lib.GetHTTPResponse(
+			// 	http.StatusOK,
+			// 	"Success",
+			// 	&users,
+			// ))
+		}
 	})
 
 	// This handler will match /user/john but will not match /user/ or /user

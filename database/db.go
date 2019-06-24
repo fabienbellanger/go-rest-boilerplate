@@ -27,8 +27,8 @@ func Open() {
 	lib.CheckError(err, 0)
 
 	// TODO: A mettre dans le fin de config
-	db.SetMaxOpenConns(5)
-	db.SetMaxIdleConns(5)
+	db.SetMaxOpenConns(3)
+	db.SetMaxIdleConns(2)
 	db.SetConnMaxLifetime(time.Hour)
 
 	DB = db
