@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -31,7 +32,7 @@ func exampleRoutes(group *gin.RouterGroup) {
 		query := "SELECT * FROM users"
 		rows, _ := database.Select(query)
 
-		users := make([]models.User, 0)
+		users := make([]models.User, 0, 100000)
 		var user models.User
 
 		for rows.Next() {
@@ -113,4 +114,84 @@ func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
 	// Routes
 	// ------
 	g.GET("/hello", hello)
+
+	// Benchmark large query with pure mysql
+	g.GET("/benchmark", func(c echo.Context) error {
+		query := "SELECT * FROM users"
+		rows, _ := database.Select(query)
+
+		resp := c.Response()
+		resp.WriteHeader(http.StatusOK)
+
+		if _, err := io.WriteString(resp, "["); err != nil {
+			return err
+		}
+
+		enc := json.NewEncoder(resp)
+		var user models.User
+		i := 0
+		for rows.Next() {
+			if i > 0 {
+				if _, err := io.WriteString(resp, ","); err != nil {
+					return err
+				}
+			}
+
+			rows.Scan(
+				&user.ID,
+				&user.Username,
+				&user.Password,
+				&user.Lastname,
+				&user.Firstname,
+				&user.CreatedAt,
+				&user.UpdatedAt,
+				&user.DeletedAt)
+
+			if err := enc.Encode(user); err != nil {
+				return err
+			}
+
+			i++
+		}
+
+		if _, err := io.WriteString(resp, "]"); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	g.GET("/benchmark2", func(c echo.Context) error {
+		query := "SELECT * FROM users"
+		rows, _ := database.Select(query)
+
+		users := make([]models.User, 0)
+		var user models.User
+
+		for rows.Next() {
+			rows.Scan(
+				&user.ID,
+				&user.Username,
+				&user.Password,
+				&user.Lastname,
+				&user.Firstname,
+				&user.CreatedAt,
+				&user.UpdatedAt,
+				&user.DeletedAt)
+
+			users = append(users, user)
+		}
+
+		if len(users) == 0 {
+			return c.JSON(http.StatusNotFound, users)
+		}
+
+		res := lib.GetHTTPResponse(
+			http.StatusOK,
+			"Success",
+			&users,
+		)
+
+		return c.JSON(http.StatusOK, res)
+	})
 }
