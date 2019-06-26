@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+// StartEchoServer starts Echo web server
 func StartEchoServer(port int) {
 	// La config pour le CORS est-elle correcte ?
 	// ------------------------------------------

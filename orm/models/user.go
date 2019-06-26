@@ -7,7 +7,7 @@ type User struct {
 	Password  string `gorm:"type:varchar(128);not null" json:"password"` // SHA-512
 	Lastname  string `gorm:"type:varchar(100);not null" json:"lastname"`
 	Firstname string `gorm:"type:varchar(100);not null" json:"firstname"`
-	Roles     []Role `gorm:"many2many:users_roles;" json:"roles"`
+	// Roles     []Role `gorm:"many2many:users_roles;" json:"roles"`
 	TimestampModel
 	SoftDeleteModel
 }

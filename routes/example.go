@@ -117,22 +117,24 @@ func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
 
 	// Benchmark large query with pure mysql
 	g.GET("/benchmark", func(c echo.Context) error {
-		query := "SELECT * FROM users"
+		query := "SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at FROM users"
 		rows, _ := database.Select(query)
 
-		resp := c.Response()
-		resp.WriteHeader(http.StatusOK)
+		response := c.Response()
+		response.WriteHeader(http.StatusOK)
 
-		if _, err := io.WriteString(resp, "["); err != nil {
+		if _, err := io.WriteString(response, "["); err != nil {
 			return err
 		}
 
-		enc := json.NewEncoder(resp)
+		encoder := json.NewEncoder(response)
 		var user models.User
+		//users := make([]models.User, 0)
+
 		i := 0
 		for rows.Next() {
 			if i > 0 {
-				if _, err := io.WriteString(resp, ","); err != nil {
+				if _, err := io.WriteString(response, ","); err != nil {
 					return err
 				}
 			}
@@ -147,14 +149,16 @@ func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
 				&user.UpdatedAt,
 				&user.DeletedAt)
 
-			if err := enc.Encode(user); err != nil {
+			if err := encoder.Encode(user); err != nil {
 				return err
 			}
 
 			i++
+
+			//users = append(users, user)
 		}
 
-		if _, err := io.WriteString(resp, "]"); err != nil {
+		if _, err := io.WriteString(response, "]"); err != nil {
 			return err
 		}
 
@@ -162,7 +166,7 @@ func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
 	})
 
 	g.GET("/benchmark2", func(c echo.Context) error {
-		query := "SELECT * FROM users"
+		query := "SELECT * FROM users LIMIT 100000"
 		rows, _ := database.Select(query)
 
 		users := make([]models.User, 0)
@@ -183,13 +187,13 @@ func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
 		}
 
 		if len(users) == 0 {
-			return c.JSON(http.StatusNotFound, users)
+			return c.JSON(http.StatusNotFound, nil)
 		}
 
 		res := lib.GetHTTPResponse(
 			http.StatusOK,
 			"Success",
-			&users,
+			nil,
 		)
 
 		return c.JSON(http.StatusOK, res)

@@ -9,11 +9,11 @@ type PrimaryModel struct {
 
 // TimestampModel type
 type TimestampModel struct {
-	CreatedAt time.Time `gorm:"not null" json:"createdAt"`
-	UpdatedAt time.Time `gorm:"not null" json:"updatedAt"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 // SoftDeleteModel type
 type SoftDeleteModel struct {
-	DeletedAt *time.Time `json:"deletedAt"`
+	DeletedAt *time.Time `json:"deletedAt"` // * <=> nullable
 }
