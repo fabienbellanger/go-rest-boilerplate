@@ -11,15 +11,18 @@ type ConfigType struct {
 	Version     string
 	Environment string
 	Database    struct {
-		Driver   string
-		Host     string
-		Port     int
-		Name     string
-		User     string
-		Password string
-		Timezone string
-		Charset  string
-		Engine   string
+		Driver                string
+		Host                  string
+		Port                  int
+		Name                  string
+		User                  string
+		Password              string
+		Timezone              string
+		Charset               string
+		Engine                string
+		MaxIdleConnections    int
+		MaxOpenConnections    int
+		MaxLifetimeConnection int
 	} `toml:"database"`
 	Jwt struct {
 		Secret string

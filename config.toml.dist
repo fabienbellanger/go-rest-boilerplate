@@ -13,14 +13,17 @@ password = ""
 timezone = "Europe/Paris"
 charset = "utf8mb4"
 engine = "InnoDB"
+maxOpenConnections = 5
+maxIdleConnections = 3
+maxLifetimeConnection = 60 # In minutes
 
 [jwt]
 secret = "mysecretkey"
 
 [orm]
 enabledLogs = true
-maxIdleConnections = 10
-maxOpenConnections = 100
+maxIdleConnections = 5
+maxOpenConnections = 10
 maxLifetimeConnection = 60 # In minutes
 
 [ssl]
