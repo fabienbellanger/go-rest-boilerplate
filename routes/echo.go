@@ -13,6 +13,20 @@ import (
 
 // StartEchoServer starts Echo web server
 func StartEchoServer(port int) {
+	e := initEchoServer()
+
+	// Start server
+	// ------------
+	s := &http.Server{
+		Addr:         ":" + strconv.Itoa(port),
+		ReadTimeout:  time.Duration(lib.Config.Server.ReadTimeout) * time.Second,
+		WriteTimeout: time.Duration(lib.Config.Server.WriteTimeout) * time.Second,
+	}
+	e.Logger.Fatal(e.StartServer(s))
+}
+
+// initEchoServer initializes Echo server
+func initEchoServer() *echo.Echo {
 	// La config pour le CORS est-elle correcte ?
 	// ------------------------------------------
 	if !lib.IsServerConfigCorrect() {
@@ -60,25 +74,21 @@ func StartEchoServer(port int) {
 	versionGroup := e.Group("/v1/echo")
 
 	// Liste des routes
+	// ----------------
 	echoAuthRoutes(e, versionGroup)
 	echoExampleRoutes(e, versionGroup)
 
 	// Favicon
 	// -------
+	e.File("/favicon.ico", "assets/images/favicon.ico")
+
+	// Assets
+	// ------
 	e.Static("/js", "./assets/js")
 	e.Static("/css", "./assets/css")
 	e.Static("/images", "./assets/images")
-	e.File("/favicon.ico", "assets/images/favicon.ico")
 
-	// Start server
-	// ------------
-	s := &http.Server{
-		Addr:         ":" + strconv.Itoa(port),
-		ReadTimeout:  20 * time.Minute,
-		WriteTimeout: 20 * time.Minute,
-	}
-	e.Logger.Fatal(e.StartServer(s))
-	// e.Logger.Fatal(e.Start(":" + strconv.Itoa(port)))
+	return e
 }
 
 func hello(c echo.Context) error {
