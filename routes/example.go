@@ -8,27 +8,14 @@ import (
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
 	"github.com/gin-gonic/gin"
 	"github.com/labstack/echo/v4"
 )
 
 func exampleRoutes(group *gin.RouterGroup) {
-	// Benchmark large query with Gorm
-	group.GET("/benchmark", func(c *gin.Context) {
-		users := make([]models.User, 0)
-		orm.DB.Limit(1000).Find(&users)
-
-		c.JSON(http.StatusOK, lib.GetHTTPResponse(
-			http.StatusOK,
-			"Success",
-			users,
-		))
-	})
-
 	// Benchmark large query with pure mysql
-	group.GET("/benchmark2", func(c *gin.Context) {
+	group.GET("/benchmark", func(c *gin.Context) {
 		query := "SELECT * FROM users"
 		rows, _ := database.Select(query)
 
@@ -63,12 +50,6 @@ func exampleRoutes(group *gin.RouterGroup) {
 				lib.CheckError(err, 0)
 			}
 			c.Writer.Flush()
-
-			// c.JSON(http.StatusOK, lib.GetHTTPResponse(
-			// 	http.StatusOK,
-			// 	"Success",
-			// 	&users,
-			// ))
 		}
 	})
 
@@ -163,39 +144,5 @@ func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
 		}
 
 		return nil
-	})
-
-	g.GET("/benchmark2", func(c echo.Context) error {
-		query := "SELECT * FROM users LIMIT 100000"
-		rows, _ := database.Select(query)
-
-		users := make([]models.User, 0)
-		var user models.User
-
-		for rows.Next() {
-			rows.Scan(
-				&user.ID,
-				&user.Username,
-				&user.Password,
-				&user.Lastname,
-				&user.Firstname,
-				&user.CreatedAt,
-				&user.UpdatedAt,
-				&user.DeletedAt)
-
-			users = append(users, user)
-		}
-
-		if len(users) == 0 {
-			return c.JSON(http.StatusNotFound, nil)
-		}
-
-		res := lib.GetHTTPResponse(
-			http.StatusOK,
-			"Success",
-			nil,
-		)
-
-		return c.JSON(http.StatusOK, res)
 	})
 }
