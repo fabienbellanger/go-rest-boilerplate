@@ -1,8 +1,9 @@
 package routes
 
 import (
+	"database/sql"
 	"encoding/json"
-	"io"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -101,48 +102,74 @@ func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
 		query := "SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at FROM users"
 		rows, _ := database.Select(query)
 
-		response := c.Response()
-		response.WriteHeader(http.StatusOK)
+		benchmarkEcho(rows)
 
-		if _, err := io.WriteString(response, "["); err != nil {
-			return err
-		}
+		// response := c.Response()
+		// response.WriteHeader(http.StatusOK)
 
-		encoder := json.NewEncoder(response)
-		var user models.User
-		//users := make([]models.User, 0)
+		// if _, err := io.WriteString(response, "["); err != nil {
+		// 	return err
+		// }
 
-		i := 0
-		for rows.Next() {
-			if i > 0 {
-				if _, err := io.WriteString(response, ","); err != nil {
-					return err
-				}
-			}
+		// encoder := json.NewEncoder(response)
+		// var user models.User
+		// //users := make([]models.User, 0)
 
-			rows.Scan(
-				&user.ID,
-				&user.Username,
-				&user.Password,
-				&user.Lastname,
-				&user.Firstname,
-				&user.CreatedAt,
-				&user.UpdatedAt,
-				&user.DeletedAt)
+		// i := 0
+		// for rows.Next() {
+		// 	if i > 0 {
+		// 		if _, err := io.WriteString(response, ","); err != nil {
+		// 			return err
+		// 		}
+		// 	}
 
-			if err := encoder.Encode(user); err != nil {
-				return err
-			}
+		// 	rows.Scan(
+		// 		&user.ID,
+		// 		&user.Username,
+		// 		&user.Password,
+		// 		&user.Lastname,
+		// 		&user.Firstname,
+		// 		&user.CreatedAt,
+		// 		&user.UpdatedAt,
+		// 		&user.DeletedAt)
 
-			i++
+		// 	if err := encoder.Encode(user); err != nil {
+		// 		return err
+		// 	}
 
-			//users = append(users, user)
-		}
+		// 	i++
 
-		if _, err := io.WriteString(response, "]"); err != nil {
-			return err
-		}
+		// 	//users = append(users, user)
+		// }
+
+		// if _, err := io.WriteString(response, "]"); err != nil {
+		// 	return err
+		// }
 
 		return nil
 	})
+}
+
+func benchmarkEcho(rows *sql.Rows) {
+	users := [100001]models.User{}
+	var user models.User
+
+	i := 0
+	for rows.Next() {
+		rows.Scan(
+			&user.ID,
+			&user.Username,
+			&user.Password,
+			&user.Lastname,
+			&user.Firstname,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+			&user.DeletedAt)
+
+		users[i] = user
+
+		i++
+	}
+
+	fmt.Println(len(users))
 }
