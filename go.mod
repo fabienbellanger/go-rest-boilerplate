@@ -3,7 +3,7 @@ module github.com/fabienbellanger/go-rest-boilerplate
 go 1.12
 
 require (
-	cloud.google.com/go v0.40.0 // indirect
+	cloud.google.com/go v0.41.0 // indirect
 	code.cloudfoundry.org/bytefmt v0.0.0-20180906201452-2aa6f33b730c
 	github.com/BurntSushi/toml v0.3.1
 	github.com/appleboy/gin-jwt v2.5.0+incompatible
@@ -15,20 +15,17 @@ require (
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gorilla/websocket v1.4.0
-	github.com/jinzhu/gorm v1.9.9
+	github.com/jinzhu/gorm v1.9.10
 	github.com/labstack/echo/v4 v4.1.6
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/spf13/cobra v0.0.5
-	github.com/tidwall/gjson v1.2.1 // indirect
-	github.com/tidwall/match v1.0.1 // indirect
-	github.com/tidwall/pretty v1.0.0 // indirect
-	github.com/ugorji/go v1.1.5-pre // indirect
-	golang.org/x/crypto v0.0.0-20190621222207-cc06ce4a13d4 // indirect
-	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
+	github.com/tidwall/gjson v1.3.0 // indirect
+	github.com/ugorji/go v1.1.7 // indirect
+	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
+	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
 	golang.org/x/sys v0.0.0-20190626221950-04f50cda93cb // indirect
-	google.golang.org/appengine v1.6.1 // indirect
 	gopkg.in/dgrijalva/jwt-go.v3 v3.2.0 // indirect
 )
 
