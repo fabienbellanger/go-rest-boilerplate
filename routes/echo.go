@@ -36,6 +36,12 @@ func initEchoServer() *echo.Echo {
 	// Echo instance
 	e := echo.New()
 
+	// automatically add routers for net/http/pprof
+	// e.g. /debug/pprof, /debug/pprof/heap, etc.
+	if lib.Config.Environment == "development" {
+		Wrap(e)
+	}
+
 	// Logger
 	// ------
 	if lib.Config.Environment == "development" {
