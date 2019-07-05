@@ -3,7 +3,7 @@ package routes
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -14,6 +14,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// Routes associées au framework Gin
 func exampleRoutes(group *gin.RouterGroup) {
 	// Benchmark large query with pure mysql
 	group.GET("/benchmark", func(c *gin.Context) {
@@ -92,6 +93,7 @@ func exampleRoutes(group *gin.RouterGroup) {
 	})
 }
 
+// Routes associées au framework Echo
 func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
 	// Routes
 	// ------
@@ -99,59 +101,88 @@ func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
 
 	// Benchmark large query with pure mysql
 	g.GET("/benchmark", func(c echo.Context) error {
-		query := "SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at FROM users"
+		query := "SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at FROM users LIMIT 100000"
 		rows, _ := database.Select(query)
 
-		benchmarkEcho(rows)
+		users := benchmarkEcho(rows)
+		nbUsers := len(users)
 
-		// response := c.Response()
-		// response.WriteHeader(http.StatusOK)
+		response := c.Response()
+		response.WriteHeader(http.StatusOK)
 
-		// if _, err := io.WriteString(response, "["); err != nil {
-		// 	return err
-		// }
+		if _, err := io.WriteString(response, "["); err != nil {
+			return err
+		}
 
-		// encoder := json.NewEncoder(response)
-		// var user models.User
-		// //users := make([]models.User, 0)
+		encoder := json.NewEncoder(response)
 
-		// i := 0
-		// for rows.Next() {
-		// 	if i > 0 {
-		// 		if _, err := io.WriteString(response, ","); err != nil {
-		// 			return err
-		// 		}
-		// 	}
+		for i := 0; i < nbUsers; i++ {
+			if i > 0 {
+				if _, err := io.WriteString(response, ","); err != nil {
+					return err
+				}
+			}
 
-		// 	rows.Scan(
-		// 		&user.ID,
-		// 		&user.Username,
-		// 		&user.Password,
-		// 		&user.Lastname,
-		// 		&user.Firstname,
-		// 		&user.CreatedAt,
-		// 		&user.UpdatedAt,
-		// 		&user.DeletedAt)
+			if err := encoder.Encode(users[i]); err != nil {
+				return err
+			}
+		}
 
-		// 	if err := encoder.Encode(user); err != nil {
-		// 		return err
-		// 	}
+		if _, err := io.WriteString(response, "]"); err != nil {
+			return err
+		}
 
-		// 	i++
+		return nil
+	})
 
-		// 	//users = append(users, user)
-		// }
+	// Benchmark large query with pure mysql
+	g.GET("/benchmark2", func(c echo.Context) error {
+		query := "SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at FROM users LIMIT 100000"
+		rows, _ := database.Select(query)
 
-		// if _, err := io.WriteString(response, "]"); err != nil {
-		// 	return err
-		// }
+		response := c.Response()
+		response.WriteHeader(http.StatusOK)
+
+		if _, err := io.WriteString(response, "["); err != nil {
+			return err
+		}
+
+		encoder := json.NewEncoder(response)
+		var user models.User
+
+		i := 0
+		for ; rows.Next(); i++ {
+			if i > 0 {
+				if _, err := io.WriteString(response, ","); err != nil {
+					return err
+				}
+			}
+
+			rows.Scan(
+				&user.ID,
+				&user.Username,
+				&user.Password,
+				&user.Lastname,
+				&user.Firstname,
+				&user.CreatedAt,
+				&user.UpdatedAt,
+				&user.DeletedAt)
+
+			if err := encoder.Encode(user); err != nil {
+				return err
+			}
+		}
+
+		if _, err := io.WriteString(response, "]"); err != nil {
+			return err
+		}
 
 		return nil
 	})
 }
 
-func benchmarkEcho(rows *sql.Rows) {
-	users := [100001]models.User{}
+func benchmarkEcho(rows *sql.Rows) []*models.User {
+	users := make([]*models.User, 100000)
 	var user models.User
 
 	i := 0
@@ -166,10 +197,11 @@ func benchmarkEcho(rows *sql.Rows) {
 			&user.UpdatedAt,
 			&user.DeletedAt)
 
-		users[i] = user
+		users[i] = &user
+		// users = append(users, user)
 
 		i++
 	}
 
-	fmt.Println(len(users))
+	return users
 }

@@ -9,11 +9,18 @@ start=`date +%s`
 
 function launchCurl()
 {
-    #curl -o /dev/null \
-    curl -H 'Cache-Control: no-cache' \
-         -s \
-         -w "Connect: %{time_connect} | TTFB: %{time_starttransfer} | Total time: %{time_total} \n" \
-         $1
+    if [ $# -eq 1 ]; then
+        curl -H 'Cache-Control: no-cache' \
+            -s \
+            -w "Connect: %{time_connect} | TTFB: %{time_starttransfer} | Total time: %{time_total} \n" \
+            $1
+    else
+        curl -o /dev/null \
+            -H 'Cache-Control: no-cache' \
+            -s \
+            -w "Connect: %{time_connect} | TTFB: %{time_starttransfer} | Total time: %{time_total} \n" \
+            $1
+    fi
 }
 
 if [ $# -eq 1 ]; then
@@ -24,8 +31,14 @@ elif [ $# -eq 2 ]; then
         launchCurl $1 &
         ((index++))
     done
+elif [ $# -eq 3 ]; then
+    index=1
+    while [ $index -le $2 ]; do
+        launchCurl $1 $3 &
+        ((index++))
+    done
 else
-    echo "Usage: ./ttfb.sh <url> <loop number>"
+    echo "Usage: ./ttfb.sh <url> <loop number> <only TTFB>"
 fi
 
 wait
