@@ -2,14 +2,26 @@ package routes
 
 import (
 	"errors"
+	"io"
 	"net/http"
 	"strconv"
+	"text/template"
 	"time"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
+
+// TemplateRenderer is a custom html/template renderer for Echo framework
+type TemplateRenderer struct {
+	templates *template.Template
+}
+
+// Render renders a template document
+func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return t.templates.ExecuteTemplate(w, name, data)
+}
 
 // StartEchoServer starts Echo web server
 func StartEchoServer(port int) {
@@ -35,12 +47,6 @@ func initEchoServer() *echo.Echo {
 
 	// Echo instance
 	e := echo.New()
-
-	// automatically add routers for net/http/pprof
-	// e.g. /debug/pprof, /debug/pprof/heap, etc.
-	if lib.Config.Environment == "development" {
-		Wrap(e)
-	}
 
 	// Logger
 	// ------
@@ -68,11 +74,11 @@ func initEchoServer() *echo.Echo {
 	// Secure
 	// ------
 	e.Use(middleware.SecureWithConfig(middleware.SecureConfig{
-		XSSProtection:         "1; mode=block",
-		ContentTypeNosniff:    "nosniff",
-		XFrameOptions:         "SAMEORIGIN",
-		HSTSMaxAge:            3600,
-		ContentSecurityPolicy: "default-src 'self'",
+		XSSProtection:      "1; mode=block",
+		ContentTypeNosniff: "nosniff",
+		XFrameOptions:      "SAMEORIGIN",
+		HSTSMaxAge:         3600,
+		// ContentSecurityPolicy: "default-src 'self'",
 	}))
 
 	// Version de l'API
@@ -84,6 +90,12 @@ func initEchoServer() *echo.Echo {
 	echoAuthRoutes(e, versionGroup)
 	echoExampleRoutes(e, versionGroup)
 
+	// Profilage
+	// ---------
+	if lib.Config.Environment == "development" {
+		echoPprofRoutes(versionGroup)
+	}
+
 	// Favicon
 	// -------
 	e.File("/favicon.ico", "assets/favicon.ico")
@@ -94,9 +106,12 @@ func initEchoServer() *echo.Echo {
 	e.Static("/css", "./assets/css")
 	e.Static("/images", "./assets/images")
 
-	return e
-}
+	// Templates
+	// ---------
+	t := &TemplateRenderer{
+		templates: template.Must(template.ParseGlob("templates/**/*.gohtml")),
+	}
+	e.Renderer = t
 
-func hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
+	return e
 }

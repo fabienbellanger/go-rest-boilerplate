@@ -16,6 +16,7 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gorilla/websocket v1.4.0
 	github.com/jinzhu/gorm v1.9.10
+	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/echo/v4 v4.1.6
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/onsi/ginkgo v1.8.0 // indirect

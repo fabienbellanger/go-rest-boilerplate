@@ -95,13 +95,27 @@ func exampleRoutes(group *gin.RouterGroup) {
 
 // Routes associées au framework Echo
 func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
-	// Routes
-	// ------
-	g.GET("/hello", hello)
+	// Test page for websockets
+	g.GET("/websockets", func(c echo.Context) error {
+		return c.Render(http.StatusOK, "example/websockets.gohtml", map[string]interface{}{
+			"title":        "Websockets example",
+			"webSocketUrl": strconv.Itoa(lib.Config.WebSocketServer.Port),
+		})
+	})
+
+	// Test page for VueJS
+	g.GET("/vuejs", func(c echo.Context) error {
+		return c.Render(http.StatusOK, "example/vuejs.gohtml", map[string]interface{}{
+			"title": "VueJS example",
+		})
+	})
 
 	// Benchmark large query with pure mysql
 	g.GET("/benchmark", func(c echo.Context) error {
-		query := "SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at FROM users LIMIT 100000"
+		query := `
+			SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at
+			FROM users
+			LIMIT 100000`
 		rows, _ := database.Select(query)
 
 		users := benchmarkEcho(rows)
@@ -137,7 +151,10 @@ func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
 
 	// Benchmark large query with pure mysql
 	g.GET("/benchmark2", func(c echo.Context) error {
-		query := "SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at FROM users LIMIT 100000"
+		query := `
+			SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at
+			FROM users
+			LIMIT 100000`
 		rows, _ := database.Select(query)
 
 		response := c.Response()

@@ -1,10 +1,11 @@
 package websockets
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 // ServerStart starts websockets server
@@ -14,12 +15,33 @@ func ServerStart(port int) {
 	hub := newHub()
 	go hub.run()
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		ClientConnection(hub, w, r)
-	})
+	e := echo.New()
 
-	err := http.ListenAndServe(":"+strconv.Itoa(port), nil)
-	lib.CheckError(err, 1)
+	// Logger
+	// ------
+	if lib.Config.Environment == "development" {
+		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+			Format: "[WS] ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
+		}))
+	}
+
+	// Recover
+	// -------
+	e.Use(middleware.Recover())
+	e.Static("/", "../public")
+	e.GET("/", func(c echo.Context) error {
+		ClientConnection(hub, c.Response(), c.Request())
+
+		return nil
+	})
+	e.Logger.Fatal(e.Start(":" + strconv.Itoa(port)))
+
+	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	ClientConnection(hub, w, r)
+	// })
+
+	// err := http.ListenAndServe(":"+strconv.Itoa(port), nil)
+	// lib.CheckError(err, 1)
 
 	// Pour utiliser les wss (WebSocket Secure)
 	// ----------------------------------------
