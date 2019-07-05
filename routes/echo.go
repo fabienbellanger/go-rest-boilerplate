@@ -80,7 +80,7 @@ func initEchoServer() *echo.Echo {
 
 	// Favicon
 	// -------
-	e.File("/favicon.ico", "assets/images/favicon.ico")
+	e.File("/favicon.ico", "assets/favicon.ico")
 
 	// Assets
 	// ------
