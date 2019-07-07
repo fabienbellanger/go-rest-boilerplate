@@ -1,4 +1,4 @@
-package routes
+package gin
 
 import (
 	"time"
@@ -49,7 +49,7 @@ func initJWTMiddleware() (authMiddleware *jwt.GinJWTMiddleware) {
 
 			// Vérification en base
 			// --------------------
-			userToCheck, err := checkLogin(username, password)
+			userToCheck, err := models.CheckLogin(username, password)
 
 			if err == nil && userToCheck.ID != 0 {
 				return &userToCheck, nil

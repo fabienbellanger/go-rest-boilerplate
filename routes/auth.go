@@ -1,56 +1,14 @@
 package routes
 
 import (
-	"crypto/sha512"
-	"encoding/hex"
 	"net/http"
 	"time"
 
-	jwt "github.com/appleboy/gin-jwt"
 	jwtEcho "github.com/dgrijalva/jwt-go"
-	"github.com/fabienbellanger/go-rest-boilerplate/controllers"
-	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
-	"github.com/gin-gonic/gin"
 	"github.com/labstack/echo/v4"
 )
-
-// checkLogin checks if username and password are correct
-// TODO: Utiliser GORM
-func checkLogin(username, password string) (models.User, error) {
-	encryptPassword := sha512.Sum512([]byte(password))
-	encryptPasswordStr := hex.EncodeToString(encryptPassword[:])
-	query := `
-		SELECT id, username, lastname, firstname, created_at, deleted_at
-		FROM users
-		WHERE username = ? AND password = ? AND deleted_at IS NULL
-		LIMIT 1`
-	rows, err := database.Select(query, username, encryptPasswordStr)
-
-	var user models.User
-
-	for rows.Next() {
-		err = rows.Scan(&user.ID, &user.Username, &user.Lastname, &user.Firstname, &user.CreatedAt, &user.DeletedAt)
-
-		lib.CheckError(err, 0)
-	}
-
-	return user, err
-}
-
-// authRoutes manages authentication routes
-func authRoutes(group *gin.RouterGroup, jwtMiddleware *jwt.GinJWTMiddleware) {
-	// Liste des routes
-	// ----------------
-	group.POST("/login", jwtMiddleware.LoginHandler)
-	group.GET("/refresh-token", jwtMiddleware.RefreshHandler)
-
-	group.Use(jwtMiddleware.MiddlewareFunc())
-	{
-		group.GET("/users", controllers.GetUserHandler)
-	}
-}
 
 // echoAuthRoutes manages authentication routes for Echo
 func echoAuthRoutes(e *echo.Echo, g *echo.Group) {
@@ -66,7 +24,7 @@ func loginHandler(c echo.Context) error {
 
 	// Vérification en base
 	// --------------------
-	user, err := checkLogin(username, password)
+	user, err := models.CheckLogin(username, password)
 
 	if err == nil && user.ID != 0 {
 		// Création du token d'authentification

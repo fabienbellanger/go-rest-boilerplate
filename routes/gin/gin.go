@@ -1,4 +1,4 @@
-package routes
+package gin
 
 import (
 	"context"

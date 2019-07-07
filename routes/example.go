@@ -14,47 +14,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// Routes associées au framework Gin
-func exampleRoutes(group *gin.RouterGroup) {
-	// Benchmark large query with pure mysql
-	group.GET("/benchmark", func(c *gin.Context) {
-		query := "SELECT * FROM users"
-		rows, _ := database.Select(query)
-
-		users := make([]models.User, 0, 100000)
-		var user models.User
-
-		for rows.Next() {
-			rows.Scan(
-				&user.ID,
-				&user.Username,
-				&user.Password,
-				&user.Lastname,
-				&user.Firstname,
-				&user.CreatedAt,
-				&user.UpdatedAt,
-				&user.DeletedAt)
-
-			users = append(users, user)
-		}
-
-		if len(users) == 0 {
-			c.JSON(http.StatusNotFound, users)
-		} else {
-			res := lib.GetHTTPResponse(
-				http.StatusOK,
-				"Success",
-				&users,
-			)
-
-			c.Writer.WriteHeader(200)
-			if err := json.NewEncoder(c.Writer).Encode(res); err != nil {
-				lib.CheckError(err, 0)
-			}
-			c.Writer.Flush()
-		}
-	})
-
+// GinExampleRoutes lists routes of Gin
+func GinExampleRoutes(group *gin.RouterGroup) {
 	// This handler will match /user/john but will not match /user/ or /user
 	group.GET("/user/:name", func(c *gin.Context) {
 		name := c.Param("name")

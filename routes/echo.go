@@ -83,7 +83,7 @@ func initEchoServer() *echo.Echo {
 
 	// Version de l'API
 	// ----------------
-	versionGroup := e.Group("/v1/echo")
+	versionGroup := e.Group("/v1")
 
 	// Liste des routes
 	// ----------------
