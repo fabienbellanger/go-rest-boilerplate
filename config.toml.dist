@@ -38,6 +38,7 @@ shutdownTimeout = 5 # In seconds
 allowOrigins = [
     "http://localhost:8889",
 ]
+pprof = false
 
 [webSocketServer]
 port = 8889

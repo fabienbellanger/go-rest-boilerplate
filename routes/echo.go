@@ -85,16 +85,31 @@ func initEchoServer() *echo.Echo {
 	// ----------------
 	versionGroup := e.Group("/v1")
 
-	// Liste des routes
-	// ----------------
-	echoAuthRoutes(e, versionGroup)
-	echoExampleRoutes(e, versionGroup)
+	// JWT configuration
+	// -----------------
+	jwtConfiguration := middleware.JWTConfig{
+		Claims:     &JwtClaims{},
+		SigningKey: []byte(lib.Config.Jwt.Secret),
+	}
 
 	// Profilage
 	// ---------
-	if lib.Config.Environment == "development" {
-		echoPprofRoutes(versionGroup)
+	if lib.Config.Server.Pprof {
+		pprofRoutes(versionGroup)
 	}
+
+	// Liste des routes non protégées
+	// ------------------------------
+	authRoutes(e, versionGroup)
+	exampleRoutes(e, versionGroup)
+
+	// Liste des routes protégées
+	// --------------------------
+	versionGroup.Use(middleware.JWTWithConfig(jwtConfiguration))
+
+	versionGroup.GET("/restricted", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Restricted page")
+	})
 
 	// Favicon
 	// -------
@@ -114,4 +129,8 @@ func initEchoServer() *echo.Echo {
 	e.Renderer = t
 
 	return e
+}
+
+func initJWT() {
+
 }

@@ -43,6 +43,7 @@ type ConfigType struct {
 		WriteTimeout    int
 		ShutdownTimeout int
 		AllowOrigins    []string
+		Pprof           bool
 	} `toml:"server"`
 	WebSocketServer struct {
 		Port int

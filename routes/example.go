@@ -10,52 +10,11 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
-	"github.com/gin-gonic/gin"
 	"github.com/labstack/echo/v4"
 )
 
-// GinExampleRoutes lists routes of Gin
-func GinExampleRoutes(group *gin.RouterGroup) {
-	// This handler will match /user/john but will not match /user/ or /user
-	group.GET("/user/:name", func(c *gin.Context) {
-		name := c.Param("name")
-
-		c.HTML(http.StatusOK, "example/index.gohtml", gin.H{
-			"title": "Example page",
-			"name":  name,
-		})
-	})
-
-	// However, this one will match /user/john/ and also /user/john/send
-	// If no other routers match /user/john, it will redirect to /user/john/
-	// :param : Paramètre obligatoire
-	// *param : Paramètre optionnel
-	group.GET("/user/:name/*action", func(c *gin.Context) {
-		name := c.Param("name")
-		action := c.Param("action")
-		message := name + " is " + action
-
-		c.String(http.StatusOK, message)
-	})
-
-	// Test page for websockets
-	group.GET("/websockets", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "example/websockets.gohtml", gin.H{
-			"title":        "Websockets example",
-			"webSocketUrl": strconv.Itoa(lib.Config.WebSocketServer.Port),
-		})
-	})
-
-	// Test page for VueJS
-	group.GET("/vuejs", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "example/vuejs.gohtml", gin.H{
-			"title": "VueJS example",
-		})
-	})
-}
-
 // Routes associées au framework Echo
-func echoExampleRoutes(e *echo.Echo, g *echo.Group) {
+func exampleRoutes(e *echo.Echo, g *echo.Group) {
 	// Test page for websockets
 	g.GET("/websockets", func(c echo.Context) error {
 		return c.Render(http.StatusOK, "example/websockets.gohtml", map[string]interface{}{

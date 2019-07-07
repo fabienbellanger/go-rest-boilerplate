@@ -4,7 +4,7 @@ import "time"
 
 // PrimaryModel type
 type PrimaryModel struct {
-	ID uint `gorm:"primary_key" json:"id"`
+	ID uint64 `gorm:"primary_key" json:"id"`
 }
 
 // TimestampModel type
