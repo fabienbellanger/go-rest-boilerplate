@@ -2,7 +2,6 @@ package gin
 
 import (
 	jwt "github.com/appleboy/gin-jwt"
-	"github.com/fabienbellanger/go-rest-boilerplate/controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +14,6 @@ func authRoutes(group *gin.RouterGroup, jwtMiddleware *jwt.GinJWTMiddleware) {
 
 	group.Use(jwtMiddleware.MiddlewareFunc())
 	{
-		group.GET("/users", controllers.GetUserHandler)
+
 	}
 }

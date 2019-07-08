@@ -31,7 +31,7 @@ func (u *User) GetFullname() string {
 	return u.Firstname + " " + u.Lastname
 }
 
-// CheckLogin checks if username and password are correct
+// CheckLogin checks if username and password are corrects
 func CheckLogin(username, password string) (User, error) {
 	encryptPassword := sha512.Sum512([]byte(password))
 	encryptPasswordStr := hex.EncodeToString(encryptPassword[:])
@@ -45,7 +45,13 @@ func CheckLogin(username, password string) (User, error) {
 	var user User
 
 	for rows.Next() {
-		err = rows.Scan(&user.ID, &user.Username, &user.Lastname, &user.Firstname, &user.CreatedAt, &user.DeletedAt)
+		err = rows.Scan(
+			&user.ID,
+			&user.Username,
+			&user.Lastname,
+			&user.Firstname,
+			&user.CreatedAt,
+			&user.DeletedAt)
 
 		lib.CheckError(err, 0)
 	}

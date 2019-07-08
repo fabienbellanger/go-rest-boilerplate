@@ -8,6 +8,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/fabienbellanger/go-rest-boilerplate/controllers"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -88,8 +89,11 @@ func initEchoServer() *echo.Echo {
 	// JWT configuration
 	// -----------------
 	jwtConfiguration := middleware.JWTConfig{
-		Claims:     &JwtClaims{},
-		SigningKey: []byte(lib.Config.Jwt.Secret),
+		ContextKey:  "user",
+		TokenLookup: "header:" + echo.HeaderAuthorization,
+		AuthScheme:  "Bearer",
+		Claims:      &controllers.JwtClaims{},
+		SigningKey:  []byte(lib.Config.Jwt.Secret),
 	}
 
 	// Profilage
@@ -106,10 +110,7 @@ func initEchoServer() *echo.Echo {
 	// Liste des routes protégées
 	// --------------------------
 	versionGroup.Use(middleware.JWTWithConfig(jwtConfiguration))
-
-	versionGroup.GET("/restricted", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Restricted page")
-	})
+	usersRoutes(e, versionGroup)
 
 	// Favicon
 	// -------

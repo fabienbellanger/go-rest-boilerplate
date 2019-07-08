@@ -135,7 +135,6 @@ func benchmarkEcho(rows *sql.Rows) []*models.User {
 			&user.DeletedAt)
 
 		users[i] = &user
-		// users = append(users, user)
 
 		i++
 	}
