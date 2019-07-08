@@ -13,6 +13,5 @@ type userLogin struct {
 
 // authRoutes manages authentication routes for Echo
 func authRoutes(e *echo.Echo, g *echo.Group) {
-	// Liste des routes
 	g.POST("/login", controllers.LoginHandler)
 }

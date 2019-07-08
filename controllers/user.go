@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 	"time"
 
@@ -54,6 +55,7 @@ func LoginHandler(c echo.Context) error {
 	// Vérification en base
 	// --------------------
 	user, err := models.CheckLogin(u.Username, u.Password)
+	lib.CheckError(errors.New("dfdfdfd"), 0)
 	if err != nil || user.ID == 0 {
 		return echo.ErrUnauthorized
 	}
@@ -66,7 +68,7 @@ func LoginHandler(c echo.Context) error {
 		user.Lastname,
 		user.Firstname,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(), // TODO: à mettre dans la config
+			ExpiresAt: time.Now().Add(time.Minute * time.Duration(lib.Config.Jwt.ExpirationTime)).Unix(),
 		},
 	}
 
@@ -77,7 +79,6 @@ func LoginHandler(c echo.Context) error {
 	// Génération du token encodé et envoi dans la réponse
 	// ---------------------------------------------------
 	t, err := token.SignedString([]byte(lib.Config.Jwt.Secret))
-
 	if err != nil {
 		return err
 	}
@@ -88,5 +89,6 @@ func LoginHandler(c echo.Context) error {
 		"lastname":  user.Lastname,
 		"firstname": user.Firstname,
 		"fullname":  user.GetFullname(),
+		"expireAt":  time.Unix(claims.StandardClaims.ExpiresAt, 0),
 	})
 }

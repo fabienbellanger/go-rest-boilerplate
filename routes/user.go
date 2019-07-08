@@ -7,7 +7,5 @@ import (
 
 // usersRoutes manages users routes
 func usersRoutes(e *echo.Echo, g *echo.Group) {
-	// Liste des routes
-	// ----------------
 	g.GET("/users", controllers.GetUserHandler)
 }

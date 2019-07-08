@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"text/template"
 	"time"
@@ -51,11 +52,22 @@ func initEchoServer() *echo.Echo {
 
 	// Logger
 	// ------
-	if lib.Config.Environment == "development" {
-		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-			Format: "[ECHO] ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
-		}))
+	lib.DefaultEchoLogWriter = os.Stdout
+	if lib.Config.Environment == "production" {
+		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
+		// -----------------------------------------------------------
+		logsFile, err := os.OpenFile("./"+lib.Config.Log.DirPath+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE, 0644)
+
+		if err != nil {
+			lib.CheckError(err, 1)
+		}
+
+		lib.DefaultEchoLogWriter = io.MultiWriter(logsFile)
 	}
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "[ECHO] ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
+		Output: lib.DefaultEchoLogWriter,
+	}))
 
 	// Recover
 	// -------
@@ -82,35 +94,15 @@ func initEchoServer() *echo.Echo {
 		// ContentSecurityPolicy: "default-src 'self'",
 	}))
 
-	// Version de l'API
-	// ----------------
-	versionGroup := e.Group("/v1")
-
-	// JWT configuration
-	// -----------------
-	jwtConfiguration := middleware.JWTConfig{
-		ContextKey:  "user",
-		TokenLookup: "header:" + echo.HeaderAuthorization,
-		AuthScheme:  "Bearer",
-		Claims:      &controllers.JwtClaims{},
-		SigningKey:  []byte(lib.Config.Jwt.Secret),
-	}
-
 	// Profilage
 	// ---------
 	if lib.Config.Server.Pprof {
-		pprofRoutes(versionGroup)
+		pprofRoutes(e.Group(""))
 	}
 
-	// Liste des routes non protégées
-	// ------------------------------
-	authRoutes(e, versionGroup)
-	exampleRoutes(e, versionGroup)
-
-	// Liste des routes protégées
-	// --------------------------
-	versionGroup.Use(middleware.JWTWithConfig(jwtConfiguration))
-	usersRoutes(e, versionGroup)
+	// Liste des routes
+	// ----------------
+	initRoutes(e)
 
 	// Favicon
 	// -------
@@ -132,6 +124,29 @@ func initEchoServer() *echo.Echo {
 	return e
 }
 
-func initJWT() {
+// initRoutes initializes routes list
+func initRoutes(e *echo.Echo) {
+	// JWT configuration
+	// -----------------
+	jwtConfiguration := middleware.JWTConfig{
+		ContextKey:  "user",
+		TokenLookup: "header:" + echo.HeaderAuthorization,
+		AuthScheme:  "Bearer",
+		Claims:      &controllers.JwtClaims{},
+		SigningKey:  []byte(lib.Config.Jwt.Secret),
+	}
 
+	// Version de l'API
+	// ----------------
+	versionGroup := e.Group("/v1")
+
+	// Liste des routes non protégées
+	// ------------------------------
+	authRoutes(e, versionGroup)
+	exampleRoutes(e, versionGroup)
+
+	// Liste des routes protégées
+	// --------------------------
+	versionGroup.Use(middleware.JWTWithConfig(jwtConfiguration))
+	usersRoutes(e, versionGroup)
 }

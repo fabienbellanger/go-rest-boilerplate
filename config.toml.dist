@@ -19,6 +19,7 @@ maxLifetimeConnection = 60 # In minutes
 
 [jwt]
 secret = "mysecretkey"
+expirationTime = 24 # In minutes
 
 [orm]
 enabledLogs = true

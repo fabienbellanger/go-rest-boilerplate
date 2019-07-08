@@ -25,7 +25,8 @@ type ConfigType struct {
 		MaxLifetimeConnection int
 	} `toml:"database"`
 	Jwt struct {
-		Secret string
+		Secret         string
+		ExpirationTime int
 	} `toml:"jwt"`
 	ORM struct {
 		EnabledLogs           bool
