@@ -56,18 +56,18 @@ func initEchoServer() *echo.Echo {
 	if lib.Config.Environment == "production" {
 		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
 		// -----------------------------------------------------------
-		logsFile, err := os.OpenFile("./"+lib.Config.Log.DirPath+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE, 0644)
-
+		logsFile, err := os.OpenFile("./"+lib.Config.Log.DirPath+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 		if err != nil {
 			lib.CheckError(err, 1)
 		}
 
 		lib.DefaultEchoLogWriter = io.MultiWriter(logsFile)
+	} else {
+		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+			Format: "[ECH] ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
+			Output: lib.DefaultEchoLogWriter,
+		}))
 	}
-	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Format: "[ECHO] ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
-		Output: lib.DefaultEchoLogWriter,
-	}))
 
 	// Recover
 	// -------

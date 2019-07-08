@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"net/http"
 	"time"
 
@@ -55,7 +54,6 @@ func LoginHandler(c echo.Context) error {
 	// Vérification en base
 	// --------------------
 	user, err := models.CheckLogin(u.Username, u.Password)
-	lib.CheckError(errors.New("dfdfdfd"), 0)
 	if err != nil || user.ID == 0 {
 		return echo.ErrUnauthorized
 	}

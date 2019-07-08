@@ -6,8 +6,6 @@ import (
 	"sync"
 	"time"
 	"io"
-
-	"github.com/fatih/color"
 )
 
 // DefaultEchoLogWriter displays logs on the good writer
@@ -19,6 +17,7 @@ var (
 )
 
 // GLog displays log in gin.DefaultWriter
+// TODO: Faire la config pour Echo
 func GLog(v ...interface{}) {
 	mutex := new(sync.Mutex)
 
@@ -28,9 +27,7 @@ func GLog(v ...interface{}) {
 
 	mutex.Lock()
 	go func(v ...interface{}) {
-		color.New(color.FgRed).Print("[❌] ")
-		log.Printf("%+v\n", v)
-		color.Unset()
+		log.Printf("[ERR] %s | %+v\n", time.Now().Format(time.RFC3339), v)
 		mutex.Unlock()
 	}(v)
 }
@@ -78,26 +75,26 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 	if Config.SQLLog.Level == 1 {
 		// Time only
 		// ---------
-		log.Printf("[SQL] %t | %3s |%s %13v %s|\n",
+		log.Printf("[SQL] %s | %3s |%s %13v %s|\n",
 			// time.Now().Format("2006/01/02 - 15:04:05"),
-			time.Now().Unix(),
+			time.Now().Format(time.RFC3339),
 			requestType,
 			latencyColor, latency, resetColor)
 	} else if Config.SQLLog.Level == 2 {
 		// Time and query
 		// --------------
-		log.Printf("[SQL] %t | %3s |%s %13v %s| %s\n",
+		log.Printf("[SQL] %s | %3s |%s %13v %s| %s\n",
 			// time.Now().Format("2006/01/02 - 15:04:05"),
-			time.Now().Unix(),
+			time.Now().Format(time.RFC3339),
 			requestType,
 			latencyColor, latency, resetColor,
 			query)
 	} else if Config.SQLLog.Level == 3 {
 		// Time, query and arguments
 		// -------------------------
-		log.Printf("[SQL] %t | %3s |%s %13v %s| %s | %v\n",
+		log.Printf("[SQL] %s | %3s |%s %13v %s| %s | %v\n",
 			// time.Now().Format("2006/01/02 - 15:04:05"),
-			time.Now().Unix(),
+			time.Now().Format(time.RFC3339),
 			requestType,
 			latencyColor, latency, resetColor,
 			query,
