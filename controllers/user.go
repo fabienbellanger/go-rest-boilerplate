@@ -6,7 +6,7 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
+	"github.com/fabienbellanger/go-rest-boilerplate/models"
 	"github.com/labstack/echo/v4"
 )
 

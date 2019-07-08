@@ -53,7 +53,7 @@ func StartServer(port int) {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	lib.GLog("Shutdown Server...")
+	lib.CustomLog("Shutdown Server...")
 
 	// Do something if you want !
 
@@ -66,7 +66,7 @@ func StartServer(port int) {
 
 	select {
 	case <-ctx.Done():
-		lib.GLog("timeout of " + timeout.String())
+		lib.CustomLog("timeout of " + timeout.String())
 	}
 	// End exammple
 

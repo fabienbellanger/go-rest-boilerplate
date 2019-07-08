@@ -9,7 +9,7 @@ import (
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
+	"github.com/fabienbellanger/go-rest-boilerplate/models"
 	"github.com/labstack/echo/v4"
 )
 

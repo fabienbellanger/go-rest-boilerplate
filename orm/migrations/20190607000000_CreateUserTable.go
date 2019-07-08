@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
+	"github.com/fabienbellanger/go-rest-boilerplate/models"
 	"github.com/jinzhu/gorm"
 )
 

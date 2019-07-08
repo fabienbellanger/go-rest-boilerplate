@@ -5,7 +5,7 @@ import (
 
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/orm/models"
+	"github.com/fabienbellanger/go-rest-boilerplate/models"
 	"github.com/gin-gonic/gin"
 )
 

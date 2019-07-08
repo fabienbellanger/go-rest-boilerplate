@@ -62,9 +62,16 @@ func initEchoServer() *echo.Echo {
 		}
 
 		lib.DefaultEchoLogWriter = io.MultiWriter(logsFile)
+
+		if lib.Config.Log.EnableAccessLog {
+			e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+				Format: "ECHO | ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
+				Output: lib.DefaultEchoLogWriter,
+			}))
+		}
 	} else {
 		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-			Format: "[ECH] ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
+			Format: "ECHO | ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
 			Output: lib.DefaultEchoLogWriter,
 		}))
 	}
