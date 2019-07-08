@@ -26,7 +26,7 @@ func CheckError(err error, exitCode int) {
 // DisplaySuccessMessage displays success message to output
 func DisplaySuccessMessage(msg string) {
 	if len(msg) > 0 {
-		color.New(color.FgGreen).Print("[✔️] ")
+		color.New(color.FgGreen).Print(" ✔  ")
 		fmt.Println(msg)
 	}
 }

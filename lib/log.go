@@ -21,6 +21,9 @@ func CustomLog(v ...interface{}) {
 	// log.SetOutput(gin.DefaultWriter)
 	log.SetOutput(DefaultEchoLogWriter)
 
+	// Remove logs timestamp
+	log.SetFlags(0)
+
 	log.Printf("ERR  | %s | %+v\n", time.Now().Format(time.RFC3339), v)
 
 	// mutex := new(sync.Mutex)
