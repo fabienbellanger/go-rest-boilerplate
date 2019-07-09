@@ -177,6 +177,32 @@ service <service name> stop
 ```
 
 
+## Mesure et performance
+Go met à disposition de puissants outils pour mesurer les performances des programmes :
+- pprof (graph, flamegraph, peek)
+- trace
+- cover
+
+### pprof
+```bash
+curl http://localhost:8888/debug/pprof/heap > <fichier.pprof>
+go tool pprof -http :7000 <fichier.pprof> # Interface web
+go tool pprof <fichier.pprof> # Ligne de commande
+```
+
+### trace
+```bash
+go test <package path> -trace=test.out
+go tool trace <fichier à analyser>
+```
+
+### cover
+```bash
+go test <package path> -covermode=count -coverprofile=./coverage.out
+go tool cover -html=<fichier à analyser>
+```
+
+
 ## TODO list
 - [x] Passer aux modules introduits avec Go 1.11 :
     - https://roberto.selbach.ca/intro-to-go-modules/

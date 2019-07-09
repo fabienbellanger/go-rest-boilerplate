@@ -53,7 +53,7 @@ func executeQuery(query string, args ...interface{}) (sql.Result, error) {
 	lib.CheckError(err, 0)
 
 	// Query log
-	go logRequest(start, query, args)
+	logRequest(start, query, args)
 
 	return result, err
 }
@@ -70,7 +70,7 @@ func Select(query string, args ...interface{}) (*sql.Rows, error) {
 	lib.CheckError(err, 0)
 
 	// Query log
-	go logRequest(start, query, args)
+	logRequest(start, query, args)
 
 	return rows, err
 }

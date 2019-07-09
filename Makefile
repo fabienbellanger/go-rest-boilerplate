@@ -62,6 +62,9 @@ test:
 bench: 
 	$(GOTEST) -bench=. -v ./...
 
+testTrace: 
+	$(GOTEST) ./lib -trace test.out
+
 clean: 
 	$(GOCLEAN)
 	rm -f $(BINARY_NAME)
