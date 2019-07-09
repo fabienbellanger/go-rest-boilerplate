@@ -17,27 +17,23 @@ var (
 
 // CustomLog displays logs
 func CustomLog(v ...interface{}) {
-	// On redirige les logs vers le default writer de Gin
-	// log.SetOutput(gin.DefaultWriter)
 	log.SetOutput(DefaultEchoLogWriter)
 
 	// Remove logs timestamp
 	log.SetFlags(0)
 
-	log.Printf("ERR  | %s | %+v\n", time.Now().Format(time.RFC3339), v)
+	log.Printf("ERR  | %s | %+v\n", time.Now().Format("2006-01-02 15:04:05"), v)
 
 	// mutex := new(sync.Mutex)
 	// mutex.Lock()
 	// go func(v ...interface{}) {
-	// 	log.Printf("ERR  | %s | %+v\n", time.Now().Format(time.RFC3339), v)
+	// 	log.Printf("ERR  | %s | %+v\n", time.Now().Format("2006-01-02 15:04:05"), v)
 	// 	mutex.Unlock()
 	// }(v)
 }
 
 // SQLLog displays SQL log in gin.DefaultWriter
 func SQLLog(latency time.Duration, query string, args ...interface{}) {
-	// On redirige les logs vers le default writer de Gin
-	// log.SetOutput(gin.DefaultWriter)
 	log.SetOutput(DefaultEchoLogWriter)
 
 	// Remove logs timestamp
@@ -77,26 +73,23 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 	if Config.SQLLog.Level == 1 {
 		// Time only
 		// ---------
-		log.Printf("SQL  | %s | %4s |%s %13v %s|\n",
-			// time.Now().Format("2006/01/02 - 15:04:05"),
-			time.Now().Format(time.RFC3339),
+		log.Printf("SQL  | %s | %4s |%s %v\t%s|\n",
+			time.Now().Format("2006-01-02 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor)
 	} else if Config.SQLLog.Level == 2 {
 		// Time and query
 		// --------------
-		log.Printf("SQL  | %s | %4s |%s %13v %s| %s\n",
-			// time.Now().Format("2006/01/02 - 15:04:05"),
-			time.Now().Format(time.RFC3339),
+		log.Printf("SQL  | %s | %4s |%s %v\t%s| %s\n",
+			time.Now().Format("2006-01-02 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor,
 			query)
 	} else if Config.SQLLog.Level == 3 {
 		// Time, query and arguments
 		// -------------------------
-		log.Printf("SQL  | %s | %4s |%s %13v %s| %s | %v\n",
-			// time.Now().Format("2006/01/02 - 15:04:05"),
-			time.Now().Format(time.RFC3339),
+		log.Printf("SQL  | %s | %4s |%s %v\t%s| %s | %v\n",
+			time.Now().Format("2006-01-02 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor,
 			query,

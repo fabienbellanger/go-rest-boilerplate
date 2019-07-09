@@ -67,7 +67,7 @@ var APICommand = &cobra.Command{
 		defer database.DB.Close()
 
 		fmt.Print("Connection to database \t")
-		color.Green("✔️\n")
+		color.Green("✔\n")
 
 		// Connexion à l'ORM
 		// -----------------
@@ -75,7 +75,7 @@ var APICommand = &cobra.Command{
 		defer orm.DB.Close()
 
 		fmt.Print("Connection to ORM \t")
-		color.Green("✔️\n\n")
+		color.Green("✔\n\n")
 
 		// Lancement du serveur web
 		// ------------------------

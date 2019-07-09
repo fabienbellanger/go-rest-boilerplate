@@ -52,34 +52,59 @@ func initEchoServer() *echo.Echo {
 
 	// Logger
 	// ------
-	lib.DefaultEchoLogWriter = os.Stdout
-	if lib.Config.Environment == "production" {
-		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
-		// -----------------------------------------------------------
-		logsFile, err := os.OpenFile("./"+lib.Config.Log.DirPath+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
-		if err != nil {
-			lib.CheckError(err, 1)
-		}
-
-		lib.DefaultEchoLogWriter = io.MultiWriter(logsFile)
-
-		if lib.Config.Log.EnableAccessLog {
-			e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-				Format: "ECHO | ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
-				Output: lib.DefaultEchoLogWriter,
-			}))
-		}
-	} else {
-		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-			Format: "ECHO | ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
-			Output: lib.DefaultEchoLogWriter,
-		}))
-	}
+	initLogger(e)
 
 	// Recover
 	// -------
 	e.Use(middleware.Recover())
 
+	// CORS & Secure middlewares
+	// -------------------------
+	initCorsAndSecurity(e)
+
+	// HTTP errors management
+	// ----------------------
+	e.HTTPErrorHandler = customHTTPErrorHandler
+
+	// Profilage
+	// ---------
+	if lib.Config.Server.Pprof {
+		pprofRoutes(e.Group(""))
+	}
+
+	// Liste des routes
+	// ----------------
+	initRoutes(e)
+
+	// Favicon, static files and template renderer
+	// -------------------------------------------
+	initStaticFilesAndTemplates(e)
+
+	return e
+}
+
+// initStaticFilesAndTemplates initializes static files and template renderer
+func initStaticFilesAndTemplates(e *echo.Echo) {
+	// Favicon
+	// -------
+	e.File("/favicon.ico", "assets/favicon.ico")
+
+	// Assets
+	// ------
+	e.Static("/js", "./assets/js")
+	e.Static("/css", "./assets/css")
+	e.Static("/images", "./assets/images")
+
+	// Templates
+	// ---------
+	t := &TemplateRenderer{
+		templates: template.Must(template.ParseGlob("templates/**/*.gohtml")),
+	}
+	e.Renderer = t
+}
+
+// initCorsAndSecurity initializes CORS and Secure middlewares
+func initCorsAndSecurity(e *echo.Echo) {
 	// CORS
 	// ----
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -100,35 +125,35 @@ func initEchoServer() *echo.Echo {
 		HSTSMaxAge:         3600,
 		// ContentSecurityPolicy: "default-src 'self'",
 	}))
+}
 
-	// Profilage
-	// ---------
-	if lib.Config.Server.Pprof {
-		pprofRoutes(e.Group(""))
+// initLogger initializes logger
+func initLogger(e *echo.Echo) {
+	lib.DefaultEchoLogWriter = os.Stdout
+	if lib.Config.Environment == "production" {
+		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
+		// -----------------------------------------------------------
+		logsFile, err := os.OpenFile("./"+lib.Config.Log.DirPath+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+		if err != nil {
+			lib.CheckError(err, 1)
+		}
+
+		lib.DefaultEchoLogWriter = io.MultiWriter(logsFile)
+
+		if lib.Config.Log.EnableAccessLog {
+			e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+				Format:           "ECHO | ${time_custom} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
+				Output:           lib.DefaultEchoLogWriter,
+				CustomTimeFormat: "2006-01-02 15:04:05",
+			}))
+		}
+	} else {
+		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+			Format:           "ECHO | ${time_custom} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
+			Output:           lib.DefaultEchoLogWriter,
+			CustomTimeFormat: "2006-01-02 15:04:05",
+		}))
 	}
-
-	// Liste des routes
-	// ----------------
-	initRoutes(e)
-
-	// Favicon
-	// -------
-	e.File("/favicon.ico", "assets/favicon.ico")
-
-	// Assets
-	// ------
-	e.Static("/js", "./assets/js")
-	e.Static("/css", "./assets/css")
-	e.Static("/images", "./assets/images")
-
-	// Templates
-	// ---------
-	t := &TemplateRenderer{
-		templates: template.Must(template.ParseGlob("templates/**/*.gohtml")),
-	}
-	e.Renderer = t
-
-	return e
 }
 
 // initRoutes initializes routes list
@@ -156,4 +181,26 @@ func initRoutes(e *echo.Echo) {
 	// --------------------------
 	versionGroup.Use(middleware.JWTWithConfig(jwtConfiguration))
 	usersRoutes(e, versionGroup)
+}
+
+// customHTTPErrorHandler manages HTTP errors
+func customHTTPErrorHandler(err error, c echo.Context) {
+	code := http.StatusInternalServerError
+	if httpError, ok := err.(*echo.HTTPError); ok {
+		code = httpError.Code
+	}
+
+	switch code {
+	case http.StatusUnauthorized:
+		// 401
+		c.JSON(code, map[string]string{"message": "Not Authorized"})
+	case http.StatusNotFound:
+		// 404
+		c.JSON(code, map[string]string{"message": "Resource Not Found"})
+	case http.StatusInternalServerError:
+		// 500
+		c.JSON(code, map[string]string{"message": "Internal Server Error"})
+	default:
+		c.JSON(code, "")
+	}
 }

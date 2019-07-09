@@ -30,16 +30,12 @@ func GetUserHandler(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*JwtClaims)
 
-	return c.JSON(http.StatusOK, lib.GetHTTPResponse(
-		http.StatusOK,
-		"Success",
-		map[string]interface{}{
-			"id":        claims.ID,
-			"username":  claims.Username,
-			"lastname":  claims.Lastname,
-			"firstname": claims.Firstname,
-		}),
-	)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"id":        claims.ID,
+		"username":  claims.Username,
+		"lastname":  claims.Lastname,
+		"firstname": claims.Firstname,
+	})
 }
 
 // LoginHandler make authentication

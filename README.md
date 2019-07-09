@@ -183,22 +183,25 @@ Go met à disposition de puissants outils pour mesurer les performances des prog
 - trace
 - cover
 
+=> Lien vers une vidéo intéressante [Mesure et optimisation de la performance en Go](https://www.youtube.com/watch?v=jd47gDK-yDc)
+
 ### pprof
 ```bash
-curl http://localhost:8888/debug/pprof/heap > <fichier.pprof>
-go tool pprof -http :7000 <fichier.pprof> # Interface web
-go tool pprof <fichier.pprof> # Ligne de commande
+curl http://localhost:8888/debug/pprof/heap?seconds=10 > <fichier à analyser>
+go tool pprof -http :7000 <fichier à analyser> # Interface web
+go tool pprof <fichier à analyser> # Ligne de commande
 ```
 
 ### trace
 ```bash
-go test <package path> -trace=test.out
+go test <package path> -trace=<fichier à analyser>
+curl localhost:<port>/debug/pprof/trace?seconds=10 > <fichier à analyser>
 go tool trace <fichier à analyser>
 ```
 
 ### cover
 ```bash
-go test <package path> -covermode=count -coverprofile=./coverage.out
+go test <package path> -covermode=count -coverprofile=./<fichier à analyser>
 go tool cover -html=<fichier à analyser>
 ```
 

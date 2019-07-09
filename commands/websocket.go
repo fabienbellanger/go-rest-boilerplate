@@ -60,7 +60,7 @@ var WebSocketCommand = &cobra.Command{
 		defer orm.DB.Close()
 
 		fmt.Print("Connection to ORM  ")
-		color.Green("✔️\n\n")
+		color.Green("✔\n\n")
 
 		// Lancement du serveur websocket
 		// ------------------------------

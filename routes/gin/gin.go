@@ -160,6 +160,8 @@ func initServerEnvironment() {
 		gin.DisableConsoleColor()
 		gin.DefaultWriter = io.MultiWriter(logsFile)
 	}
+
+	lib.DefaultEchoLogWriter = gin.DefaultWriter
 }
 
 // initServerRouting initializes routing
