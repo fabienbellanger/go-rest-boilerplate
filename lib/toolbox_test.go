@@ -4,11 +4,6 @@ import (
 	"testing"
 )
 
-// TestCheckError
-func TestCheckError(t *testing.T) {
-	// TODO
-}
-
 // TestUcfirst
 func TestUcfirst(t *testing.T) {
 	s1 := "test chaîne Avec et sans majuscule"

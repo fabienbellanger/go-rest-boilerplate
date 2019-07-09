@@ -23,13 +23,6 @@ func CustomLog(v ...interface{}) {
 	log.SetFlags(0)
 
 	log.Printf("ERR  | %s | %+v\n", time.Now().Format("2006-01-02 15:04:05"), v)
-
-	// mutex := new(sync.Mutex)
-	// mutex.Lock()
-	// go func(v ...interface{}) {
-	// 	log.Printf("ERR  | %s | %+v\n", time.Now().Format("2006-01-02 15:04:05"), v)
-	// 	mutex.Unlock()
-	// }(v)
 }
 
 // SQLLog displays SQL log in gin.DefaultWriter

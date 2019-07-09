@@ -53,7 +53,7 @@ func StartServer(port int) {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	lib.CustomLog("Shutdown Server...")
+	// lib.CustomLog("Shutdown Server...")
 
 	// Do something if you want !
 
@@ -64,10 +64,10 @@ func StartServer(port int) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	select {
-	case <-ctx.Done():
-		lib.CustomLog("timeout of " + timeout.String())
-	}
+	// select {
+	// case <-ctx.Done():
+	// 	lib.CustomLog("timeout of " + timeout.String())
+	// }
 	// End exammple
 
 	// Shutdown the server
