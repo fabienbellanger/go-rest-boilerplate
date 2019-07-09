@@ -7,6 +7,7 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GOMOD=$(GOCMD) mod
+GOTOOL=$(GOCMD) tool
 BINARY_NAME=goRestBoilerplate
 BINARY_UNIX=$(BINARY_NAME)_unix
 
@@ -57,13 +58,22 @@ build:
 	$(GOBUILD) -o $(BINARY_NAME) -v
 
 test: 
-	$(GOTEST) -cover -v ./...
+	$(GOTEST) -cover ./...
+
+testCoverCount: 
+	$(GOTEST) -covermode=count -coverprofile=cover-count.out ./...
+
+testCoverAtomic: 
+	$(GOTEST) -covermode=atomic -coverprofile=cover-atomic.out ./...
+
+coverCount:
+	$(GOTOOL) cover -func=cover-count.out
+
+coverAtomic:
+	$(GOTOOL) cover -func=cover-atomic.out
 	
 bench: 
-	$(GOTEST) -bench=. -v ./...
-
-testTrace: 
-	$(GOTEST) ./lib -trace test.out
+	$(GOTEST) -bench=. ./...
 
 clean: 
 	$(GOCLEAN)
