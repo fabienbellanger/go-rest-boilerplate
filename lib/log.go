@@ -46,7 +46,7 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 	} else {
 		latencyColor = resetColor
 
-		if Config.Environment == "development" && latency.Seconds() >= Config.SQLLog.Limit {
+		if latency.Seconds() >= Config.SQLLog.Limit {
 			latencyColor = redColor
 		}
 	}
@@ -66,14 +66,14 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 	if Config.SQLLog.Level == 1 {
 		// Time only
 		// ---------
-		log.Printf("SQL  | %s | %4s |%s %v\t%s|\n",
+		log.Printf("SQL  | %s | %4s |%s %v %s\t|\n",
 			time.Now().Format("2006-01-02 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor)
 	} else if Config.SQLLog.Level == 2 {
 		// Time and query
 		// --------------
-		log.Printf("SQL  | %s | %4s |%s %v\t%s| %s\n",
+		log.Printf("SQL  | %s | %4s |%s %v %s\t| %s\n",
 			time.Now().Format("2006-01-02 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor,
@@ -81,7 +81,7 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 	} else if Config.SQLLog.Level == 3 {
 		// Time, query and arguments
 		// -------------------------
-		log.Printf("SQL  | %s | %4s |%s %v\t%s| %s | %v\n",
+		log.Printf("SQL  | %s | %4s |%s %v %s\t| %s | %v\n",
 			time.Now().Format("2006-01-02 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor,

@@ -1,8 +1,32 @@
 package lib
 
 import (
+	"bytes"
+	"errors"
+	"strings"
 	"testing"
 )
+
+// TestCheckError
+// exitCode != 0, non testable car le programme s'arrete à cause du os.Exit()
+func TestCheckError(t *testing.T) {
+	b := new(bytes.Buffer)
+	DefaultEchoLogWriter = b
+
+	var err error
+	var exitCode int
+	var result, want string
+
+	err = errors.New("My error")
+	exitCode = 0
+	CheckError(err, exitCode)
+	result = b.String()
+	want = "[" + err.Error() + "]"
+	if !strings.Contains(result, want) {
+		t.Errorf("CheckError() == %q, want %q", result, want)
+	}
+	b.Reset()
+}
 
 // TestUcfirst
 func TestUcfirst(t *testing.T) {
