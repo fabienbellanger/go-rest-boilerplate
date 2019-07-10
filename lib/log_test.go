@@ -2,6 +2,8 @@ package lib
 
 import (
 	"bytes"
+	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -131,4 +133,37 @@ func TestSQLLog(t *testing.T) {
 		t.Errorf("SQLLog() == %q, want %q", result, want)
 	}
 	b.Reset()
+}
+
+// TestDisplaySuccessMessage
+func TestDisplaySuccessMessage(t *testing.T) {
+	rescueStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	var msg, want, result string
+
+	msg = "Test success message"
+	DisplaySuccessMessage(msg)
+	w.Close()
+
+	out, _ := ioutil.ReadAll(r)
+	result = string(out)
+	want = msg + "\n"
+	if !strings.Contains(result, want) {
+		t.Errorf("DisplaySuccessMessage(%s) == %#v, want: %#v", msg, result, want)
+	}
+
+	msg = ""
+	DisplaySuccessMessage(msg)
+	w.Close()
+
+	out, _ = ioutil.ReadAll(r)
+	result = string(out)
+	want = ""
+	if !strings.Contains(result, want) {
+		t.Errorf("DisplaySuccessMessage(%s) == %#v, want: %#v", msg, result, want)
+	}
+
+	os.Stdout = rescueStdout
 }
