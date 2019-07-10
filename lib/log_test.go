@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // TestCustomLog
@@ -14,15 +16,15 @@ func TestCustomLog(t *testing.T) {
 	b := new(bytes.Buffer)
 	DefaultEchoLogWriter = b
 
+	var want, result string
+
 	// String
 	// ------
 	getStr := "ERR  | "
-	want := "ERR  | "
+	want = "ERR  | "
 	CustomLog(getStr)
-	result := b.String()
-	if !strings.Contains(result, want) {
-		t.Errorf("CustomLog(%q) == %q, want %q", getStr, result, want)
-	}
+	result = b.String()
+	assert.Contains(t, result, want, "must constaint "+want)
 	b.Reset()
 
 	// Number
@@ -31,9 +33,7 @@ func TestCustomLog(t *testing.T) {
 	want = "1542.545"
 	CustomLog(getFloat)
 	result = b.String()
-	if !strings.Contains(result, want) {
-		t.Errorf("CustomLog(%f) == %q, want %q", getFloat, result, want)
-	}
+	assert.Contains(t, result, want, "must constaint "+want)
 	b.Reset()
 
 	// Custom type
@@ -49,9 +49,7 @@ func TestCustomLog(t *testing.T) {
 	want = "{prop1:str prop2:23}"
 	CustomLog(getType)
 	result = b.String()
-	if !strings.Contains(result, want) {
-		t.Errorf("CustomLog(%v) == %q, want %q", getType, result, want)
-	}
+	assert.Contains(t, result, want, "must constaint "+want)
 	b.Reset()
 }
 
@@ -78,18 +76,14 @@ func TestSQLLog(t *testing.T) {
 	want = "|  SEL |\x1b[97;41m " + latency.String() + " \x1b[0m\t|"
 	SQLLog(latency, query, nil)
 	result = b.String()
-	if !strings.Contains(result, want) {
-		t.Errorf("SQLLog() == %q, want %q", result, want)
-	}
+	assert.Contains(t, result, want, "should contains time with color")
 	b.Reset()
 
 	Config.Environment = "production"
 	want = "|  SEL | " + latency.String() + " \t|"
 	SQLLog(latency, query, nil)
 	result = b.String()
-	if !strings.Contains(result, want) {
-		t.Errorf("SQLLog() == %q, want %q", result, want)
-	}
+	assert.Contains(t, result, want, "should contains time without color")
 	b.Reset()
 
 	// Time + query
@@ -99,18 +93,14 @@ func TestSQLLog(t *testing.T) {
 	want = "|  SEL |\x1b[97;41m " + latency.String() + " \t| " + query
 	SQLLog(latency, query, nil)
 	result = b.String()
-	if !strings.Contains(result, want) {
-		t.Errorf("SQLLog() == %q, want %q", result, want)
-	}
-
+	assert.Contains(t, result, want, "should contains time and query with color")
 	b.Reset()
+
 	Config.Environment = "production"
 	want = "|  SEL | " + latency.String() + " \t| " + query
 	SQLLog(latency, query, nil)
 	result = b.String()
-	if !strings.Contains(result, want) {
-		t.Errorf("SQLLog() == %q, want %q", result, want)
-	}
+	assert.Contains(t, result, want, "should contains time and query without color")
 	b.Reset()
 
 	// Time + query
@@ -120,18 +110,14 @@ func TestSQLLog(t *testing.T) {
 	want = "|  SEL |\x1b[97;41m " + latency.String() + " \t| " + query + " | [1]"
 	SQLLog(latency, query, 1)
 	result = b.String()
-	if !strings.Contains(result, want) {
-		t.Errorf("SQLLog() == %q, want %q", result, want)
-	}
+	assert.Contains(t, result, want, "should contains time, query and arguments with color")
 	b.Reset()
 
 	Config.Environment = "development"
 	want = "|  SEL |\x1b[97;41m " + latency.String() + " \t| " + query + " | [1 test]"
 	SQLLog(latency, query, 1, "test")
 	result = b.String()
-	if !strings.Contains(result, want) {
-		t.Errorf("SQLLog() == %q, want %q", result, want)
-	}
+	assert.Contains(t, result, want, "should contains time, query and arguments without color")
 	b.Reset()
 }
 
@@ -146,24 +132,18 @@ func TestDisplaySuccessMessage(t *testing.T) {
 	msg = "Test success message"
 	DisplaySuccessMessage(msg)
 	w.Close()
-
 	out, _ := ioutil.ReadAll(r)
 	result = string(out)
 	want = msg + "\n"
-	if !strings.Contains(result, want) {
-		t.Errorf("DisplaySuccessMessage(%s) == %#v, want: %#v", msg, result, want)
-	}
+	assert.Contains(t, result, want, "result should contain non empty message")
 
 	msg = ""
 	DisplaySuccessMessage(msg)
 	w.Close()
-
 	out, _ = ioutil.ReadAll(r)
 	result = string(out)
 	want = ""
-	if !strings.Contains(result, want) {
-		t.Errorf("DisplaySuccessMessage(%s) == %#v, want: %#v", msg, result, want)
-	}
+	assert.Contains(t, result, want, "result should contain empty message")
 
 	os.Stdout = rescueStdout
 }
