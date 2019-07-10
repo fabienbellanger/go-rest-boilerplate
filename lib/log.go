@@ -1,10 +1,13 @@
 package lib
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 // DefaultEchoLogWriter displays logs on the good writer
@@ -14,6 +17,14 @@ var (
 	redColor   = string([]byte{27, 91, 57, 55, 59, 52, 49, 109})
 	resetColor = string([]byte{27, 91, 48, 109})
 )
+
+// DisplaySuccessMessage displays success message to output
+func DisplaySuccessMessage(msg string) {
+	if len(msg) > 0 {
+		color.New(color.FgGreen).Print(" ✔  ")
+		fmt.Println(msg)
+	}
+}
 
 // CustomLog displays logs
 func CustomLog(v ...interface{}) {

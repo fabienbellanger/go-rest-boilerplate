@@ -33,6 +33,12 @@ func (u *User) GetFullname() string {
 
 // CheckLogin checks if username and password are corrects
 func CheckLogin(username, password string) (User, error) {
+	var user User
+
+	if len(username) == 0 || len(password) == 0 {
+		return user, nil
+	}
+
 	encryptPassword := sha512.Sum512([]byte(password))
 	encryptPasswordStr := hex.EncodeToString(encryptPassword[:])
 	query := `
@@ -41,8 +47,6 @@ func CheckLogin(username, password string) (User, error) {
 		WHERE username = ? AND password = ? AND deleted_at IS NULL
 		LIMIT 1`
 	rows, err := database.Select(query, username, encryptPasswordStr)
-
-	var user User
 
 	for rows.Next() {
 		err = rows.Scan(
