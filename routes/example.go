@@ -69,7 +69,7 @@ func exampleRoutes(e *echo.Echo, g *echo.Group) {
 		return nil
 	})
 
-	// Benchmark large query with pure mysql
+	// Benchmark large query without using an array
 	g.GET("/benchmark2", func(c echo.Context) error {
 		query := `
 			SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at
@@ -118,10 +118,12 @@ func exampleRoutes(e *echo.Echo, g *echo.Group) {
 	})
 }
 
+// benchmarkEcho executes query and create the array of results
 func benchmarkEcho(rows *sql.Rows) []*models.User {
-	users := make([]*models.User, 100000)
 	var user models.User
 
+	users := make([]*models.User, 100000)
+	// users := make([]*models.User, 0)
 	i := 0
 	for rows.Next() {
 		rows.Scan(
@@ -135,6 +137,7 @@ func benchmarkEcho(rows *sql.Rows) []*models.User {
 			&user.DeletedAt)
 
 		users[i] = &user
+		// users = append(users, &user)
 
 		i++
 	}
