@@ -37,6 +37,8 @@ func ServerStart(port int) {
 	})
 	e.Logger.Fatal(e.Start(":" + strconv.Itoa(port)))
 
+	// Version sans framework Echo
+	// ---------------------------
 	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 	// 	ClientConnection(hub, w, r)
 	// })
