@@ -119,10 +119,10 @@ func exampleRoutes(e *echo.Echo, g *echo.Group) {
 }
 
 // benchmarkEcho executes query and create the array of results
-func benchmarkEcho(rows *sql.Rows) []*models.User {
+func benchmarkEcho(rows *sql.Rows) []models.User {
 	var user models.User
 
-	users := make([]*models.User, 100000)
+	users := make([]models.User, 100000)
 	// users := make([]*models.User, 0)
 	i := 0
 	for rows.Next() {
@@ -136,7 +136,7 @@ func benchmarkEcho(rows *sql.Rows) []*models.User {
 			&user.UpdatedAt,
 			&user.DeletedAt)
 
-		users[i] = &user
+		users[i] = user
 		// users = append(users, &user)
 
 		i++
