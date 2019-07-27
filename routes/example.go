@@ -123,7 +123,7 @@ func benchmarkEcho(rows *sql.Rows) []models.User {
 	var user models.User
 
 	users := make([]models.User, 100000)
-	// users := make([]*models.User, 0)
+	// users := make([]models.User, 0)
 	i := 0
 	for rows.Next() {
 		rows.Scan(
@@ -137,7 +137,7 @@ func benchmarkEcho(rows *sql.Rows) []models.User {
 			&user.DeletedAt)
 
 		users[i] = user
-		// users = append(users, &user)
+		// users = append(users, user)
 
 		i++
 	}
