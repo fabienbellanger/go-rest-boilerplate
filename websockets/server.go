@@ -21,34 +21,7 @@ func ServerStart(port int) {
 
 	// Logger
 	// ------
-	lib.DefaultEchoLogWriter = os.Stdout
-	if lib.Config.Environment == "production" {
-		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
-		// -----------------------------------------------------------
-		logsFile, err := os.OpenFile("./"+lib.Config.Log.DirPath+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
-		if err != nil {
-			lib.CheckError(err, 1)
-		}
-
-		lib.DefaultEchoLogWriter = io.MultiWriter(logsFile)
-
-		if lib.Config.Log.EnableAccessLog {
-			e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-				Format: "WS   | ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
-				Output: lib.DefaultEchoLogWriter,
-			}))
-		}
-	} else {
-		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-			Format: "WS   | ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
-			Output: lib.DefaultEchoLogWriter,
-		}))
-	}
-	if lib.Config.Environment == "development" {
-		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-			Format: "WS   | ${time_rfc3339} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
-		}))
-	}
+	initLogger(e)
 
 	// Recover
 	// -------
@@ -75,4 +48,33 @@ func ServerStart(port int) {
 	// ----------------------------------------
 	// err := http.ListenAndServeTLS(":8443", lib.Config.SSL.CertPath, lib.Config.SSL.KeyPath, nil)
 	// lib.CheckError(err, 1)
+}
+
+// initLogger initializes logger
+func initLogger(e *echo.Echo) {
+	lib.DefaultEchoLogWriter = os.Stdout
+	if lib.Config.Environment == "production" {
+		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
+		// -----------------------------------------------------------
+		logsFile, err := os.OpenFile("./"+lib.Config.Log.DirPath+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+		if err != nil {
+			lib.CheckError(err, 1)
+		}
+
+		lib.DefaultEchoLogWriter = io.MultiWriter(logsFile)
+
+		if lib.Config.Log.EnableAccessLog {
+			e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+				Format:           "WS   | ${time_custom} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
+				Output:           lib.DefaultEchoLogWriter,
+				CustomTimeFormat: "2006-01-02 15:04:05",
+			}))
+		}
+	} else {
+		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+			Format:           "WS   | ${time_custom} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
+			Output:           lib.DefaultEchoLogWriter,
+			CustomTimeFormat: "2006-01-02 15:04:05",
+		}))
+	}
 }
