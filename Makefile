@@ -30,10 +30,6 @@ runWebSocket:
 	$(GORUN) -race main.go websocket
 ws: install runWebSocket
 
-runApiRace:
-	$(GORUN) -race main.go api
-apiRace: install runApiRace
-
 runDbInit:
 	$(GORUN) main.go db --init
 dbInit: install runDbInit
