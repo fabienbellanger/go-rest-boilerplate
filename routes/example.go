@@ -142,5 +142,9 @@ func benchmarkEcho(rows *sql.Rows) []models.User {
 		i++
 	}
 
-	return make([]models.User, 1, 1) // users
+	// u := make([]models.User, 1000, 1000)
+	// copy(u, users)
+	// users = nil
+
+	return users
 }
