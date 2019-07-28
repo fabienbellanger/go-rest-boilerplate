@@ -122,7 +122,7 @@ func exampleRoutes(e *echo.Echo, g *echo.Group) {
 func benchmarkEcho(rows *sql.Rows) []models.User {
 	var user models.User
 
-	users := make([]models.User, 100000)
+	users := make([]models.User, 100000, 100000)
 	// users := make([]models.User, 0)
 	i := 0
 	for rows.Next() {
@@ -142,5 +142,5 @@ func benchmarkEcho(rows *sql.Rows) []models.User {
 		i++
 	}
 
-	return users
+	return make([]models.User, 1, 1) // users
 }

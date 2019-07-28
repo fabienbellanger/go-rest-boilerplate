@@ -81,5 +81,5 @@ clean:
 	rm -f $(BINARY_UNIX)
 
 run-prod:
-	$(GOBUILD) -o $(BINARY_NAME) -v ./...
+	$(GOBUILD) -o $(BINARY_NAME) -v
 	./$(BINARY_NAME)

@@ -8,6 +8,7 @@
 - [Architecture du projet](#architecture-du-projet)
 - [Golang web server in production](#golang-web-server-in-production)
 - [TODO list](#todo-list)
+- [Astuces et explications](#Astuces-et-explications)
 
 
 ## Installation
@@ -225,3 +226,10 @@ go tool cover -html=<fichier à analyser>
 - [ ] Problème de consommation mémoire
     - [https://github.com/gin-contrib/pprof](https://github.com/gin-contrib/pprof)
     - [https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d](https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d)
+
+
+## Astuces et explications
+- [Astuces Slices](https://github.com/golang/go/wiki/SliceTricks)
+- [Pool](https://www.akshaydeo.com/blog/2017/12/23/How-did-I-improve-latency-by-700-percent-using-syncPool/)
+- [Understanding The Memory Model Of Golang : Part 1](https://medium.com/@edwardpie/understanding-the-memory-model-of-golang-part-1-9814f95621b4)
+- [Understanding The Memory Model Of Golang : Part 2](https://medium.com/@edwardpie/understanding-the-memory-model-of-golang-part-2-972fe74372ba)
