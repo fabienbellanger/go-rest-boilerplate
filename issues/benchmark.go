@@ -5,29 +5,6 @@ import (
 	"time"
 )
 
-type applicationType struct {
-	ID        int
-	Name      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-type moduleType struct {
-	ID            int
-	ApplicationID int
-	Name          string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-}
-
-type actionType struct {
-	ID        int
-	ModuleID  int
-	Name      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
 type sqlDataType struct {
 	ApplicationID        int
 	ApplicationName      string
@@ -141,9 +118,6 @@ func InitData() map[int]DataApplicationType {
 			data[sqlData[i].ApplicationID].Modules[sqlData[i].ModuleID].Actions[sqlData[i].ActionID] = *dac
 		}
 	}
-
-	// jsonData, _ := json.Marshal(data)
-	// fmt.Printf("%v\n", string(jsonData))
 
 	return data
 }
