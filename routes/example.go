@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
+	"github.com/fabienbellanger/go-rest-boilerplate/issues"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/models"
 	"github.com/labstack/echo/v4"
@@ -111,6 +112,44 @@ func exampleRoutes(e *echo.Echo, g *echo.Group) {
 		}
 
 		if _, err := io.WriteString(response, "]"); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	// Benchmark large query with pure mysql
+	g.GET("/benchmark3", func(c echo.Context) error {
+		data := issues.InitData()
+
+		response := c.Response()
+		response.WriteHeader(http.StatusOK)
+
+		if _, err := io.WriteString(response, "{"); err != nil {
+			return err
+		}
+
+		encoder := json.NewEncoder(response)
+		i := 0
+		for applicationID, application := range data {
+			if i > 0 {
+				if _, err := io.WriteString(response, ","); err != nil {
+					return err
+				}
+			}
+
+			if _, err := io.WriteString(response, `"`+strconv.Itoa(applicationID)+`": `); err != nil {
+				return err
+			}
+
+			if err := encoder.Encode(application); err != nil {
+				return err
+			}
+
+			i++
+		}
+
+		if _, err := io.WriteString(response, "}"); err != nil {
 			return err
 		}
 

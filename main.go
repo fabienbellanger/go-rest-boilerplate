@@ -1,19 +1,17 @@
 package main
 
 import (
-	"time"
-
-	"github.com/fabienbellanger/go-rest-boilerplate/issues"
+	"github.com/fabienbellanger/go-rest-boilerplate/commands"
 )
 
 func main() {
 	// Lancement de Cobra
-	// commands.Execute()
-	go issues.InitData()
-	go issues.InitData()
-	go issues.InitData()
-	go issues.InitData()
-	go issues.InitData()
+	commands.Execute()
+	// go issues.InitData()
+	// go issues.InitData()
+	// go issues.InitData()
+	// go issues.InitData()
+	// go issues.InitData()
 
-	time.Sleep(10 * time.Second)
+	// time.Sleep(10 * time.Second)
 }
