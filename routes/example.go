@@ -131,7 +131,7 @@ func exampleRoutes(e *echo.Echo, g *echo.Group) {
 
 		encoder := json.NewEncoder(response)
 		i := 0
-		for applicationID, application := range data {
+		for applicationID, application := range *data {
 			if i > 0 {
 				if _, err := io.WriteString(response, ","); err != nil {
 					return err

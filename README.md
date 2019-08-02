@@ -189,7 +189,7 @@ Go met à disposition de puissants outils pour mesurer les performances des prog
 ### pprof
 ```bash
 curl http://localhost:8888/debug/pprof/heap?seconds=10 > <fichier à analyser>
-go tool pprof -http :7000 <fichier à analyser> # Interface web
+go tool pprof --nodefraction=0 -http :7000 <fichier à analyser> # Interface web
 go tool pprof <fichier à analyser> # Ligne de commande
 ```
 
@@ -229,6 +229,8 @@ go tool cover -html=<fichier à analyser>
 
 
 ## Astuces et explications
+- [pprof & Memory leaks](https://www.freecodecamp.org/news/how-i-investigated-memory-leaks-in-go-using-pprof-on-a-large-codebase-4bec4325e192/)
+- [Allocation efficiency in high-performance Go services](https://segment.com/blog/allocation-efficiency-in-high-performance-go-services/)
 - [Astuces Slices](https://github.com/golang/go/wiki/SliceTricks)
 - [Pool](https://www.akshaydeo.com/blog/2017/12/23/How-did-I-improve-latency-by-700-percent-using-syncPool/)
 - [Understanding The Memory Model Of Golang : Part 1](https://medium.com/@edwardpie/understanding-the-memory-model-of-golang-part-1-9814f95621b4)

@@ -1,6 +1,7 @@
 package issues
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -41,9 +42,16 @@ type dataActionType struct {
 }
 
 // InitData inits data for test
-func InitData() map[int]DataApplicationType {
-	data := make(map[int]DataApplicationType)
+func InitData() *map[int]DataApplicationType {
+	//sqlData := constructSQLArray()
+	data := constructFinalArray(constructSQLArray())
 
+	fmt.Printf("%+v", data)
+
+	return data
+}
+
+func constructSQLArray() []sqlDataType {
 	const nbApplications = 10
 	const nbModules = 1000
 	const nbActions = 100000
@@ -67,6 +75,12 @@ func InitData() map[int]DataApplicationType {
 
 		sqlData = append(sqlData, line)
 	}
+
+	return sqlData
+}
+
+func constructFinalArray(sqlData []sqlDataType) *map[int]DataApplicationType {
+	data := make(map[int]DataApplicationType)
 
 	nbData := len(sqlData)
 	for i := 0; i < nbData; i++ {
@@ -119,5 +133,5 @@ func InitData() map[int]DataApplicationType {
 		}
 	}
 
-	return data
+	return &data
 }
