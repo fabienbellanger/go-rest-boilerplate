@@ -1,7 +1,6 @@
 package issues
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 )
@@ -43,10 +42,10 @@ type dataActionType struct {
 
 // InitData inits data for test
 func InitData() *map[int]DataApplicationType {
-	//sqlData := constructSQLArray()
-	data := constructFinalArray(constructSQLArray())
+	sqlData := constructSQLArray()
+	data := constructFinalArray(sqlData)
 
-	fmt.Printf("%+v", data)
+	// fmt.Printf("%+v", data)
 
 	return data
 }
