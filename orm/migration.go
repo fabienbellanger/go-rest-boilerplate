@@ -12,4 +12,7 @@ func Migrate(db *gorm.DB) {
 
 	migrations.Migration20190607000000CreateUserTable(db)
 	migrations.Migration20191006175832AddRolesTable(db)
+	migrations.Migration20190803215634CreateApplicationModuleActionTables(db)
+	// migrations.Migration20190308215349CreateApplicationModuleActionTables(db)
+	// migrations.Migration20190803215634CreateApplicationModuleActionTables(db)
 }

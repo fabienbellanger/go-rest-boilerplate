@@ -43,7 +43,7 @@ runLogsRotation:
 log: install runLogsRotation
 
 runMakeMigration:
-	$(GORUN) main.go make:migration
+	$(GORUN) main.go make-migration
 make-migration: install runMakeMigration
 
 runMigrate:

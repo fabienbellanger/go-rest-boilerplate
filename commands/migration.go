@@ -25,7 +25,7 @@ func init() {
 
 // MigrationCommand create database migration
 var MigrationCommand = &cobra.Command{
-	Use:   "make:migration",
+	Use:   "make-migration",
 	Short: "Create a database migration",
 	Long:  "Create a database migration",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -39,7 +39,7 @@ var MigrationCommand = &cobra.Command{
 
 `)
 
-		timePrefix := time.Now().Format("20060201150405")
+		timePrefix := time.Now().Format("20060102150405")
 		migrationFileNamePath := migrationsPath + timePrefix + migrationFileName + ".go"
 		functionName := "Migration" + timePrefix + migrationFileName
 

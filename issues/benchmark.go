@@ -1,20 +1,23 @@
 package issues
 
 import (
+	"fmt"
 	"strconv"
 	"time"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
 )
 
 type sqlDataType struct {
-	ApplicationID        int
+	ApplicationID        uint64
 	ApplicationName      string
 	ApplicationCreatedAt time.Time
 	ApplicationUpdatedAt time.Time
-	ModuleID             int
+	ModuleID             uint64
 	ModuleName           string
 	ModuleCreatedAt      time.Time
 	ModuleUpdatedAt      time.Time
-	ActionID             int
+	ActionID             uint64
 	ActionName           string
 	ActionCreatedAt      time.Time
 	ActionUpdatedAt      time.Time
@@ -24,14 +27,14 @@ type DataApplicationType struct {
 	Name      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Modules   map[int]dataModuleType
+	Modules   map[uint64]dataModuleType
 }
 
 type dataModuleType struct {
 	Name      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Actions   map[int]dataActionType
+	Actions   map[uint64]dataActionType
 }
 
 type dataActionType struct {
@@ -41,13 +44,57 @@ type dataActionType struct {
 }
 
 // InitData inits data for test
-func InitData() *map[int]DataApplicationType {
-	sqlData := constructSQLArray()
-	data := constructFinalArray(sqlData)
+func InitData() *map[uint64]DataApplicationType {
+	// sqlData := constructSQLArray()
+	// data := constructFinalArray(sqlData)
 
 	// fmt.Printf("%+v", data)
 
-	return data
+	getSQLData()
+
+	return nil // data
+}
+
+func getSQLData() {
+	query := `
+		SELECT 
+			applications.id,
+			applications.name,
+			applications.created_at,
+			applications.updated_at,
+			modules.id,
+			modules.name,
+			modules.created_at,
+			modules.updated_at,
+			actions.id,
+			actions.name,
+			actions.created_at,
+			actions.updated_at
+		FROM applications
+			INNER JOIN modules ON applications.id = modules.application_id
+			INNER JOIN actions ON modules.id = actions.module_id
+		LIMIT 10`
+	rows, _ := database.Select(query)
+
+	var line sqlDataType
+	for rows.Next() {
+		rows.Scan(
+			&line.ApplicationID,
+			&line.ApplicationName,
+			&line.ApplicationCreatedAt,
+			&line.ApplicationUpdatedAt,
+			&line.ModuleID,
+			&line.ModuleName,
+			&line.ModuleCreatedAt,
+			&line.ModuleUpdatedAt,
+			&line.ActionID,
+			&line.ActionName,
+			&line.ActionCreatedAt,
+			&line.ActionUpdatedAt)
+
+		fmt.Printf("%v", line)
+	}
+
 }
 
 func constructSQLArray() []sqlDataType {
@@ -58,15 +105,15 @@ func constructSQLArray() []sqlDataType {
 	sqlData := make([]sqlDataType, 0)
 	for i := 0; i < nbActions; i++ {
 		line := sqlDataType{
-			ApplicationID:        (i % nbApplications) + 1,
+			ApplicationID:        uint64(i%nbApplications) + 1,
 			ApplicationName:      "Application " + strconv.Itoa((i%nbApplications)+1),
 			ApplicationCreatedAt: time.Now(),
 			ApplicationUpdatedAt: time.Now(),
-			ModuleID:             (i % nbModules) + 1,
+			ModuleID:             uint64(i%nbModules) + 1,
 			ModuleName:           "Module " + strconv.Itoa((i%nbModules)+1),
 			ModuleCreatedAt:      time.Now(),
 			ModuleUpdatedAt:      time.Now(),
-			ActionID:             i + 1,
+			ActionID:             uint64(i) + 1,
 			ActionName:           "Action " + strconv.Itoa(i+1),
 			ActionCreatedAt:      time.Now(),
 			ActionUpdatedAt:      time.Now(),
@@ -78,11 +125,12 @@ func constructSQLArray() []sqlDataType {
 	return sqlData
 }
 
-func constructFinalArray(sqlData []sqlDataType) *map[int]DataApplicationType {
-	data := make(map[int]DataApplicationType)
+func constructFinalArray(sqlData []sqlDataType) *map[uint64]DataApplicationType {
+	data := make(map[uint64]DataApplicationType)
 
-	nbData := len(sqlData)
-	for i := 0; i < nbData; i++ {
+	nbData := uint64(len(sqlData))
+	var i uint64
+	for i = 0; i < nbData; i++ {
 		if _, ok := data[sqlData[i].ApplicationID]; !ok {
 			dac := new(dataActionType)
 			dac.Name = sqlData[i].ActionName
@@ -93,14 +141,14 @@ func constructFinalArray(sqlData []sqlDataType) *map[int]DataApplicationType {
 			dmo.Name = sqlData[i].ModuleName
 			dmo.CreatedAt = sqlData[i].ModuleCreatedAt
 			dmo.UpdatedAt = sqlData[i].ModuleUpdatedAt
-			dmo.Actions = make(map[int]dataActionType)
+			dmo.Actions = make(map[uint64]dataActionType)
 			dmo.Actions[sqlData[i].ActionID] = *dac
 
 			dap := new(DataApplicationType)
 			dap.Name = sqlData[i].ApplicationName
 			dap.CreatedAt = sqlData[i].ApplicationCreatedAt
 			dap.UpdatedAt = sqlData[i].ApplicationUpdatedAt
-			dap.Modules = make(map[int]dataModuleType)
+			dap.Modules = make(map[uint64]dataModuleType)
 			dap.Modules[sqlData[i].ModuleID] = *dmo
 
 			data[sqlData[i].ApplicationID] = *dap
@@ -116,7 +164,7 @@ func constructFinalArray(sqlData []sqlDataType) *map[int]DataApplicationType {
 			dmo.Name = sqlData[i].ModuleName
 			dmo.CreatedAt = sqlData[i].ModuleCreatedAt
 			dmo.UpdatedAt = sqlData[i].ModuleUpdatedAt
-			dmo.Actions = make(map[int]dataActionType)
+			dmo.Actions = make(map[uint64]dataActionType)
 			dmo.Actions[sqlData[i].ActionID] = *dac
 
 			data[sqlData[i].ApplicationID].Modules[sqlData[i].ModuleID] = *dmo
