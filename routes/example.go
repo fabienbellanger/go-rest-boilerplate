@@ -43,6 +43,7 @@ func exampleRoutes(e *echo.Echo, g *echo.Group) {
 		nbUsers := len(users)
 
 		response := c.Response()
+		response.Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
 		response.WriteHeader(http.StatusOK)
 
 		if _, err := io.WriteString(response, "["); err != nil {
@@ -79,6 +80,7 @@ func exampleRoutes(e *echo.Echo, g *echo.Group) {
 		rows, _ := database.Select(query)
 
 		response := c.Response()
+		response.Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
 		response.WriteHeader(http.StatusOK)
 
 		if _, err := io.WriteString(response, "["); err != nil {
@@ -123,6 +125,7 @@ func exampleRoutes(e *echo.Echo, g *echo.Group) {
 		data := issues.InitData()
 
 		response := c.Response()
+		response.Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
 		response.WriteHeader(http.StatusOK)
 
 		if _, err := io.WriteString(response, "{"); err != nil {
@@ -138,7 +141,7 @@ func exampleRoutes(e *echo.Echo, g *echo.Group) {
 				}
 			}
 
-			if _, err := io.WriteString(response, `"`+strconv.Itoa(applicationID)+`": `); err != nil {
+			if _, err := io.WriteString(response, `"`+strconv.Itoa(int(applicationID))+`":`); err != nil {
 				return err
 			}
 

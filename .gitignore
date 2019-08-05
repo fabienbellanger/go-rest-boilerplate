@@ -8,6 +8,8 @@ vendor
 config.toml
 dump_*.sql
 *.out
+*.pprof
+goRestBoilerplate
 
 gin.log*
 /logs/*

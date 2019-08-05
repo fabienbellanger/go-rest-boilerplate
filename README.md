@@ -189,7 +189,8 @@ Go met à disposition de puissants outils pour mesurer les performances des prog
 ### pprof
 ```bash
 curl http://localhost:8888/debug/pprof/heap?seconds=10 > <fichier à analyser>
-go tool pprof --nodefraction=0 -http :7000 <fichier à analyser> # Interface web
+go tool pprof -http :7000 <fichier à analyser> # Interface web
+go tool pprof --nodefraction=0 -http :7000 <fichier à analyser> # Interface web avec tous les noeuds
 go tool pprof <fichier à analyser> # Ligne de commande
 ```
 
