@@ -40,7 +40,7 @@ var MigrationCommand = &cobra.Command{
 `)
 
 		timePrefix := time.Now().Format("20060102150405")
-		migrationFileNamePath := migrationsPath + timePrefix + migrationFileName + ".go"
+		migrationFileNamePath := migrationsPath + timePrefix + "_" + migrationFileName + ".go"
 		functionName := "Migration" + timePrefix + migrationFileName
 
 		// Création du fichier de migration
