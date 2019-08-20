@@ -21,8 +21,8 @@ var (
 // DisplaySuccessMessage displays success message to output
 func DisplaySuccessMessage(msg string) {
 	if len(msg) > 0 {
-		color.New(color.FgGreen).Print(" ✔  ")
-		fmt.Println(msg)
+		green := color.New(color.FgGreen).SprintFunc()
+		fmt.Printf(" %s  %s\n", green("✔"), msg)
 	}
 }
 

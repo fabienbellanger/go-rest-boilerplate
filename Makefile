@@ -68,10 +68,17 @@ coverCount:
 coverAtomic:
 	$(GOTOOL) cover -func=cover-atomic.out
 
-runCoverCount: testCoverCount coverCount
+htmlCoverCount:
+	$(GOTOOL) cover -html=cover-count.out
 
+htmlCoverAtomic:
+	$(GOTOOL) cover -html=cover-atomic.out
+
+runCoverCount: testCoverCount coverCount
 runCoverAtomic: testCoverAtomic coverAtomic
-	
+viewCoverCount: testCoverCount htmlCoverCount
+viewCoverCount: testCoverCount htmlCoverAtomic
+
 bench: 
 	$(GOTEST) -bench=. ./...
 

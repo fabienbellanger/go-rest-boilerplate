@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	cloud.google.com/go v0.44.3 // indirect
-	code.cloudfoundry.org/bytefmt v0.0.0-20190710193110-1eb035ffe2b6
+	code.cloudfoundry.org/bytefmt v0.0.0-20190819182555-854d396b647c
 	github.com/BurntSushi/toml v0.3.1
 	github.com/appleboy/gin-jwt v2.5.0+incompatible
 	github.com/denisenkom/go-mssqldb v0.0.0-20190806190131-db2462fef53b // indirect
@@ -23,12 +23,13 @@ require (
 	github.com/lib/pq v1.2.0 // indirect
 	github.com/mattn/go-sqlite3 v1.11.0 // indirect
 	github.com/mitchellh/mapstructure v1.1.2
-	github.com/onsi/ginkgo v1.8.0 // indirect
-	github.com/onsi/gomega v1.5.0 // indirect
+	github.com/onsi/ginkgo v1.9.0 // indirect
+	github.com/onsi/gomega v1.6.0 // indirect
 	github.com/spf13/cobra v0.0.5
 	github.com/stretchr/testify v1.4.0
 	github.com/tidwall/gjson v1.3.2 // indirect
 	github.com/ugorji/go v1.1.7 // indirect
+	golang.org/x/crypto v0.0.0-20190820162420-60c769a6c586 // indirect
 	golang.org/x/net v0.0.0-20190813141303-74dc4d7220e7 // indirect
 	gopkg.in/dgrijalva/jwt-go.v3 v3.2.0 // indirect
 )
