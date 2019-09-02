@@ -22,7 +22,8 @@ type sqlDataType struct {
 	ActionUpdatedAt      time.Time
 }
 
-type dataApplicationType struct {
+// DataApplicationType type
+type DataApplicationType struct {
 	ID        uint64
 	Name      string
 	CreatedAt time.Time
@@ -46,7 +47,7 @@ type dataActionType struct {
 }
 
 // InitData inits data for test
-func InitData() *map[uint64]dataApplicationType {
+func InitData() *map[uint64]DataApplicationType {
 	// sqlData := constructSQLArray()
 	// data := constructFinalArray(sqlData)
 
@@ -57,7 +58,7 @@ func InitData() *map[uint64]dataApplicationType {
 	return data
 }
 
-func getSQLData() *map[uint64]dataApplicationType {
+func getSQLData() *map[uint64]DataApplicationType {
 	query := `
 		SELECT 
 			applications.id,
@@ -77,7 +78,7 @@ func getSQLData() *map[uint64]dataApplicationType {
 			INNER JOIN actions ON modules.id = actions.module_id`
 	rows, _ := database.Select(query)
 
-	data := make(map[uint64]dataApplicationType)
+	data := make(map[uint64]DataApplicationType)
 
 	var line sqlDataType
 	for rows.Next() {
@@ -110,7 +111,7 @@ func getSQLData() *map[uint64]dataApplicationType {
 			dmo.Actions = make(map[uint64]dataActionType)
 			dmo.Actions[line.ActionID] = *dac
 
-			dap := new(dataApplicationType)
+			dap := new(DataApplicationType)
 			dap.ID = line.ApplicationID
 			dap.Name = line.ApplicationName
 			dap.CreatedAt = line.ApplicationCreatedAt
@@ -181,8 +182,8 @@ func constructSQLArray() []sqlDataType {
 	return sqlData
 }
 
-func constructFinalArray(sqlData []sqlDataType) *map[uint64]dataApplicationType {
-	data := make(map[uint64]dataApplicationType)
+func constructFinalArray(sqlData []sqlDataType) *map[uint64]DataApplicationType {
+	data := make(map[uint64]DataApplicationType)
 
 	nbData := uint64(len(sqlData))
 	var i uint64
@@ -202,7 +203,7 @@ func constructFinalArray(sqlData []sqlDataType) *map[uint64]dataApplicationType 
 			dmo.Actions = make(map[uint64]dataActionType)
 			dmo.Actions[sqlData[i].ActionID] = *dac
 
-			dap := new(dataApplicationType)
+			dap := new(DataApplicationType)
 			dap.ID = sqlData[i].ApplicationID
 			dap.Name = sqlData[i].ApplicationName
 			dap.CreatedAt = sqlData[i].ApplicationCreatedAt
