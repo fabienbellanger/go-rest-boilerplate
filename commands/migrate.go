@@ -3,8 +3,8 @@ package commands
 import (
 	"fmt"
 
+	"github.com/fabienbellanger/go-rest-boilerplate/database/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/orm"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )

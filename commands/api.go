@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
+	"github.com/fabienbellanger/go-rest-boilerplate/database/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -79,7 +79,6 @@ var APICommand = &cobra.Command{
 
 		// Lancement du serveur web
 		// ------------------------
-		// gin.StartServer(port)
 		routes.StartEchoServer(port)
 	},
 }

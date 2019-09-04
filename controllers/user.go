@@ -21,8 +21,8 @@ type JwtClaims struct {
 
 // userLogin is used for binding data in login route
 type userLogin struct {
-	Username string `json:"username" form:"username" query:"username"`
-	Password string `json:"password" form:"password" query:"password"`
+	username string `json:"username" form:"username" query:"username"`
+	password string `json:"password" form:"password" query:"password"`
 }
 
 // GetUserHandler displays authenticated user information
@@ -49,7 +49,7 @@ func LoginHandler(c echo.Context) error {
 
 	// Vérification en base
 	// --------------------
-	user, err := models.CheckLogin(u.Username, u.Password)
+	user, err := models.CheckLogin(u.username, u.password)
 	if err != nil || user.ID == 0 {
 		return echo.ErrUnauthorized
 	}

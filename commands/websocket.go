@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/fabienbellanger/go-rest-boilerplate/database/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
