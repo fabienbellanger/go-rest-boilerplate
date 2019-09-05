@@ -12,7 +12,7 @@ import (
 type User struct {
 	PrimaryModel
 	Username  string `gorm:"type:varchar(191);unique_index:idx_username" json:"username"`
-	Password  string `gorm:"type:varchar(128);not null" json:"password"` // SHA-512
+	Password  string `gorm:"type:varchar(128);not null" json:"password"` // SHA-256
 	Lastname  string `gorm:"type:varchar(100);not null" json:"lastname"`
 	Firstname string `gorm:"type:varchar(100);not null" json:"firstname"`
 	// Roles     []Role `gorm:"many2many:users_roles;" json:"roles"`
@@ -42,7 +42,7 @@ func CheckLogin(username, password string) (User, error) {
 	encryptPassword := sha512.Sum512([]byte(password))
 	encryptPasswordStr := hex.EncodeToString(encryptPassword[:])
 	query := `
-		SELECT id, username, lastname, firstname, created_at, deleted_at
+		SELECT id, username, password, lastname, firstname, created_at, deleted_at
 		FROM users
 		WHERE username = ? AND password = ? AND deleted_at IS NULL
 		LIMIT 1`
@@ -52,6 +52,7 @@ func CheckLogin(username, password string) (User, error) {
 		err = rows.Scan(
 			&user.ID,
 			&user.Username,
+			&user.Password,
 			&user.Lastname,
 			&user.Firstname,
 			&user.CreatedAt,

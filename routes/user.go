@@ -7,5 +7,6 @@ import (
 
 // usersRoutes manages users routes
 func usersRoutes(e *echo.Echo, g *echo.Group) {
-	g.GET("/users", controllers.GetUserHandler)
+	g.GET("/users", controllers.GetUserDetailsHandler)
+	g.PATCH("/users/change-password", controllers.ChangePassword)
 }

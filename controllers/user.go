@@ -1,10 +1,13 @@
 package controllers
 
 import (
+	"crypto/sha512"
+	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/models"
 	"github.com/labstack/echo/v4"
@@ -14,6 +17,7 @@ import (
 type JwtClaims struct {
 	ID        uint64 `json:"id"`
 	Username  string `json:"username"`
+	Password  string `json:"password"`
 	Lastname  string `json:"lastname"`
 	Firstname string `json:"firstname"`
 	jwt.StandardClaims
@@ -21,12 +25,12 @@ type JwtClaims struct {
 
 // userLogin is used for binding data in login route
 type userLogin struct {
-	username string `json:"username" form:"username" query:"username"`
-	password string `json:"password" form:"password" query:"password"`
+	Username string `json:"username" form:"username" query:"username"`
+	Password string `json:"password" form:"password" query:"password"`
 }
 
-// GetUserHandler displays authenticated user information
-func GetUserHandler(c echo.Context) error {
+// GetUserDetailsHandler displays authenticated user information
+func GetUserDetailsHandler(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*JwtClaims)
 
@@ -44,12 +48,14 @@ func LoginHandler(c echo.Context) error {
 	// -------------------------------------
 	u := new(userLogin)
 	if err := c.Bind(u); err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "Invalid parameters",
+		})
 	}
 
 	// Vérification en base
 	// --------------------
-	user, err := models.CheckLogin(u.username, u.password)
+	user, err := models.CheckLogin(u.Username, u.Password)
 	if err != nil || user.ID == 0 {
 		return echo.ErrUnauthorized
 	}
@@ -59,6 +65,7 @@ func LoginHandler(c echo.Context) error {
 	claims := &JwtClaims{
 		user.ID,
 		user.Username,
+		user.Password,
 		user.Lastname,
 		user.Firstname,
 		jwt.StandardClaims{
@@ -85,4 +92,50 @@ func LoginHandler(c echo.Context) error {
 		"fullname":  user.GetFullname(),
 		"expireAt":  time.Unix(claims.StandardClaims.ExpiresAt, 0),
 	})
+}
+
+// ChangePassword changes user password
+func ChangePassword(c echo.Context) error {
+	type data struct {
+		CurrentPassword    string `json:"currentPassword" form:"currentPassword" query:"currentPassword"`
+		NewPassword        string `json:"newPassword" form:"newPassword" query:"newPassword"`
+		ConfirmNewPassword string `json:"confirmNewPassword" form:"confirmNewPassword" query:"confirmNewPassword"`
+	}
+
+	// Récupération des variables transmises
+	// -------------------------------------
+	input := new(data)
+	if err := c.Bind(input); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "Invalid parameters",
+		})
+	}
+
+	// Récupération du claims
+	// ----------------------
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*JwtClaims)
+	newPassword := fmt.Sprintf("%x", sha512.Sum512([]byte(input.NewPassword)))
+
+	// Tests validité des paramètres
+	// -----------------------------
+	if claims.Password == newPassword {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "New password must be different from old password",
+		})
+	}
+
+	if len(input.NewPassword) < 8 {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "New password must contain at least 8 caracters",
+		})
+	}
+
+	if input.NewPassword != input.ConfirmNewPassword {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "Confirm password must be the same as new password",
+		})
+	}
+
+	return errors.New("error")
 }
