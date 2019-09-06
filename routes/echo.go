@@ -2,6 +2,7 @@ package routes
 
 import (
 	"errors"
+	"github.com/fabienbellanger/go-rest-boilerplate/controllers/user"
 	"io"
 	"net/http"
 	"os"
@@ -9,7 +10,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/controllers"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -164,7 +164,7 @@ func initRoutes(e *echo.Echo) {
 		ContextKey:  "user",
 		TokenLookup: "header:" + echo.HeaderAuthorization,
 		AuthScheme:  "Bearer",
-		Claims:      &controllers.JwtClaims{},
+		Claims:      &user.JwtClaims{},
 		SigningKey:  []byte(lib.Config.Jwt.Secret),
 	}
 

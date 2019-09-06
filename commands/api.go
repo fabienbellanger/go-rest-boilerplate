@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/fatih/color"
+	"github.com/spf13/cobra"
+
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes"
-	"github.com/fatih/color"
-	"github.com/spf13/cobra"
 )
 
 var port, defaultPort int

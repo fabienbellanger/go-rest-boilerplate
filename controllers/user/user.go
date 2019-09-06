@@ -1,4 +1,4 @@
-package controllers
+package user
 
 import (
 	"crypto/sha512"
@@ -7,12 +7,11 @@ import (
 	"time"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	userModel "github.com/fabienbellanger/go-rest-boilerplate/models/user"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
-
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/models"
 )
 
 // JwtClaims are custom claims extending default ones.
@@ -55,7 +54,7 @@ func LoginHandler(c echo.Context) error {
 
 	// Vérification en base
 	// --------------------
-	var user models.User
+	var user userModel.User
 	err := user.CheckLogin(u.Username, u.Password)
 	if err != nil || user.ID == 0 {
 		return echo.ErrUnauthorized
@@ -119,7 +118,7 @@ func ChangePassword(c echo.Context) error {
 
 	// Récupération de l'utilisateur en base
 	// -------------------------------------
-	var user models.User
+	var user userModel.User
 	database.Orm.First(&user, claims.ID)
 
 	if user.ID == 0 {
