@@ -24,7 +24,7 @@ func Open() {
 			"@tcp("+databaseConfig.Host+":"+strconv.Itoa(databaseConfig.Port)+")"+
 			"/"+databaseConfig.Name+"?parseTime=true&loc="+databaseConfig.Timezone+
 			"&charset="+databaseConfig.Charset)
-	lib.CheckError(err, 0)
+	lib.CheckError(err, 1)
 
 	db.SetMaxOpenConns(databaseConfig.MaxOpenConnections)
 	db.SetMaxIdleConns(databaseConfig.MaxIdleConnections)

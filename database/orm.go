@@ -1,4 +1,4 @@
-package orm
+package database
 
 import (
 	"strconv"
@@ -10,11 +10,11 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-// DB is the connection handle
-var DB *gorm.DB
+// Database is the connection handle
+var Orm *gorm.DB
 
 // Open connects to the database and links to the ORM
-func Open() {
+func OpenORM() {
 	databaseConfig := lib.Config.Database
 
 	db, err := gorm.Open(databaseConfig.Driver,
@@ -56,5 +56,5 @@ func Open() {
 	// 	db.Create(&user)
 	// }
 
-	DB = db
+	Orm = db
 }

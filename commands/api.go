@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
-	"github.com/fabienbellanger/go-rest-boilerplate/database/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes"
 	"github.com/fatih/color"
@@ -71,8 +70,8 @@ var APICommand = &cobra.Command{
 
 		// Connexion à l'ORM
 		// -----------------
-		orm.Open()
-		defer orm.DB.Close()
+		database.OpenORM()
+		defer database.Orm.Close()
 
 		fmt.Print("Connection to ORM \t")
 		color.Green("✔\n\n")

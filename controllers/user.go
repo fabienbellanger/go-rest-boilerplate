@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"crypto/sha512"
-	"errors"
 	"fmt"
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"net/http"
 	"time"
 
@@ -17,16 +17,9 @@ import (
 type JwtClaims struct {
 	ID        uint64 `json:"id"`
 	Username  string `json:"username"`
-	Password  string `json:"password"`
 	Lastname  string `json:"lastname"`
 	Firstname string `json:"firstname"`
 	jwt.StandardClaims
-}
-
-// userLogin is used for binding data in login route
-type userLogin struct {
-	Username string `json:"username" form:"username" query:"username"`
-	Password string `json:"password" form:"password" query:"password"`
 }
 
 // GetUserDetailsHandler displays authenticated user information
@@ -44,6 +37,11 @@ func GetUserDetailsHandler(c echo.Context) error {
 
 // LoginHandler make authentication
 func LoginHandler(c echo.Context) error {
+	type userLogin struct {
+		Username string `json:"username" form:"username" query:"username"`
+		Password string `json:"password" form:"password" query:"password"`
+	}
+
 	// Récupération des variables transmises
 	// -------------------------------------
 	u := new(userLogin)
@@ -65,7 +63,6 @@ func LoginHandler(c echo.Context) error {
 	claims := &JwtClaims{
 		user.ID,
 		user.Username,
-		user.Password,
 		user.Lastname,
 		user.Firstname,
 		jwt.StandardClaims{
@@ -113,13 +110,24 @@ func ChangePassword(c echo.Context) error {
 
 	// Récupération du claims
 	// ----------------------
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*JwtClaims)
+	u := c.Get("user").(*jwt.Token)
+	claims := u.Claims.(*JwtClaims)
 	newPassword := fmt.Sprintf("%x", sha512.Sum512([]byte(input.NewPassword)))
+
+	// Récupération de l'utilisateur en base
+	// -------------------------------------
+	var user models.User
+	database.Orm.First(&user, claims.ID)
+
+	if user.ID == 0 {
+		return c.JSON(http.StatusNotFound, map[string]string{
+			"message": "User not found",
+		})
+	}
 
 	// Tests validité des paramètres
 	// -----------------------------
-	if claims.Password == newPassword {
+	if user.Password == newPassword {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "New password must be different from old password",
 		})
@@ -137,5 +145,11 @@ func ChangePassword(c echo.Context) error {
 		})
 	}
 
-	return errors.New("error")
+	// Modification en base
+	// --------------------
+	user.ChangePassword(newPassword)
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "Password changes with success",
+	})
 }

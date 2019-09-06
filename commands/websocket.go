@@ -2,9 +2,9 @@ package commands
 
 import (
 	"fmt"
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"strconv"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/database/orm"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
 	"github.com/fatih/color"
@@ -56,8 +56,8 @@ var WebSocketCommand = &cobra.Command{
 
 		// Connexion à l'ORM
 		// -----------------
-		orm.Open()
-		defer orm.DB.Close()
+		database.OpenORM()
+		defer database.Orm.Close()
 
 		fmt.Print("Connection to ORM  ")
 		color.Green("✔\n\n")

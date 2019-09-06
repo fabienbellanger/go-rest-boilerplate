@@ -3,7 +3,6 @@ package models
 import (
 	"crypto/sha512"
 	"encoding/hex"
-
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
@@ -42,7 +41,7 @@ func CheckLogin(username, password string) (User, error) {
 	encryptPassword := sha512.Sum512([]byte(password))
 	encryptPasswordStr := hex.EncodeToString(encryptPassword[:])
 	query := `
-		SELECT id, username, password, lastname, firstname, created_at, deleted_at
+		SELECT id, username, lastname, firstname, created_at, deleted_at
 		FROM users
 		WHERE username = ? AND password = ? AND deleted_at IS NULL
 		LIMIT 1`
@@ -52,7 +51,6 @@ func CheckLogin(username, password string) (User, error) {
 		err = rows.Scan(
 			&user.ID,
 			&user.Username,
-			&user.Password,
 			&user.Lastname,
 			&user.Firstname,
 			&user.CreatedAt,
@@ -62,4 +60,9 @@ func CheckLogin(username, password string) (User, error) {
 	}
 
 	return user, err
+}
+
+// ChangePassword changes user password in database
+func (u *User) ChangePassword(password string) {
+	database.Orm.Model(&u).Update("password", password)
 }
