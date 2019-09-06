@@ -3,14 +3,16 @@ package controllers
 import (
 	"crypto/sha512"
 	"fmt"
-	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"net/http"
 	"time"
 
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
+
 	"github.com/dgrijalva/jwt-go"
+	"github.com/labstack/echo/v4"
+
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/models"
-	"github.com/labstack/echo/v4"
 )
 
 // JwtClaims are custom claims extending default ones.
@@ -53,7 +55,8 @@ func LoginHandler(c echo.Context) error {
 
 	// Vérification en base
 	// --------------------
-	user, err := models.CheckLogin(u.Username, u.Password)
+	var user models.User
+	err := user.CheckLogin(u.Username, u.Password)
 	if err != nil || user.ID == 0 {
 		return echo.ErrUnauthorized
 	}
@@ -131,15 +134,11 @@ func ChangePassword(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "New password must be different from old password",
 		})
-	}
-
-	if len(input.NewPassword) < 8 {
+	} else if len(input.NewPassword) < 8 {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "New password must contain at least 8 caracters",
 		})
-	}
-
-	if input.NewPassword != input.ConfirmNewPassword {
+	} else if input.NewPassword != input.ConfirmNewPassword {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Confirm password must be the same as new password",
 		})
@@ -147,7 +146,12 @@ func ChangePassword(c echo.Context) error {
 
 	// Modification en base
 	// --------------------
-	user.ChangePassword(newPassword)
+	ok := user.ChangePassword(newPassword)
+	if !ok {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": "An error has occured",
+		})
+	}
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"message": "Password changes with success",

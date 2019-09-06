@@ -15,7 +15,7 @@ import (
 )
 
 // Routes associées au framework Echo
-func exampleRoutes(e *echo.Echo, g *echo.Group) {
+func exampleRoutes(g *echo.Group) {
 	// Test page for websockets
 	g.GET("/websockets", func(c echo.Context) error {
 		return c.Render(http.StatusOK, "example/websockets.gohtml", map[string]interface{}{

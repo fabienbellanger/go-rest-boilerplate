@@ -172,15 +172,15 @@ func initRoutes(e *echo.Echo) {
 	// ----------------
 	versionGroup := e.Group("/v1")
 
-	// Liste des routes non protégées
-	// ------------------------------
-	authRoutes(e, versionGroup)
-	exampleRoutes(e, versionGroup)
+	// Liste des routes non protégées (à placer avant les routes protégées)
+	// --------------------------------------------------------------------
+	authRoutes(versionGroup)
+	exampleRoutes(versionGroup)
 
 	// Liste des routes protégées
 	// --------------------------
 	versionGroup.Use(middleware.JWTWithConfig(jwtConfiguration))
-	usersRoutes(e, versionGroup)
+	usersRoutes(versionGroup)
 }
 
 // customHTTPErrorHandler manages HTTP errors

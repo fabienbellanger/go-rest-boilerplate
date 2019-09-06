@@ -3,6 +3,7 @@ package models
 import (
 	"crypto/sha512"
 	"encoding/hex"
+
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
@@ -19,23 +20,10 @@ type User struct {
 	SoftDeleteModel
 }
 
-// GetFullname returns user fullname
-func (u *User) GetFullname() string {
-	if u.Firstname == "" {
-		return u.Lastname
-	} else if u.Lastname == "" {
-		return u.Firstname
-	}
-
-	return u.Firstname + " " + u.Lastname
-}
-
 // CheckLogin checks if username and password are corrects
-func CheckLogin(username, password string) (User, error) {
-	var user User
-
+func (u *User) CheckLogin(username, password string) error {
 	if len(username) == 0 || len(password) == 0 {
-		return user, nil
+		return nil
 	}
 
 	encryptPassword := sha512.Sum512([]byte(password))
@@ -48,21 +36,33 @@ func CheckLogin(username, password string) (User, error) {
 	rows, err := database.Select(query, username, encryptPasswordStr)
 
 	for rows.Next() {
+		println()
 		err = rows.Scan(
-			&user.ID,
-			&user.Username,
-			&user.Lastname,
-			&user.Firstname,
-			&user.CreatedAt,
-			&user.DeletedAt)
+			&u.ID,
+			&u.Username,
+			&u.Lastname,
+			&u.Firstname,
+			&u.CreatedAt,
+			&u.DeletedAt)
 
 		lib.CheckError(err, 0)
 	}
 
-	return user, err
+	return err
+}
+
+// GetFullname returns user fullname
+func (u *User) GetFullname() string {
+	if u.Firstname == "" {
+		return u.Lastname
+	} else if u.Lastname == "" {
+		return u.Firstname
+	}
+
+	return u.Firstname + " " + u.Lastname
 }
 
 // ChangePassword changes user password in database
-func (u *User) ChangePassword(password string) {
-	database.Orm.Model(&u).Update("password", password)
+func (u *User) ChangePassword(password string) bool {
+	return len(database.Orm.Model(&u).Update("password", password).GetErrors()) == 0
 }

@@ -6,6 +6,6 @@ import (
 )
 
 // authRoutes manages authentication routes for Echo
-func authRoutes(e *echo.Echo, g *echo.Group) {
+func authRoutes(g *echo.Group) {
 	g.POST("/login", controllers.LoginHandler)
 }
