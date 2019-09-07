@@ -1,8 +1,9 @@
 package routes
 
 import (
-	userController "github.com/fabienbellanger/go-rest-boilerplate/controllers/user"
 	"github.com/labstack/echo/v4"
+
+	userController "github.com/fabienbellanger/go-rest-boilerplate/controllers/user"
 )
 
 // usersRoutes manages users routes

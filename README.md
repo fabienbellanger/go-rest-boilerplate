@@ -169,3 +169,8 @@ go tool cover -html=<fichier à analyser>
 -  [Understanding The Memory Model Of Golang : Part 1](https://medium.com/@edwardpie/understanding-the-memory-model-of-golang-part-1-9814f95621b4)
 -  [Understanding The Memory Model Of Golang : Part 2](https://medium.com/@edwardpie/understanding-the-memory-model-of-golang-part-2-972fe74372ba)
 -  [High Performance Go Workshop](https://dave.cheney.net/high-performance-go-workshop/gophercon-2019.html)
+
+### Architecture
+-  [Trying Clean Architecture on Golang](https://hackernoon.com/golang-clean-archithecture-efd6d7c43047)
+-  [go-clean-arch](https://github.com/bxcodec/go-clean-arch/tree/master/models)
+-  [Beautify your Golang project](https://itnext.io/beautify-your-golang-project-f795b4b453aa)
