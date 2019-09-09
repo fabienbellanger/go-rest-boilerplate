@@ -8,6 +8,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes/web"
@@ -21,8 +22,8 @@ func StartEchoServer(port int) {
 	// ------------
 	s := &http.Server{
 		Addr:         ":" + strconv.Itoa(port),
-		ReadTimeout:  time.Duration(lib.Config.Server.ReadTimeout) * time.Second,
-		WriteTimeout: time.Duration(lib.Config.Server.WriteTimeout) * time.Second,
+		ReadTimeout:  time.Duration(viper.GetInt("server.readTimeout")) * time.Second,
+		WriteTimeout: time.Duration(viper.GetInt("server.writeTimeout")) * time.Second,
 	}
 	e.Logger.Fatal(e.StartServer(s))
 }
@@ -40,7 +41,7 @@ func initEchoServer() *echo.Echo {
 
 	// Startup banner
 	// --------------
-	if lib.Config.Environment == "production" {
+	if viper.GetString("environment") != "production" {
 		e.HideBanner = true
 	}
 
@@ -62,7 +63,7 @@ func initEchoServer() *echo.Echo {
 
 	// Profilage
 	// ---------
-	if lib.Config.Server.Pprof {
+	if viper.GetBool("server.pprof") {
 		web.NewWebPprofRoute(e.Group("")).PprofRoutes()
 	}
 

@@ -2,13 +2,12 @@ package web
 
 import (
 	"net/http"
-	"strconv"
+
+	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/routes"
 
 	"github.com/labstack/echo/v4"
-
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 type webExampleRoute struct {
@@ -28,7 +27,7 @@ func (r *webExampleRoute) ExampleRoutes() {
 	r.Group.GET("/websockets", func(c echo.Context) error {
 		return c.Render(http.StatusOK, "example/websockets.gohtml", map[string]interface{}{
 			"title":        "Websockets example",
-			"webSocketUrl": strconv.Itoa(lib.Config.WebSocketServer.Port),
+			"webSocketUrl": viper.GetString("webSocketServer.port"),
 		})
 	})
 

@@ -2,10 +2,11 @@ package database
 
 import (
 	"database/sql"
-	"strconv"
+	"strings"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql" // MySQL driver
+	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
@@ -17,19 +18,18 @@ var (
 
 // Open opens database connection
 func Open() {
-	databaseConfig := lib.Config.Database
-
 	db, err := sql.Open(
-		databaseConfig.Driver,
-		databaseConfig.User+":"+databaseConfig.Password+
-			"@tcp("+databaseConfig.Host+":"+strconv.Itoa(databaseConfig.Port)+")"+
-			"/"+databaseConfig.Name+"?parseTime=true&loc="+databaseConfig.Timezone+
-			"&charset="+databaseConfig.Charset)
+		viper.GetString("database.driver"),
+		viper.GetString("database.user")+":"+viper.GetString("database.password")+
+			"@tcp("+viper.GetString("database.host")+":"+viper.GetString("database.port")+")"+
+			"/"+viper.GetString("database.name")+"?parseTime=true&loc="+
+			strings.Replace(viper.GetString("database.timezone"), "/", "%2F", -1)+
+			"&charset="+viper.GetString("database.charset"))
 	lib.CheckError(err, 1)
 
-	db.SetMaxOpenConns(databaseConfig.MaxOpenConnections)
-	db.SetMaxIdleConns(databaseConfig.MaxIdleConnections)
-	db.SetConnMaxLifetime(time.Duration(databaseConfig.MaxLifetimeConnection) * time.Minute)
+	db.SetMaxOpenConns(viper.GetInt("database.maxOpenConnections"))
+	db.SetMaxIdleConns(viper.GetInt("database.maxIdleConnections"))
+	db.SetConnMaxLifetime(time.Duration(viper.GetInt("database.maxLifetimeConnection")) * time.Minute)
 
 	DB = db
 }
@@ -135,11 +135,11 @@ func Delete(query string, args ...interface{}) (int64, error) {
 
 // logRequest writes query log to Gin default writer
 func logRequest(start time.Time, query string, args ...interface{}) {
-	if lib.Config.SQLLog.Level >= 1 {
+	if viper.GetInt("sql_log.level") >= 1 {
 		elapsed := time.Since(start)
-		limit := lib.Config.SQLLog.Limit
+		limit := viper.GetFloat64("sql_log.limit")
 
-		if limit == 0.0 || lib.Config.SQLLog.DisplayOverLimit || elapsed.Seconds() >= limit {
+		if limit == 0.0 || viper.GetBool("sql_log.displayOverLimit") || elapsed.Seconds() >= limit {
 			lib.SQLLog(elapsed, query, args)
 		}
 	}

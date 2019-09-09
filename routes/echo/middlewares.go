@@ -8,6 +8,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
@@ -47,7 +48,7 @@ func initCorsAndSecurity(e *echo.Echo) {
 	// CORS
 	// ----
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     lib.Config.Server.AllowOrigins,
+		AllowOrigins:     viper.GetStringSlice("server.allowOrigins"),
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -69,17 +70,21 @@ func initCorsAndSecurity(e *echo.Echo) {
 // initLogger initializes logger
 func initLogger(e *echo.Echo) {
 	lib.DefaultEchoLogWriter = os.Stdout
-	if lib.Config.Environment == "production" {
+	if viper.GetString("environment") == "production" {
 		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
 		// -----------------------------------------------------------
-		logsFile, err := os.OpenFile("./"+lib.Config.Log.DirPath+lib.Config.Log.FileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+		logsFile, err := os.OpenFile(
+			"./"+viper.GetString("log.dirPath")+viper.GetString("log.fileName"),
+			os.O_RDWR|os.O_CREATE|os.O_APPEND,
+			0644)
+
 		if err != nil {
 			lib.CheckError(err, 1)
 		}
 
 		lib.DefaultEchoLogWriter = io.MultiWriter(logsFile)
 
-		if lib.Config.Log.EnableAccessLog {
+		if viper.GetBool("log.enableAccessLog") {
 			e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 				Format:           "ECHO | ${time_custom} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
 				Output:           lib.DefaultEchoLogWriter,

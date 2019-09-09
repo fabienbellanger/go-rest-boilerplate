@@ -12,6 +12,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
@@ -54,15 +55,15 @@ var LogCommand = &cobra.Command{
 func executeLogsRotation() {
 	// Le répertoire existe t-il ?
 	// ---------------------------
-	if _, err := os.Stat(lib.Config.Log.DirPath); os.IsNotExist(err) {
-		lib.CheckError(errors.New(lib.Config.Log.DirPath+" directory does not exist"), 1)
+	if _, err := os.Stat(viper.GetString("log.dirPath")); os.IsNotExist(err) {
+		lib.CheckError(errors.New(viper.GetString("log.dirPath")+" directory does not exist"), 1)
 	}
 
-	logFileName = lib.Config.Log.DirPath + lib.Config.Log.FileName
+	logFileName = viper.GetString("log.dirPath") + viper.GetString("log.fileName")
 
 	logFile, err := os.OpenFile(logFileName, os.O_RDONLY, 0755)
 	if err != nil {
-		lib.CheckError(errors.New("log file "+lib.Config.Log.FileName+" does not exists"), 2)
+		lib.CheckError(errors.New("log file "+viper.GetString("log.fileName")+" does not exists"), 2)
 	}
 	defer logFile.Close()
 
@@ -98,7 +99,7 @@ func findLogFile() []logFile {
 
 	// On parcours tous les fichiers du dossier
 	// ----------------------------------------
-	err := filepath.Walk(lib.Config.Log.DirPath, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(viper.GetString("log.dirPath"), func(path string, info os.FileInfo, err error) error {
 		isLogFile, _ := regexp.Match(`^`+logFileName+`.[\d]+$`, []byte(path))
 
 		if isLogFile {
@@ -138,7 +139,7 @@ func findArchiveName() (string, error) {
 
 	// On parcours tous les fichiers du dossier
 	// ----------------------------------------
-	err := filepath.Walk(lib.Config.Log.DirPath, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(viper.GetString("log.dirPath"), func(path string, info os.FileInfo, err error) error {
 		regexResult := regex.FindAllSubmatch([]byte(path), -1)
 
 		for _, matchMessage := range regexResult {
@@ -181,7 +182,7 @@ func makeLogsRotation(logFiles []logFile) {
 func makeLogsArchiving(logFiles []logFile) {
 	// Nombre de fichiers à archiver
 	// -----------------------------
-	nbFilesToArchive := lib.Config.Log.NbFilesToArchive
+	nbFilesToArchive := viper.GetInt("log.nbFilesToArchive")
 
 	if nbFilesToArchive <= 0 {
 		nbFilesToArchive = 1

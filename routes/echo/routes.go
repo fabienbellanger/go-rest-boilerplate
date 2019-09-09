@@ -3,9 +3,9 @@ package echo
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/handlers/user"
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes/api"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes/web"
 )
@@ -19,7 +19,7 @@ func initRoutes(e *echo.Echo) {
 		TokenLookup: "header:" + echo.HeaderAuthorization,
 		AuthScheme:  "Bearer",
 		Claims:      &user.JwtClaims{},
-		SigningKey:  []byte(lib.Config.Jwt.Secret),
+		SigningKey:  []byte(viper.GetString("jwt.secret")),
 	}
 
 	// Version de l'API

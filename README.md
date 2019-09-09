@@ -146,7 +146,7 @@ go tool cover -html=<fichier à analyser>
     -  https://www.melvinvivas.com/go-version-1-11-modules/
     -  https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d
 -  [x] Mettre en place un système de migration avec GORM
--  [ ] Utiliser [Viper](https://github.com/spf13/viper) pour gérer la config
+-  [x] Utiliser [Viper](https://github.com/spf13/viper) pour gérer la config
 -  [ ] Séparer les logs d'accès des autres logs
 -  SQL logs
     -  [x] Afficher la requête sans retour à la ligne

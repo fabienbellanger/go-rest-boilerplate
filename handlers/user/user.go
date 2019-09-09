@@ -8,9 +8,9 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
+	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/models"
 	"github.com/fabienbellanger/go-rest-boilerplate/repositories"
 	userRepository "github.com/fabienbellanger/go-rest-boilerplate/repositories/user"
@@ -81,7 +81,7 @@ func (h *Handler) LoginHandler(c echo.Context) error {
 		user.Lastname,
 		user.Firstname,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * time.Duration(lib.Config.Jwt.ExpirationTime)).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * time.Duration(viper.GetInt("jwt.expirationTime"))).Unix(),
 		},
 	}
 
@@ -91,7 +91,7 @@ func (h *Handler) LoginHandler(c echo.Context) error {
 
 	// Génération du token encodé et envoi dans la réponse
 	// ---------------------------------------------------
-	t, err := token.SignedString([]byte(lib.Config.Jwt.Secret))
+	t, err := token.SignedString([]byte(viper.GetString("jwt.secret")))
 	if err != nil {
 		return err
 	}
