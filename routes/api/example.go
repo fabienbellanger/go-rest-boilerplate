@@ -14,7 +14,6 @@ import (
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/issues"
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 type apiExampleRoute struct {
@@ -30,21 +29,6 @@ func NewApiExampleRoute(g *echo.Group) routes.ApiExampleRoutes {
 
 // Routes associées au framework Echo
 func (r *apiExampleRoute) ExampleRoutes() {
-	// Test page for websockets
-	r.Group.GET("/websockets", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "example/websockets.gohtml", map[string]interface{}{
-			"title":        "Websockets example",
-			"webSocketUrl": strconv.Itoa(lib.Config.WebSocketServer.Port),
-		})
-	})
-
-	// Test page for VueJS
-	r.Group.GET("/vuejs", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "example/vuejs.gohtml", map[string]interface{}{
-			"title": "VueJS example",
-		})
-	})
-
 	// Benchmark large query with pure mysql
 	r.Group.GET("/benchmark", func(c echo.Context) error {
 		query := `

@@ -7,6 +7,7 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/handlers/user"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes/api"
+	"github.com/fabienbellanger/go-rest-boilerplate/routes/web"
 )
 
 // initRoutes initializes routes list
@@ -29,6 +30,7 @@ func initRoutes(e *echo.Echo) {
 	// --------------------------------------------------------------------
 	api.NewApiAuthRoute(versionGroup).AuthRoutes()
 	api.NewApiExampleRoute(versionGroup).ExampleRoutes()
+	web.NewWebExampleRoute(versionGroup).ExampleRoutes()
 
 	// Liste des routes protégées
 	// --------------------------
