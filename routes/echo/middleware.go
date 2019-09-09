@@ -1,18 +1,15 @@
-package routes
+package echo
 
 import (
-	"errors"
-	"github.com/fabienbellanger/go-rest-boilerplate/handlers/user"
 	"io"
-	"net/http"
 	"os"
-	"strconv"
 	"text/template"
 	"time"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 // TemplateRenderer is a custom html/template renderer for Echo framework
@@ -23,64 +20,6 @@ type TemplateRenderer struct {
 // Render renders a template document
 func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
 	return t.templates.ExecuteTemplate(w, name, data)
-}
-
-// StartEchoServer starts Echo web server
-func StartEchoServer(port int) {
-	e := initEchoServer()
-
-	// Start server
-	// ------------
-	s := &http.Server{
-		Addr:         ":" + strconv.Itoa(port),
-		ReadTimeout:  time.Duration(lib.Config.Server.ReadTimeout) * time.Second,
-		WriteTimeout: time.Duration(lib.Config.Server.WriteTimeout) * time.Second,
-	}
-	e.Logger.Fatal(e.StartServer(s))
-}
-
-// initEchoServer initializes Echo server
-func initEchoServer() *echo.Echo {
-	// La config pour le CORS est-elle correcte ?
-	// ------------------------------------------
-	if !lib.IsServerConfigCorrect() {
-		lib.CheckError(errors.New("no allow origins defined in config file"), 1)
-	}
-
-	// Echo instance
-	e := echo.New()
-
-	// Logger
-	// ------
-	initLogger(e)
-
-	// Recover
-	// -------
-	e.Use(middleware.Recover())
-
-	// CORS & Secure middlewares
-	// -------------------------
-	initCorsAndSecurity(e)
-
-	// HTTP errors management
-	// ----------------------
-	e.HTTPErrorHandler = customHTTPErrorHandler
-
-	// Profilage
-	// ---------
-	if lib.Config.Server.Pprof {
-		pprofRoutes(e.Group(""))
-	}
-
-	// Liste des routes
-	// ----------------
-	initRoutes(e)
-
-	// Favicon, static files and template renderer
-	// -------------------------------------------
-	initStaticFilesAndTemplates(e)
-
-	return e
 }
 
 // initStaticFilesAndTemplates initializes static files and template renderer
@@ -153,54 +92,5 @@ func initLogger(e *echo.Echo) {
 			Output:           lib.DefaultEchoLogWriter,
 			CustomTimeFormat: "2006-01-02 15:04:05",
 		}))
-	}
-}
-
-// initRoutes initializes routes list
-func initRoutes(e *echo.Echo) {
-	// JWT configuration
-	// -----------------
-	jwtConfiguration := middleware.JWTConfig{
-		ContextKey:  "user",
-		TokenLookup: "header:" + echo.HeaderAuthorization,
-		AuthScheme:  "Bearer",
-		Claims:      &user.JwtClaims{},
-		SigningKey:  []byte(lib.Config.Jwt.Secret),
-	}
-
-	// Version de l'API
-	// ----------------
-	versionGroup := e.Group("/v1")
-
-	// Liste des routes non protégées (à placer avant les routes protégées)
-	// --------------------------------------------------------------------
-	authRoutes(versionGroup)
-	exampleRoutes(versionGroup)
-
-	// Liste des routes protégées
-	// --------------------------
-	versionGroup.Use(middleware.JWTWithConfig(jwtConfiguration))
-	usersRoutes(versionGroup)
-}
-
-// customHTTPErrorHandler manages HTTP errors
-func customHTTPErrorHandler(err error, c echo.Context) {
-	code := http.StatusInternalServerError
-	if httpError, ok := err.(*echo.HTTPError); ok {
-		code = httpError.Code
-	}
-
-	switch code {
-	case http.StatusUnauthorized:
-		// 401
-		c.JSON(code, map[string]string{"message": "Not Authorized"})
-	case http.StatusNotFound:
-		// 404
-		c.JSON(code, map[string]string{"message": "Resource Not Found"})
-	case http.StatusInternalServerError:
-		// 500
-		c.JSON(code, map[string]string{"message": "Internal Server Error"})
-	default:
-		c.JSON(code, "")
 	}
 }

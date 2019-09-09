@@ -25,20 +25,20 @@ type JwtClaims struct {
 	jwt.StandardClaims
 }
 
-// UserHandler
-type UserHandler struct {
+// Handler
+type Handler struct {
 	repository repositories.UserRepository
 }
 
 // NewUserHandler
-func NewUserHandler() *UserHandler {
-	return &UserHandler{
+func NewUserHandler() *Handler {
+	return &Handler{
 		repository: userRepository.NewMysqlUserRepository(),
 	}
 }
 
 // GetUserDetailsHandler displays authenticated user information
-func (h *UserHandler) GetUserDetailsHandler(c echo.Context) error {
+func (h *Handler) GetUserDetailsHandler(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*JwtClaims)
 
@@ -51,7 +51,7 @@ func (h *UserHandler) GetUserDetailsHandler(c echo.Context) error {
 }
 
 // LoginHandler make authentication
-func (h *UserHandler) LoginHandler(c echo.Context) error {
+func (h *Handler) LoginHandler(c echo.Context) error {
 	type userLogin struct {
 		Username string `json:"username" form:"username" query:"username"`
 		Password string `json:"password" form:"password" query:"password"`
@@ -107,7 +107,7 @@ func (h *UserHandler) LoginHandler(c echo.Context) error {
 }
 
 // ChangePassword changes user password
-func (h *UserHandler) ChangePassword(c echo.Context) error {
+func (h *Handler) ChangePassword(c echo.Context) error {
 	type data struct {
 		CurrentPassword    string `json:"currentPassword" form:"currentPassword" query:"currentPassword"`
 		NewPassword        string `json:"newPassword" form:"newPassword" query:"newPassword"`

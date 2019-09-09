@@ -5,8 +5,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	_ "github.com/go-sql-driver/mysql" // MySQL driver
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 var (

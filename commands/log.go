@@ -10,9 +10,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 type logFile struct {

@@ -3,8 +3,9 @@ package commands
 import (
 	"os"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/spf13/cobra"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 var rootCommand = &cobra.Command{

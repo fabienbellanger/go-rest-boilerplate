@@ -7,9 +7,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 const migrationsPath = "./orm/migrations/"

@@ -2,13 +2,15 @@ package commands
 
 import (
 	"fmt"
-	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"strconv"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
+
+	"github.com/fatih/color"
+	"github.com/spf13/cobra"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
-	"github.com/fatih/color"
-	"github.com/spf13/cobra"
 )
 
 var webSocketPort, webSocketDefaultPort int

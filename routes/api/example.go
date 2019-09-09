@@ -1,4 +1,4 @@
-package routes
+package api
 
 import (
 	"database/sql"
@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/models"
+	"github.com/fabienbellanger/go-rest-boilerplate/routes"
 
 	"github.com/labstack/echo/v4"
 
@@ -16,10 +17,21 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
+type apiExampleRoute struct {
+	Group *echo.Group
+}
+
+// NewApiExampleRoute returns implement of api example routes
+func NewApiExampleRoute(g *echo.Group) routes.ApiExampleRoutes {
+	return &apiExampleRoute{
+		Group: g,
+	}
+}
+
 // Routes associées au framework Echo
-func exampleRoutes(g *echo.Group) {
+func (r *apiExampleRoute) ExampleRoutes() {
 	// Test page for websockets
-	g.GET("/websockets", func(c echo.Context) error {
+	r.Group.GET("/websockets", func(c echo.Context) error {
 		return c.Render(http.StatusOK, "example/websockets.gohtml", map[string]interface{}{
 			"title":        "Websockets example",
 			"webSocketUrl": strconv.Itoa(lib.Config.WebSocketServer.Port),
@@ -27,14 +39,14 @@ func exampleRoutes(g *echo.Group) {
 	})
 
 	// Test page for VueJS
-	g.GET("/vuejs", func(c echo.Context) error {
+	r.Group.GET("/vuejs", func(c echo.Context) error {
 		return c.Render(http.StatusOK, "example/vuejs.gohtml", map[string]interface{}{
 			"title": "VueJS example",
 		})
 	})
 
 	// Benchmark large query with pure mysql
-	g.GET("/benchmark", func(c echo.Context) error {
+	r.Group.GET("/benchmark", func(c echo.Context) error {
 		query := `
 			SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at
 			FROM users
@@ -74,7 +86,7 @@ func exampleRoutes(g *echo.Group) {
 	})
 
 	// Benchmark large query without using an array
-	g.GET("/benchmark2", func(c echo.Context) error {
+	r.Group.GET("/benchmark2", func(c echo.Context) error {
 		query := `
 			SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at
 			FROM users
@@ -123,7 +135,7 @@ func exampleRoutes(g *echo.Group) {
 	})
 
 	// Benchmark large query with pure mysql
-	g.GET("/benchmark3", func(c echo.Context) error {
+	r.Group.GET("/benchmark3", func(c echo.Context) error {
 		data := issues.InitData()
 
 		response := c.Response()

@@ -5,10 +5,11 @@ import (
 	"fmt"
 
 	"code.cloudfoundry.org/bytefmt"
-	"github.com/fabienbellanger/go-rest-boilerplate/database"
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 var isInit, isDump, dumpDataOnly, dumpStructureOnly bool

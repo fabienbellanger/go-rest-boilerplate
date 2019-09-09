@@ -4,10 +4,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 // Database is the connection handle

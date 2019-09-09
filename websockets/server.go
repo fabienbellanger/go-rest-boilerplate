@@ -29,7 +29,7 @@ func ServerStart(port int) {
 
 	// Routes
 	// ------
-	e.Static("/", "../public")
+	// e.Static("/", "../public")
 	e.GET("/", func(c echo.Context) error {
 		ClientConnection(hub, c.Response(), c.Request())
 

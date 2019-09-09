@@ -10,7 +10,7 @@ import (
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/routes"
+	"github.com/fabienbellanger/go-rest-boilerplate/routes/echo"
 )
 
 var port, defaultPort int
@@ -79,6 +79,6 @@ var APICommand = &cobra.Command{
 
 		// Lancement du serveur web
 		// ------------------------
-		routes.StartEchoServer(port)
+		echo.StartEchoServer(port)
 	},
 }
