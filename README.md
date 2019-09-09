@@ -49,7 +49,7 @@ Compiler le fichier binaire `<binaire>` avec `make build` et renseigner des bonn
 \_ assets
    \_ js
 \_ commands
-\_ controllers
+\_ handlers
 \_ database
 \_ lib
 \_ logs
@@ -65,7 +65,7 @@ Compiler le fichier binaire `<binaire>` avec `make build` et renseigner des bonn
 
 -  Le dossier `assets` contient les fichiers multimédia (images, vidéos, etc.), JavaScript ou encore CSS.
 -  Le dossier `commands` contient toutes les commandes que l'on peut lancer depuis un terminal.
--  Le dossier `controllers` contient toutes les controleurs du serveur Web.
+-  Le dossier `handlers` contient tous les controleurs du serveur Web.
 -  Le dossier `database` contient tous les fichiers relatifs à l'utilisation de MySQL ainsi que l'initialisation et le dump de la base.
 -  Le dossier `lib` contient des fonctions globales à l'application.
 -  Le dossier `logs` contient les logs du serveur Web.

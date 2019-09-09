@@ -3,15 +3,17 @@ package routes
 import (
 	"database/sql"
 	"encoding/json"
-	user2 "github.com/fabienbellanger/go-rest-boilerplate/models/user"
 	"io"
 	"net/http"
 	"strconv"
 
+	"github.com/fabienbellanger/go-rest-boilerplate/models"
+
+	"github.com/labstack/echo/v4"
+
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/issues"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/labstack/echo/v4"
 )
 
 // Routes associées au framework Echo
@@ -88,7 +90,7 @@ func exampleRoutes(g *echo.Group) {
 		}
 
 		encoder := json.NewEncoder(response)
-		var user user2.User
+		var user models.User
 
 		i := 0
 		for ; rows.Next(); i++ {
@@ -161,10 +163,10 @@ func exampleRoutes(g *echo.Group) {
 }
 
 // benchmarkEcho executes query and create the array of results
-func benchmarkEcho(rows *sql.Rows) []user2.User {
-	var user user2.User
+func benchmarkEcho(rows *sql.Rows) []models.User {
+	var user models.User
 
-	users := make([]user2.User, 100000, 100000)
+	users := make([]models.User, 100000, 100000)
 	// users := make([]models.User, 0)
 	i := 0
 	for rows.Next() {

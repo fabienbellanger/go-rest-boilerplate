@@ -3,11 +3,13 @@ package routes
 import (
 	"github.com/labstack/echo/v4"
 
-	userController "github.com/fabienbellanger/go-rest-boilerplate/controllers/user"
+	userHandler "github.com/fabienbellanger/go-rest-boilerplate/handlers/user"
 )
 
 // usersRoutes manages users routes
 func usersRoutes(g *echo.Group) {
-	g.GET("/users", userController.GetUserDetailsHandler)
-	g.PATCH("/users/change-password", userController.ChangePassword)
+	userHandler := userHandler.NewUserHandler()
+
+	g.GET("/users", userHandler.GetUserDetailsHandler)
+	g.PATCH("/users/change-password", userHandler.ChangePassword)
 }

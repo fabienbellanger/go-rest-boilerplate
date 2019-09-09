@@ -1,4 +1,4 @@
-package user
+package models
 
 import (
 	defaultModel "github.com/fabienbellanger/go-rest-boilerplate/models/orm"
@@ -14,4 +14,15 @@ type User struct {
 	// Roles     []Role `gorm:"many2many:users_roles;" json:"roles"`
 	defaultModel.TimestampModel
 	defaultModel.SoftDeleteModel
+}
+
+// GetFullname returns user fullname
+func (u *User) GetFullname() string {
+	if u.Firstname == "" {
+		return u.Lastname
+	} else if u.Lastname == "" {
+		return u.Firstname
+	}
+
+	return u.Firstname + " " + u.Lastname
 }

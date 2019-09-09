@@ -1,11 +1,14 @@
 package routes
 
 import (
-	userController "github.com/fabienbellanger/go-rest-boilerplate/controllers/user"
 	"github.com/labstack/echo/v4"
+
+	userHandler "github.com/fabienbellanger/go-rest-boilerplate/handlers/user"
 )
 
 // authRoutes manages authentication routes for Echo
 func authRoutes(g *echo.Group) {
-	g.POST("/login", userController.LoginHandler)
+	userHandler := userHandler.NewUserHandler()
+
+	g.POST("/login", userHandler.LoginHandler)
 }

@@ -2,7 +2,7 @@ package routes
 
 import (
 	"errors"
-	"github.com/fabienbellanger/go-rest-boilerplate/controllers/user"
+	"github.com/fabienbellanger/go-rest-boilerplate/handlers/user"
 	"io"
 	"net/http"
 	"os"

@@ -6,12 +6,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/database"
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	userModel "github.com/fabienbellanger/go-rest-boilerplate/models/user"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/fabienbellanger/go-rest-boilerplate/models"
+	"github.com/fabienbellanger/go-rest-boilerplate/repositories"
+	userRepository "github.com/fabienbellanger/go-rest-boilerplate/repositories/user"
 )
 
 // JwtClaims are custom claims extending default ones.
@@ -23,8 +25,20 @@ type JwtClaims struct {
 	jwt.StandardClaims
 }
 
+// UserHandler
+type UserHandler struct {
+	repo repositories.UserRepository
+}
+
+// NewUserHandler
+func NewUserHandler() *UserHandler {
+	return &UserHandler{
+		repo: userRepository.NewMysqlUserRepository(),
+	}
+}
+
 // GetUserDetailsHandler displays authenticated user information
-func GetUserDetailsHandler(c echo.Context) error {
+func (h *UserHandler) GetUserDetailsHandler(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*JwtClaims)
 
@@ -37,7 +51,7 @@ func GetUserDetailsHandler(c echo.Context) error {
 }
 
 // LoginHandler make authentication
-func LoginHandler(c echo.Context) error {
+func (h *UserHandler) LoginHandler(c echo.Context) error {
 	type userLogin struct {
 		Username string `json:"username" form:"username" query:"username"`
 		Password string `json:"password" form:"password" query:"password"`
@@ -45,8 +59,8 @@ func LoginHandler(c echo.Context) error {
 
 	// Récupération des variables transmises
 	// -------------------------------------
-	u := new(userLogin)
-	if err := c.Bind(u); err != nil {
+	input := new(userLogin)
+	if err := c.Bind(input); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"message": "Invalid parameters",
 		})
@@ -54,8 +68,7 @@ func LoginHandler(c echo.Context) error {
 
 	// Vérification en base
 	// --------------------
-	var user userModel.User
-	err := user.CheckLogin(u.Username, u.Password)
+	user, err := h.repo.CheckLogin(input.Username, input.Password)
 	if err != nil || user.ID == 0 {
 		return echo.ErrUnauthorized
 	}
@@ -94,7 +107,7 @@ func LoginHandler(c echo.Context) error {
 }
 
 // ChangePassword changes user password
-func ChangePassword(c echo.Context) error {
+func (h *UserHandler) ChangePassword(c echo.Context) error {
 	type data struct {
 		CurrentPassword    string `json:"currentPassword" form:"currentPassword" query:"currentPassword"`
 		NewPassword        string `json:"newPassword" form:"newPassword" query:"newPassword"`
@@ -118,7 +131,7 @@ func ChangePassword(c echo.Context) error {
 
 	// Récupération de l'utilisateur en base
 	// -------------------------------------
-	var user userModel.User
+	var user models.User
 	database.Orm.First(&user, claims.ID)
 
 	if user.ID == 0 {
@@ -145,7 +158,7 @@ func ChangePassword(c echo.Context) error {
 
 	// Modification en base
 	// --------------------
-	ok := user.ChangePassword(newPassword)
+	ok := h.repo.ChangePassword(&user, newPassword)
 	if !ok {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "An error has occured",
