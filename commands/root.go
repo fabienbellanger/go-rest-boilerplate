@@ -20,10 +20,6 @@ var rootCommand = &cobra.Command{
 func Execute() {
 	// Initialisation de la configuration
 	// ----------------------------------
-	viper.SetConfigFile("./config.toml")
-	err := viper.ReadInConfig()
-	lib.CheckError(err, 1)
-
 	lib.InitConfig("config.toml")
 
 	// Lancement de la commande racine

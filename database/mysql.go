@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"strings"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql" // MySQL driver
@@ -23,7 +22,7 @@ func Open() {
 		viper.GetString("database.user")+":"+viper.GetString("database.password")+
 			"@tcp("+viper.GetString("database.host")+":"+viper.GetString("database.port")+")"+
 			"/"+viper.GetString("database.name")+"?parseTime=true&loc="+
-			strings.Replace(viper.GetString("database.timezone"), "/", "%2F", -1)+
+			viper.GetString("database.timezone")+
 			"&charset="+viper.GetString("database.charset"))
 	lib.CheckError(err, 1)
 
