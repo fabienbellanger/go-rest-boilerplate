@@ -140,11 +140,12 @@ go tool cover -html=<fichier à analyser>
 
 
 ## TODO list
+-  [ ] Utiliser et rendre paramétrable le Log Level d'Echo
 -  [x] Passer aux modules introduits avec Go 1.11 :
     -  https://roberto.selbach.ca/intro-to-go-modules/
     -  https://www.melvinvivas.com/go-version-1-11-modules/
     -  https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d
--  [ ] Mettre en place un système de migration avec GORM
+-  [x] Mettre en place un système de migration avec GORM
 -  [ ] Utiliser [Viper](https://github.com/spf13/viper) pour gérer la config
 -  [ ] Séparer les logs d'accès des autres logs
 -  SQL logs
@@ -152,7 +153,7 @@ go tool cover -html=<fichier à analyser>
     -  [x] Gérer la variable `limit` dans fichier de configuration
     -  [x] Gérer la rotation des logs
     -  [ ] Afficher les arguments directement dans la requête ou dans un tableau
-    -  [ ] Logger GORM
+    -  [x] Logger GORM
     -  [ ] Faire une interface graphique pour afficher et filter les logs
 -  [ ] Gestion des timezones
 -  [ ] Facade pour les datetimes

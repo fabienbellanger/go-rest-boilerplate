@@ -38,6 +38,12 @@ func initEchoServer() *echo.Echo {
 	// Echo instance
 	e := echo.New()
 
+	// Startup banner
+	// --------------
+	if lib.Config.Environment == "production" {
+		e.HideBanner = true
+	}
+
 	// Logger
 	// ------
 	initLogger(e)
