@@ -27,13 +27,13 @@ type JwtClaims struct {
 
 // UserHandler
 type UserHandler struct {
-	repo repositories.UserRepository
+	repository repositories.UserRepository
 }
 
 // NewUserHandler
 func NewUserHandler() *UserHandler {
 	return &UserHandler{
-		repo: userRepository.NewMysqlUserRepository(),
+		repository: userRepository.NewMysqlUserRepository(),
 	}
 }
 
@@ -68,7 +68,7 @@ func (h *UserHandler) LoginHandler(c echo.Context) error {
 
 	// Vérification en base
 	// --------------------
-	user, err := h.repo.CheckLogin(input.Username, input.Password)
+	user, err := h.repository.CheckLogin(input.Username, input.Password)
 	if err != nil || user.ID == 0 {
 		return echo.ErrUnauthorized
 	}
@@ -158,7 +158,7 @@ func (h *UserHandler) ChangePassword(c echo.Context) error {
 
 	// Modification en base
 	// --------------------
-	ok := h.repo.ChangePassword(&user, newPassword)
+	ok := h.repository.ChangePassword(&user, newPassword)
 	if !ok {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"message": "An error has occured",
