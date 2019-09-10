@@ -102,12 +102,6 @@ func initApiServer() *echo.Echo {
 	// ----------------------
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
-	// Profilage
-	// ---------
-	// if viper.GetBool("server.pprof") {
-	// 	web.NewWebPprofRoute(e.Group("")).PprofRoutes()
-	// }
-
 	// Liste des routes
 	// ----------------
 	initApiRoutes(e)
@@ -122,18 +116,11 @@ func initApiServer() *echo.Echo {
 
 // initClientServer initializes API for a client
 func initClientServer() *echo.Echo {
-	// La config pour le CORS est-elle correcte ?
-	// ------------------------------------------
-	// if !lib.IsServerConfigCorrect() {
-	// 	lib.CheckError(errors.New("no allow origins defined in config file"), 1)
-	// }
-
 	// Echo instance
 	e := echo.New()
 
 	// Logger
 	// ------
-	// TODO
 	initLogger(e)
 
 	// Recover
@@ -146,7 +133,6 @@ func initClientServer() *echo.Echo {
 
 	// HTTP errors management
 	// ----------------------
-	// TODO
 	e.HTTPErrorHandler = customHTTPErrorHandler
 
 	// Profilage
