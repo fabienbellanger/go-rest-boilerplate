@@ -2,12 +2,12 @@ package commands
 
 import (
 	"fmt"
-	"github.com/fabienbellanger/go-rest-boilerplate/database"
-	"github.com/fabienbellanger/go-rest-boilerplate/migrations"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 var force bool
@@ -46,7 +46,7 @@ var MigrateCommand = &cobra.Command{
 			// Migrate the schema
 			// TODO: Peut-être long si la base de données contient beaucoup de tables
 			fmt.Println("\nStarting migrations...")
-			migrations.Migrate(database.Orm)
+			database.Migrate(database.Orm)
 			lib.DisplaySuccessMessage("Migrations OK\n")
 		} else {
 			fmt.Println("Use --force flag to make migrations")

@@ -6,12 +6,23 @@ import (
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/fabienbellanger/go-rest-boilerplate/models"
+	"github.com/fabienbellanger/go-rest-boilerplate/repositories"
 )
 
+type mysqlUserRepository struct{}
+
+// NewMysqlUserRepository returns implement of user repository interface
+func NewMysqlUserRepository() repositories.UserRepository {
+	return &mysqlUserRepository{}
+}
+
 // CheckLogin checks if username and password are corrects
-func (u *User) CheckLogin(username, password string) error {
+func (m *mysqlUserRepository) CheckLogin(username, password string) (models.User, error) {
+	var user models.User
+
 	if len(username) == 0 || len(password) == 0 {
-		return nil
+		return user, nil
 	}
 
 	encryptPassword := sha512.Sum512([]byte(password))
@@ -26,31 +37,20 @@ func (u *User) CheckLogin(username, password string) error {
 	for rows.Next() {
 		println()
 		err = rows.Scan(
-			&u.ID,
-			&u.Username,
-			&u.Lastname,
-			&u.Firstname,
-			&u.CreatedAt,
-			&u.DeletedAt)
+			&user.ID,
+			&user.Username,
+			&user.Lastname,
+			&user.Firstname,
+			&user.CreatedAt,
+			&user.DeletedAt)
 
 		lib.CheckError(err, 0)
 	}
 
-	return err
-}
-
-// GetFullname returns user fullname
-func (u *User) GetFullname() string {
-	if u.Firstname == "" {
-		return u.Lastname
-	} else if u.Lastname == "" {
-		return u.Firstname
-	}
-
-	return u.Firstname + " " + u.Lastname
+	return user, err
 }
 
 // ChangePassword changes user password in database
-func (u *User) ChangePassword(password string) bool {
-	return len(database.Orm.Model(&u).Update("password", password).GetErrors()) == 0
+func (m *mysqlUserRepository) ChangePassword(user *models.User, password string) bool {
+	return len(database.Orm.Model(&user).Update("password", password).GetErrors()) == 0
 }

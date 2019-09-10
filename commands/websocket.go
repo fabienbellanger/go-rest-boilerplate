@@ -2,13 +2,16 @@ package commands
 
 import (
 	"fmt"
-	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"strconv"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
+	"github.com/spf13/viper"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/database"
+
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
 )
 
 var webSocketPort, webSocketDefaultPort int
@@ -41,10 +44,10 @@ var WebSocketCommand = &cobra.Command{
 
 		// Test du port
 		// ------------
-		if webSocketPort == webSocketDefaultPort && lib.Config.WebSocketServer.Port != 0 {
+		if webSocketPort == webSocketDefaultPort && viper.GetInt("webSocketServer.port") != 0 {
 			// Si on n'a pas spécifié un port dans la commande, on prend celui du fichier de configuration
 			// -------------------------------------------------------------------------------------------
-			webSocketPort = lib.Config.WebSocketServer.Port
+			webSocketPort = viper.GetInt("webSocketServer.port")
 		}
 
 		if webSocketPort < 1000 || webSocketPort > 10000 {

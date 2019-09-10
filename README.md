@@ -49,7 +49,7 @@ Compiler le fichier binaire `<binaire>` avec `make build` et renseigner des bonn
 \_ assets
    \_ js
 \_ commands
-\_ controllers
+\_ handlers
 \_ database
 \_ lib
 \_ logs
@@ -65,7 +65,7 @@ Compiler le fichier binaire `<binaire>` avec `make build` et renseigner des bonn
 
 -  Le dossier `assets` contient les fichiers multimédia (images, vidéos, etc.), JavaScript ou encore CSS.
 -  Le dossier `commands` contient toutes les commandes que l'on peut lancer depuis un terminal.
--  Le dossier `controllers` contient toutes les controleurs du serveur Web.
+-  Le dossier `handlers` contient tous les controleurs du serveur Web.
 -  Le dossier `database` contient tous les fichiers relatifs à l'utilisation de MySQL ainsi que l'initialisation et le dump de la base.
 -  Le dossier `lib` contient des fonctions globales à l'application.
 -  Le dossier `logs` contient les logs du serveur Web.
@@ -140,19 +140,20 @@ go tool cover -html=<fichier à analyser>
 
 
 ## TODO list
+-  [ ] Utiliser et rendre paramétrable le Log Level d'Echo
 -  [x] Passer aux modules introduits avec Go 1.11 :
     -  https://roberto.selbach.ca/intro-to-go-modules/
     -  https://www.melvinvivas.com/go-version-1-11-modules/
     -  https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d
--  [ ] Mettre en place un système de migration avec GORM
--  [ ] Utiliser [Viper](https://github.com/spf13/viper) pour gérer la config
+-  [x] Mettre en place un système de migration avec GORM
+-  [x] Utiliser [Viper](https://github.com/spf13/viper) pour gérer la config
 -  [ ] Séparer les logs d'accès des autres logs
 -  SQL logs
     -  [x] Afficher la requête sans retour à la ligne
     -  [x] Gérer la variable `limit` dans fichier de configuration
     -  [x] Gérer la rotation des logs
     -  [ ] Afficher les arguments directement dans la requête ou dans un tableau
-    -  [ ] Logger GORM
+    -  [x] Logger GORM
     -  [ ] Faire une interface graphique pour afficher et filter les logs
 -  [ ] Gestion des timezones
 -  [ ] Facade pour les datetimes

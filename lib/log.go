@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/spf13/viper"
 )
 
 // DefaultEchoLogWriter displays logs on the good writer
@@ -51,13 +52,13 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 	// -------------------------------------------
 	var latencyColor string
 
-	if Config.Environment == "production" {
+	if viper.GetString("environment") == "production" {
 		latencyColor = ""
 		resetColor = ""
 	} else {
 		latencyColor = resetColor
 
-		if latency.Seconds() >= Config.SQLLog.Limit {
+		if latency.Seconds() >= viper.GetFloat64("sql_log.limit") {
 			latencyColor = redColor
 		}
 	}
@@ -74,14 +75,14 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 
 	// Affichage des logs
 	// ------------------
-	if Config.SQLLog.Level == 1 {
+	if viper.GetInt("sql_log.level") == 1 {
 		// Time only
 		// ---------
 		log.Printf("SQL  | %s | %4s |%s %v %s\t|\n",
 			time.Now().Format("2006-01-02 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor)
-	} else if Config.SQLLog.Level == 2 {
+	} else if viper.GetInt("sql_log.level") == 2 {
 		// Time and query
 		// --------------
 		log.Printf("SQL  | %s | %4s |%s %v %s\t| %s\n",
@@ -89,7 +90,7 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 			requestType,
 			latencyColor, latency, resetColor,
 			query)
-	} else if Config.SQLLog.Level == 3 {
+	} else if viper.GetInt("sql_log.level") == 3 {
 		// Time, query and arguments
 		// -------------------------
 		log.Printf("SQL  | %s | %4s |%s %v %s\t| %s | %v\n",

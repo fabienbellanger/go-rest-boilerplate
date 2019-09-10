@@ -5,6 +5,8 @@ import (
 	"os/exec"
 	"time"
 
+	"github.com/spf13/viper"
+
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
@@ -59,24 +61,24 @@ func DumpDatabase(structureOnly bool, dataOnly bool) (string, int) {
 
 	if !structureOnly && dataOnly {
 		dumpCommand = exec.Command("mysqldump",
-			"-u"+lib.Config.Database.User,
-			"-p"+lib.Config.Database.Password,
+			"-u"+viper.GetString("database.user"),
+			"-p"+viper.GetString("database.password"),
 			"--no-create-info",
 			"--single-transaction",
-			lib.Config.Database.Name)
+			viper.GetString("database.name"))
 	} else if structureOnly && !dataOnly {
 		dumpCommand = exec.Command("mysqldump",
-			"-u"+lib.Config.Database.User,
-			"-p"+lib.Config.Database.Password,
+			"-u"+viper.GetString("database.user"),
+			"-p"+viper.GetString("database.password"),
 			"--no-data",
 			"--single-transaction",
-			lib.Config.Database.Name)
+			viper.GetString("database.name"))
 	} else {
 		dumpCommand = exec.Command("mysqldump",
-			"-u"+lib.Config.Database.User,
-			"-p"+lib.Config.Database.Password,
+			"-u"+viper.GetString("database.user"),
+			"-p"+viper.GetString("database.password"),
 			"--single-transaction",
-			lib.Config.Database.Name)
+			viper.GetString("database.name"))
 	}
 	dumpCommand.Dir = "."
 	dumpOutput, err := dumpCommand.Output()
@@ -84,7 +86,7 @@ func DumpDatabase(structureOnly bool, dataOnly bool) (string, int) {
 
 	// Création du fichier
 	// -------------------
-	dumpFileName := "dump_" + lib.Config.Database.Name + "_" + time.Now().Format("2006-01-02_150405") + ".sql"
+	dumpFileName := "dump_" + viper.GetString("database.name") + "_" + time.Now().Format("2006-01-02_150405") + ".sql"
 	file, err := os.Create(dumpFileName)
 	lib.CheckError(err, 2)
 

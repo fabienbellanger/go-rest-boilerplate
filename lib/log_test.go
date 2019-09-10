@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -57,10 +58,11 @@ func TestCustomLog(t *testing.T) {
 func TestSQLLog(t *testing.T) {
 	b := new(bytes.Buffer)
 	DefaultEchoLogWriter = b
-	Config.Environment = "development"
-	Config.SQLLog.Limit = 0.01
-	Config.SQLLog.Level = 1
-	Config.SQLLog.DisplayOverLimit = true
+	viper.Set("environment", "development")
+	viper.Set("sql_log.limit", 0.01)
+	viper.Set("sql_log.level", 1)
+	viper.Set("sql_log.displayOverLimit", true)
+
 	query := `
 		SELECT *
 		FROM Test
@@ -79,7 +81,7 @@ func TestSQLLog(t *testing.T) {
 	assert.Contains(t, result, want, "should contains time with color")
 	b.Reset()
 
-	Config.Environment = "production"
+	viper.Set("environment", "production")
 	want = "|  SEL | " + latency.String() + " \t|"
 	SQLLog(latency, query, nil)
 	result = b.String()
@@ -88,15 +90,15 @@ func TestSQLLog(t *testing.T) {
 
 	// Time + query
 	// ------------
-	Config.Environment = "development"
-	Config.SQLLog.Level = 2
+	viper.Set("environment", "development")
+	viper.Set("sql_log.level", 2)
 	want = "|  SEL |\x1b[97;41m " + latency.String() + " \t| " + query
 	SQLLog(latency, query, nil)
 	result = b.String()
 	assert.Contains(t, result, want, "should contains time and query with color")
 	b.Reset()
 
-	Config.Environment = "production"
+	viper.Set("environment", "production")
 	want = "|  SEL | " + latency.String() + " \t| " + query
 	SQLLog(latency, query, nil)
 	result = b.String()
@@ -105,15 +107,15 @@ func TestSQLLog(t *testing.T) {
 
 	// Time + query
 	// ------------
-	Config.Environment = "development"
-	Config.SQLLog.Level = 3
+	viper.Set("environment", "development")
+	viper.Set("sql_log.level", 3)
 	want = "|  SEL |\x1b[97;41m " + latency.String() + " \t| " + query + " | [1]"
 	SQLLog(latency, query, 1)
 	result = b.String()
 	assert.Contains(t, result, want, "should contains time, query and arguments with color")
 	b.Reset()
 
-	Config.Environment = "development"
+	viper.Set("environment", "development")
 	want = "|  SEL |\x1b[97;41m " + latency.String() + " \t| " + query + " | [1 test]"
 	SQLLog(latency, query, 1, "test")
 	result = b.String()
