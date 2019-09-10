@@ -8,6 +8,6 @@ type ApiUserRoutes interface {
 	UsersRoutes()
 }
 
-type ApiExampleRoutes interface {
-	ExampleRoutes()
+type ApiBenchmarkRoutes interface {
+	BenchmarkRoutes()
 }

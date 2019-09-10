@@ -5,7 +5,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/handlers/user"
+	api2 "github.com/fabienbellanger/go-rest-boilerplate/handlers/api"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes/api"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes/web"
 )
@@ -18,7 +18,7 @@ func initRoutes(e *echo.Echo) {
 		ContextKey:  "user",
 		TokenLookup: "header:" + echo.HeaderAuthorization,
 		AuthScheme:  "Bearer",
-		Claims:      &user.JwtClaims{},
+		Claims:      &api2.JwtClaims{},
 		SigningKey:  []byte(viper.GetString("jwt.secret")),
 	}
 
@@ -29,7 +29,7 @@ func initRoutes(e *echo.Echo) {
 	// Liste des routes non protégées (à placer avant les routes protégées)
 	// --------------------------------------------------------------------
 	api.NewApiAuthRoute(versionGroup).AuthRoutes()
-	api.NewApiExampleRoute(versionGroup).ExampleRoutes()
+	api.NewApiBenchmarkRoute(versionGroup).BenchmarkRoutes()
 	web.NewWebExampleRoute(versionGroup).ExampleRoutes()
 
 	// Liste des routes protégées

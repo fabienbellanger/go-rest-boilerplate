@@ -2,6 +2,7 @@ package user
 
 import (
 	"crypto/sha512"
+	"database/sql"
 	"encoding/hex"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
@@ -35,7 +36,6 @@ func (m *mysqlUserRepository) CheckLogin(username, password string) (models.User
 	rows, err := database.Select(query, username, encryptPasswordStr)
 
 	for rows.Next() {
-		println()
 		err = rows.Scan(
 			&user.ID,
 			&user.Username,
@@ -53,4 +53,22 @@ func (m *mysqlUserRepository) CheckLogin(username, password string) (models.User
 // ChangePassword changes user password in database
 func (m *mysqlUserRepository) ChangePassword(user *models.User, password string) bool {
 	return len(database.Orm.Model(&user).Update("password", password).GetErrors()) == 0
+}
+
+// GetAllSqlRows returns an array of *sql.Rows of all users
+func (m *mysqlUserRepository) GetAllSqlRows(limit uint) (rows *sql.Rows, err error) {
+	if limit <= 0 {
+		query := `
+			SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at
+			FROM users`
+		rows, err = database.Select(query)
+	} else {
+		query := `
+			SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at
+			FROM users
+			LIMIT ?`
+		rows, err = database.Select(query, limit)
+	}
+
+	return
 }

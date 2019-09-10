@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/labstack/echo/v4"
 
-	userHandler "github.com/fabienbellanger/go-rest-boilerplate/handlers/user"
+	"github.com/fabienbellanger/go-rest-boilerplate/handlers/api"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes"
 )
 
@@ -20,7 +20,7 @@ func NewApiAuthRoute(g *echo.Group) routes.ApiAuthRoutes {
 
 // AuthRoutes manages authentication routes for Echo
 func (r *apiAuthRoute) AuthRoutes() {
-	userHandler := userHandler.NewUserHandler()
+	userHandler := api.NewUserHandler()
 
 	r.Group.POST("/login", userHandler.LoginHandler)
 }
