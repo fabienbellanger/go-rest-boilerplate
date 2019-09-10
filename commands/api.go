@@ -7,10 +7,11 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/routes"
+	"github.com/fabienbellanger/go-rest-boilerplate/routes/echo"
 )
 
 var port, defaultPort int
@@ -43,10 +44,10 @@ var APICommand = &cobra.Command{
 
 		// Test du port
 		// ------------
-		if port == defaultPort && lib.Config.Server.Port != 0 {
+		if port == defaultPort && viper.GetInt("server.port") != 0 {
 			// Si on n'a pas spécifié un port dans la commande, on prend celui du fichier de configuration
 			// -------------------------------------------------------------------------------------------
-			port = lib.Config.Server.Port
+			port = viper.GetInt("server.port")
 		}
 
 		if port < 1000 || port > 10000 {
@@ -79,6 +80,6 @@ var APICommand = &cobra.Command{
 
 		// Lancement du serveur web
 		// ------------------------
-		routes.StartEchoServer(port)
+		echo.StartEchoServer(port)
 	},
 }

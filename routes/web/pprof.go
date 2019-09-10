@@ -1,13 +1,26 @@
-package routes
+package web
 
 import (
 	"net/http/pprof"
 
 	"github.com/labstack/echo/v4"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/routes"
 )
 
-// pprofRoutes adds several routes from package `net/http/pprof` to *echo.Group object.
-func pprofRoutes(g *echo.Group) {
+type webPprofRoute struct {
+	Group *echo.Group
+}
+
+// NewWebPprofRoute returns implement of api authentication routes
+func NewWebPprofRoute(g *echo.Group) routes.WebPprofRoutes {
+	return &webPprofRoute{
+		Group: g,
+	}
+}
+
+// PprofRoutes adds several routes from package `net/http/pprof` to *echo.Group object.
+func (r *webPprofRoute) PprofRoutes() {
 	routers := []struct {
 		Method  string
 		Path    string
@@ -27,12 +40,12 @@ func pprofRoutes(g *echo.Group) {
 		{"GET", "/debug/pprof/mutex", pprofMutexHandler()},
 	}
 
-	for _, r := range routers {
-		switch r.Method {
+	for _, router := range routers {
+		switch router.Method {
 		case "GET":
-			g.GET(r.Path, r.Handler)
+			r.Group.GET(router.Path, router.Handler)
 		case "POST":
-			g.POST(r.Path, r.Handler)
+			r.Group.POST(router.Path, router.Handler)
 		}
 	}
 }

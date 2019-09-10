@@ -1,38 +1,36 @@
-package routes
+package api
 
 import (
 	"database/sql"
 	"encoding/json"
-	user2 "github.com/fabienbellanger/go-rest-boilerplate/models/user"
 	"io"
 	"net/http"
 	"strconv"
 
+	"github.com/fabienbellanger/go-rest-boilerplate/models"
+	"github.com/fabienbellanger/go-rest-boilerplate/routes"
+
+	"github.com/labstack/echo/v4"
+
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
 	"github.com/fabienbellanger/go-rest-boilerplate/issues"
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/labstack/echo/v4"
 )
 
+type apiExampleRoute struct {
+	Group *echo.Group
+}
+
+// NewApiExampleRoute returns implement of api example routes
+func NewApiExampleRoute(g *echo.Group) routes.ApiExampleRoutes {
+	return &apiExampleRoute{
+		Group: g,
+	}
+}
+
 // Routes associées au framework Echo
-func exampleRoutes(g *echo.Group) {
-	// Test page for websockets
-	g.GET("/websockets", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "example/websockets.gohtml", map[string]interface{}{
-			"title":        "Websockets example",
-			"webSocketUrl": strconv.Itoa(lib.Config.WebSocketServer.Port),
-		})
-	})
-
-	// Test page for VueJS
-	g.GET("/vuejs", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "example/vuejs.gohtml", map[string]interface{}{
-			"title": "VueJS example",
-		})
-	})
-
+func (r *apiExampleRoute) ExampleRoutes() {
 	// Benchmark large query with pure mysql
-	g.GET("/benchmark", func(c echo.Context) error {
+	r.Group.GET("/benchmark", func(c echo.Context) error {
 		query := `
 			SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at
 			FROM users
@@ -72,7 +70,7 @@ func exampleRoutes(g *echo.Group) {
 	})
 
 	// Benchmark large query without using an array
-	g.GET("/benchmark2", func(c echo.Context) error {
+	r.Group.GET("/benchmark2", func(c echo.Context) error {
 		query := `
 			SELECT id, username, password, lastname, firstname, created_at, updated_at, deleted_at
 			FROM users
@@ -88,7 +86,7 @@ func exampleRoutes(g *echo.Group) {
 		}
 
 		encoder := json.NewEncoder(response)
-		var user user2.User
+		var user models.User
 
 		i := 0
 		for ; rows.Next(); i++ {
@@ -121,7 +119,7 @@ func exampleRoutes(g *echo.Group) {
 	})
 
 	// Benchmark large query with pure mysql
-	g.GET("/benchmark3", func(c echo.Context) error {
+	r.Group.GET("/benchmark3", func(c echo.Context) error {
 		data := issues.InitData()
 
 		response := c.Response()
@@ -161,10 +159,10 @@ func exampleRoutes(g *echo.Group) {
 }
 
 // benchmarkEcho executes query and create the array of results
-func benchmarkEcho(rows *sql.Rows) []user2.User {
-	var user user2.User
+func benchmarkEcho(rows *sql.Rows) []models.User {
+	var user models.User
 
-	users := make([]user2.User, 100000, 100000)
+	users := make([]models.User, 100000, 100000)
 	// users := make([]models.User, 0)
 	i := 0
 	for rows.Next() {
