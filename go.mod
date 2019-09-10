@@ -4,7 +4,6 @@ go 1.13
 
 require (
 	code.cloudfoundry.org/bytefmt v0.0.0-20190819182555-854d396b647c
-	github.com/BurntSushi/toml v0.3.1
 	github.com/denisenkom/go-mssqldb v0.0.0-20190830225923-3302f0226fbd // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.7.0
@@ -25,8 +24,8 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.4.0
-	golang.org/x/crypto v0.0.0-20190907121410-71b5226ff739 // indirect
-	golang.org/x/net v0.0.0-20190827160401-ba9fcec4b297 // indirect
+	golang.org/x/crypto v0.0.0-20190909091759-094676da4a83 // indirect
+	golang.org/x/net v0.0.0-20190909003024-a7b16738d86b // indirect
 	golang.org/x/sys v0.0.0-20190909082730-f460065e899a // indirect
 	google.golang.org/appengine v1.6.2 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect

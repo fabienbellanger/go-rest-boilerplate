@@ -41,7 +41,7 @@ func initEchoServer() *echo.Echo {
 
 	// Startup banner
 	// --------------
-	if viper.GetString("environment") != "production" {
+	if viper.GetString("environment") == "production" {
 		e.HideBanner = true
 	}
 
