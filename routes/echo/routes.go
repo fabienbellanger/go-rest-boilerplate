@@ -10,8 +10,8 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/routes/web"
 )
 
-// initRoutes initializes routes list
-func initRoutes(e *echo.Echo) {
+// initApiRoutes initializes routes list
+func initApiRoutes(e *echo.Echo) {
 	// JWT configuration
 	// -----------------
 	jwtConfiguration := middleware.JWTConfig{
@@ -36,4 +36,11 @@ func initRoutes(e *echo.Echo) {
 	// --------------------------
 	versionGroup.Use(middleware.JWTWithConfig(jwtConfiguration))
 	api.NewApiUserRoute(versionGroup).UsersRoutes()
+}
+
+// initClientRoutes initializes routes list
+func initClientRoutes(e *echo.Echo) {
+	group := e.Group("")
+
+	web.NewWebExampleRoute(group).ExampleRoutes()
 }

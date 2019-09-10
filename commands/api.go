@@ -80,6 +80,6 @@ var APICommand = &cobra.Command{
 
 		// Lancement du serveur web
 		// ------------------------
-		echo.StartEchoServer(port)
+		echo.StartServer(port)
 	},
 }

@@ -29,6 +29,10 @@ func initStaticFilesAndTemplates(e *echo.Echo) {
 	// -------
 	e.File("/favicon.ico", "assets/favicon.ico")
 
+	// Client index.html
+	// -----------------
+	e.File("/client", "templates/client/index.html")
+
 	// Assets
 	// ------
 	e.Static("/js", "./assets/js")

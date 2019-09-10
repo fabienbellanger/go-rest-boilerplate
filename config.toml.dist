@@ -28,18 +28,22 @@ maxOpenConnections = 10
 maxLifetimeConnection = 60 # In minutes
 
 [ssl]
-certPath = 'cert.pem'
-keyPath = 'key.pem'
+certPath = "cert.pem"
+keyPath = "key.pem"
 
 [server]
 port = 8888
+domain = "localhost"
+apiSubDomain = "api"
+clientSubDomain = ""
 readTimeout = 10 # In seconds
 writeTimeout = 0 # In seconds
 shutdownTimeout = 5 # In seconds
 allowOrigins = [
     "http://localhost:8889",
 ]
-pprof = false
+pprof = fals
+domain = localhost
 
 [webSocketServer]
 port = 8889
