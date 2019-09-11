@@ -72,7 +72,7 @@ var ServerCommand = &cobra.Command{
 		defer database.Orm.Close()
 
 		fmt.Print("Connection to ORM \t")
-		color.Green("✔\n\n")
+		color.Green("✔\n")
 
 		// Lancement du serveur web
 		// ------------------------
