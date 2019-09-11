@@ -38,8 +38,8 @@ func initApiRoutes(e *echo.Echo) {
 	api.NewApiUserRoute(versionGroup).UsersRoutes()
 }
 
-// initClientRoutes initializes routes list
-func initClientRoutes(e *echo.Echo) {
+// initWebRoutes initializes routes list
+func initWebRoutes(e *echo.Echo) {
 	group := e.Group("")
 
 	web.NewWebExampleRoute(group).ExampleRoutes()

@@ -23,24 +23,8 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 	return t.templates.ExecuteTemplate(w, name, data)
 }
 
-// initStaticFilesAndTemplates initializes static files and template renderer
-func initStaticFilesAndTemplates(e *echo.Echo) {
-	// Favicon
-	// -------
-	e.File("/favicon.ico", "assets/favicon.ico")
-
-	// Client index.html
-	// -----------------
-	e.File("/client", "templates/client/index.html")
-
-	// Assets
-	// ------
-	e.Static("/js", "./assets/js")
-	e.Static("/css", "./assets/css")
-	e.Static("/images", "./assets/images")
-
-	// Templates
-	// ---------
+// initTemplates initializes template renderer
+func initTemplates(e *echo.Echo) {
 	t := &TemplateRenderer{
 		templates: template.Must(template.ParseGlob("templates/**/*.gohtml")),
 	}

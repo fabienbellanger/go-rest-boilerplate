@@ -20,28 +20,9 @@ type Host struct {
 
 // StartServer starts Echo web server
 func StartServer(port int) {
-	// Hosts
-	hosts := map[string]*Host{}
-	subdomain := ""
-	domain := viper.GetString("server.domain") + ":" + strconv.Itoa(port)
-
-	// Initialisation du serveur d'API
-	// -------------------------------
-	api := initApiServer()
-	subdomain = viper.GetString("server.apiSubDomain")
-	if subdomain != "" {
-		subdomain += "."
-	}
-	hosts[subdomain+domain] = &Host{api}
-
-	// Initialisation du serveur pour le client (Web)
-	// ----------------------------------------------
-	client := initClientServer()
-	subdomain = viper.GetString("server.clientSubDomain")
-	if subdomain != "" {
-		subdomain += "."
-	}
-	hosts[subdomain+domain] = &Host{client}
+	// Sous domaines
+	// -------------
+	hosts := initSubDomains(port)
 
 	// Start server
 	// ------------
@@ -73,6 +54,43 @@ func StartServer(port int) {
 		WriteTimeout: time.Duration(viper.GetInt("server.writeTimeout")) * time.Second,
 	}
 	e.Logger.Fatal(e.StartServer(s))
+}
+
+// initSubDomains initializes sub domains
+func initSubDomains(port int) map[string]*Host {
+	// Hosts
+	hosts := map[string]*Host{}
+	subdomain := ""
+	domain := viper.GetString("server.domain") + ":" + strconv.Itoa(port)
+
+	// Initialisation du serveur d'API
+	// -------------------------------
+	api := initApiServer()
+	subdomain = viper.GetString("server.apiSubDomain")
+	if subdomain != "" {
+		subdomain += "."
+	}
+	hosts[subdomain+domain] = &Host{api}
+
+	// Initialisation du serveur pour le client
+	// ----------------------------------------
+	client := initClientServer()
+	subdomain = viper.GetString("server.clientSubDomain")
+	if subdomain != "" {
+		subdomain += "."
+	}
+	hosts[subdomain+domain] = &Host{client}
+
+	// Initialisation du serveur pour le Web
+	// -------------------------------------
+	web := initWebServer()
+	subdomain = viper.GetString("server.webSubDomain")
+	if subdomain != "" {
+		subdomain += "."
+	}
+	hosts[subdomain+domain] = &Host{web}
+
+	return hosts
 }
 
 // initApiServer initializes API server
@@ -108,14 +126,41 @@ func initApiServer() *echo.Echo {
 
 	// Favicon, static files and template renderer
 	// -------------------------------------------
-	// TODO
-	initStaticFilesAndTemplates(e)
+	initApiStaticFilesAndTemplates(e)
 
 	return e
 }
 
 // initClientServer initializes API for a client
 func initClientServer() *echo.Echo {
+	// Echo instance
+	e := echo.New()
+
+	// Logger
+	// ------
+	initLogger(e)
+
+	// Recover
+	// -------
+	e.Use(middleware.Recover())
+
+	// CORS & Secure middlewares
+	// -------------------------
+	initCorsAndSecurity(e)
+
+	// HTTP errors management
+	// ----------------------
+	e.HTTPErrorHandler = customHTTPErrorHandler
+
+	// Favicon, static files and template renderer
+	// -------------------------------------------
+	initClientStaticFilesAndTemplates(e)
+
+	return e
+}
+
+// initWebServer initializes API for a client
+func initWebServer() *echo.Echo {
 	// Echo instance
 	e := echo.New()
 
@@ -143,12 +188,11 @@ func initClientServer() *echo.Echo {
 
 	// Liste des routes
 	// ----------------
-	initClientRoutes(e)
+	initWebRoutes(e)
 
 	// Favicon, static files and template renderer
 	// -------------------------------------------
-	// TODO
-	initStaticFilesAndTemplates(e)
+	initWebStaticFilesAndTemplates(e)
 
 	return e
 }

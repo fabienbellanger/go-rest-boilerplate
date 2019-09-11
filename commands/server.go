@@ -3,7 +3,6 @@ package commands
 import (
 	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -20,25 +19,25 @@ func init() {
 	// Flag
 	// ----
 	defaultPort = 8888
-	APICommand.Flags().IntVarP(&port, "port", "p", defaultPort, "listened port")
+	ServerCommand.Flags().IntVarP(&port, "port", "p", defaultPort, "listened port")
 
 	// Ajout de la commande à la commande racine
-	rootCommand.AddCommand(APICommand)
+	rootCommand.AddCommand(ServerCommand)
 }
 
-// APICommand : API command
-var APICommand = &cobra.Command{
-	Use:   "api",
+// ServerCommand : Server command
+var ServerCommand = &cobra.Command{
+	Use:   "serve",
 	Short: "Launch the web server API",
 
 	Run: func(cmd *cobra.Command, args []string) {
 		color.Yellow(`
 
-|--------------------------------|
-|                                |
-| Lancement du serveur Web (API) |
-|                                |
-|--------------------------------|
+|--------------------------|
+|                          |
+| Lancement du serveur Web |
+|                          |
+|--------------------------|
 
 `)
 
@@ -53,9 +52,6 @@ var APICommand = &cobra.Command{
 		if port < 1000 || port > 10000 {
 			port = defaultPort
 		}
-
-		fmt.Print("Listening on port \t")
-		color.Green(strconv.Itoa(port) + "\n")
 
 		// Connexion à MySQL
 		// -----------------

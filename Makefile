@@ -23,7 +23,7 @@ updateAll:
 	$(GOGET) -u all && $(GOMOD) tidy
 
 runServe:
-	$(GORUN) -race main.go api
+	$(GORUN) -race main.go serve
 serve: install runServe
 
 runWebSocket:
