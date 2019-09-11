@@ -3,7 +3,9 @@ package commands
 import (
 	"archive/zip"
 	"errors"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -23,7 +25,8 @@ type logFile struct {
 	fullname string
 }
 
-var logFileName string
+var logErrorFileName string
+var logAccessFileName string
 
 func init() {
 	// Ajout de la commande à la commande racine
@@ -55,52 +58,99 @@ var LogCommand = &cobra.Command{
 func executeLogsRotation() {
 	// Le répertoire existe t-il ?
 	// ---------------------------
-	if _, err := os.Stat(viper.GetString("log.dirPath")); os.IsNotExist(err) {
-		lib.CheckError(errors.New(viper.GetString("log.dirPath")+" directory does not exist"), 1)
+	if _, err := os.Stat(viper.GetString("log.server.dirPath")); os.IsNotExist(err) {
+		lib.CheckError(errors.New(viper.GetString("log.server.dirPath")+" directory does not exist"), 1)
 	}
 
-	logFileName = viper.GetString("log.dirPath") + viper.GetString("log.fileName")
-
-	logFile, err := os.OpenFile(logFileName, os.O_RDONLY, 0755)
-	if err != nil {
-		lib.CheckError(errors.New("log file "+viper.GetString("log.fileName")+" does not exists"), 2)
-	}
-	defer logFile.Close()
+	// Vérifie que les fichiers d'erreur et d'accès existent
+	// -----------------------------------------------------
+	checkLogFiles()
 
 	// Recherche des anciens fichiers de log non archivés
 	// --------------------------------------------------
-	logFiles := findLogFile()
+	logErrorFiles := findLogFile(logErrorFileName)
+	logAccessFiles := findLogFile(logAccessFileName)
 
 	// Rotation des fichiers de log non archivés
 	// -----------------------------------------
-	makeLogsRotation(logFiles)
+	makeLogsRotation(logErrorFiles)
+	makeLogsRotation(logAccessFiles)
 
 	// Archivage des fichiers de log
 	// -----------------------------
-	makeLogsArchiving(logFiles)
+	makeLogsArchiving(logErrorFiles, logErrorFileName)
+	makeLogsArchiving(logAccessFiles, logAccessFileName)
 
-	// Déplacement du fichier de log
-	// -----------------------------
-	err = os.Rename(logFileName, logFileName+".1")
+	// Déplace le contenu du fichier courant dans le fichier préfixé par .1
+	// et remet à zéro le contenu du fichier courant
+	// --------------------------------------------------------------------
+	createNewLogFile(logErrorFileName)
+	createNewLogFile(logAccessFileName)
+
+	lib.DisplaySuccessMessage("Logs rotation successfully completed\n")
+}
+
+// createNewLogFile moves current file content in file prefix by .1 and reset current file content
+func createNewLogFile(fileName string) {
+	copyFile(fileName, fileName+".tmp")
+
+	// Déplacement des fichiers de log
+	// -------------------------------
+	err := os.Rename(fileName+".tmp", fileName+".1")
+	lib.CheckError(err, 1)
+
+	// Remise à zéro des fichiers courants
+	// -----------------------------------
+	err = ioutil.WriteFile(fileName, []byte(""), 0644)
+	lib.CheckError(err, 2)
+}
+
+// copyFile copies a source file to a destination file from their path names
+func copyFile(sourceName, destinationName string) {
+	sourceFileStat, err := os.Stat(sourceName)
+	lib.CheckError(err, 1)
+
+	if !sourceFileStat.Mode().IsRegular() {
+		lib.CheckError(fmt.Errorf("%s is not a regular file", sourceName), 2)
+	}
+
+	source, err := os.Open(sourceName)
+	lib.CheckError(err, 3)
+	defer source.Close()
+
+	destination, err := os.Create(destinationName)
 	lib.CheckError(err, 4)
+	defer destination.Close()
 
-	// Création du nouveau fichier logFileName
-	// ---------------------------------------
-	logFile, err = os.Create(logFileName)
-	lib.CheckError(err, 5) // Le fichier de log n'existe pas
-	defer logFile.Close()
+	_, err = io.Copy(destination, source)
+	lib.CheckError(err, 5)
+}
 
-	lib.DisplaySuccessMessage("Logs rotation DONE\n")
+// checkLogFiles checks if log files exists
+func checkLogFiles() {
+	logErrorFileName = viper.GetString("log.server.dirPath") + viper.GetString("log.server.errorFilename")
+
+	_, err := os.OpenFile(logErrorFileName, os.O_RDWR, 0755)
+	if err != nil {
+		lib.CheckError(errors.New("log file "+viper.GetString("log.server.errorFilename")+" does not exists"), 2)
+	}
+
+	logAccessFileName = viper.GetString("log.server.dirPath") + viper.GetString("log.server.accessFilename")
+
+	_, err = os.OpenFile(logErrorFileName, os.O_RDWR, 0755)
+	if err != nil {
+		lib.CheckError(errors.New("log file "+viper.GetString("log.server.errorFilename")+" does not exists"), 2)
+	}
 }
 
 // findLogFile returns the list of log files
-func findLogFile() []logFile {
+func findLogFile(logFilename string) []logFile {
 	logFiles := make([]logFile, 0)
 
 	// On parcours tous les fichiers du dossier
 	// ----------------------------------------
-	err := filepath.Walk(viper.GetString("log.dirPath"), func(path string, info os.FileInfo, err error) error {
-		isLogFile, _ := regexp.Match(`^`+logFileName+`.[\d]+$`, []byte(path))
+	err := filepath.Walk(viper.GetString("log.server.dirPath"), func(path string, info os.FileInfo, err error) error {
+		isLogFile, _ := regexp.Match(`^`+logFilename+`.[\d]+$`, []byte(path))
 
 		if isLogFile {
 			// On récupère les fichiers de log archivés uniquement
@@ -111,7 +161,7 @@ func findLogFile() []logFile {
 				fileNameWithoutSuffix := path[:lastPoint]
 				fileNameSuffix, err := strconv.Atoi(path[lastPoint+1:])
 
-				if err == nil && fileNameWithoutSuffix == logFileName {
+				if err == nil && fileNameWithoutSuffix == logFilename {
 					// Ajout du fichier à la liste des fichiers de logs archivés
 					// ---------------------------------------------------------
 					logFiles = append(logFiles, logFile{
@@ -132,14 +182,13 @@ func findLogFile() []logFile {
 }
 
 // findArchiveName returns the name of the next archive file
-func findArchiveName() (string, error) {
-	fileName := logFileName
-	regex := regexp.MustCompile(`^` + logFileName + `.([\d]+).zip$`)
+func findArchiveName(fileName string) (string, error) {
+	regex := regexp.MustCompile(`^` + fileName + `.([\d]+).zip$`)
 	maxFileSuffix := 0
 
 	// On parcours tous les fichiers du dossier
 	// ----------------------------------------
-	err := filepath.Walk(viper.GetString("log.dirPath"), func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(viper.GetString("log.server.dirPath"), func(path string, info os.FileInfo, err error) error {
 		regexResult := regex.FindAllSubmatch([]byte(path), -1)
 
 		for _, matchMessage := range regexResult {
@@ -179,10 +228,10 @@ func makeLogsRotation(logFiles []logFile) {
 }
 
 // makeLogsArchiving makes logs archiving
-func makeLogsArchiving(logFiles []logFile) {
+func makeLogsArchiving(logFiles []logFile, logFilename string) {
 	// Nombre de fichiers à archiver
 	// -----------------------------
-	nbFilesToArchive := viper.GetInt("log.nbFilesToArchive")
+	nbFilesToArchive := viper.GetInt("log.server.nbFilesToArchive")
 
 	if nbFilesToArchive <= 0 {
 		nbFilesToArchive = 1
@@ -194,7 +243,7 @@ func makeLogsArchiving(logFiles []logFile) {
 
 	// Recherche du nom de la prochaine archive
 	// ----------------------------------------
-	archiveFileName, err := findArchiveName()
+	archiveFileName, err := findArchiveName(logFilename)
 	lib.CheckError(err, 0)
 
 	// Création de l'archive

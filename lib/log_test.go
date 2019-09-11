@@ -59,9 +59,9 @@ func TestSQLLog(t *testing.T) {
 	b := new(bytes.Buffer)
 	DefaultEchoLogWriter = b
 	viper.Set("environment", "development")
-	viper.Set("sql_log.limit", 0.01)
-	viper.Set("sql_log.level", 1)
-	viper.Set("sql_log.displayOverLimit", true)
+	viper.Set("log.sql.limit", 0.01)
+	viper.Set("log.sql.level", 1)
+	viper.Set("log.sql.displayOverLimit", true)
 
 	query := `
 		SELECT *
@@ -91,7 +91,7 @@ func TestSQLLog(t *testing.T) {
 	// Time + query
 	// ------------
 	viper.Set("environment", "development")
-	viper.Set("sql_log.level", 2)
+	viper.Set("log.sql.level", 2)
 	want = "|  SEL |\x1b[97;41m " + latency.String() + " \t| " + query
 	SQLLog(latency, query, nil)
 	result = b.String()
@@ -108,7 +108,7 @@ func TestSQLLog(t *testing.T) {
 	// Time + query
 	// ------------
 	viper.Set("environment", "development")
-	viper.Set("sql_log.level", 3)
+	viper.Set("log.sql.level", 3)
 	want = "|  SEL |\x1b[97;41m " + latency.String() + " \t| " + query + " | [1]"
 	SQLLog(latency, query, 1)
 	result = b.String()

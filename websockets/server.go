@@ -60,19 +60,23 @@ func initLogger(e *echo.Echo) {
 		// Ouvre le fichier gin.log. S'il ne le trouve pas, il le crée
 		// -----------------------------------------------------------
 		logsFile, err := os.OpenFile(
-			"./"+viper.GetString("log.dirPath")+viper.GetString("log.fileName"),
+			"./"+viper.GetString("log.server.dirPath")+viper.GetString("log.server.errorFilename"),
 			os.O_RDWR|os.O_CREATE|os.O_APPEND,
 			0644)
-		if err != nil {
-			lib.CheckError(err, 1)
-		}
+		lib.CheckError(err, 1)
 
 		lib.DefaultEchoLogWriter = io.MultiWriter(logsFile)
 
-		if viper.GetBool("log.enableAccessLog") {
+		if viper.GetBool("log.server.enableAccessLog") {
+			logsFile, err := os.OpenFile(
+				"./"+viper.GetString("log.server.dirPath")+viper.GetString("log.server.accessFileName"),
+				os.O_RDWR|os.O_CREATE|os.O_APPEND,
+				0644)
+			lib.CheckError(err, 2)
+
 			e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 				Format:           "WS   | ${time_custom} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
-				Output:           lib.DefaultEchoLogWriter,
+				Output:           io.Writer(logsFile),
 				CustomTimeFormat: "2006-01-02 15:04:05",
 			}))
 		}

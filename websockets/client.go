@@ -197,9 +197,7 @@ func (c *Client) test(message Message) {
 
 	var t testType
 	err = mapstructure.Decode(message.Data, &t)
-	if err != nil {
-		lib.CheckError(err, 0)
-	}
+	lib.CheckError(err, 0)
 
 	fmt.Printf("%#v - %s\n", t, t.Text.Toto)
 

@@ -58,7 +58,7 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 	} else {
 		latencyColor = resetColor
 
-		if latency.Seconds() >= viper.GetFloat64("sql_log.limit") {
+		if latency.Seconds() >= viper.GetFloat64("log.sql.limit") {
 			latencyColor = redColor
 		}
 	}
@@ -75,14 +75,14 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 
 	// Affichage des logs
 	// ------------------
-	if viper.GetInt("sql_log.level") == 1 {
+	if viper.GetInt("log.sql.level") == 1 {
 		// Time only
 		// ---------
 		log.Printf("SQL  | %s | %4s |%s %v %s\t|\n",
 			time.Now().Format("2006-01-02 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor)
-	} else if viper.GetInt("sql_log.level") == 2 {
+	} else if viper.GetInt("log.sql.level") == 2 {
 		// Time and query
 		// --------------
 		log.Printf("SQL  | %s | %4s |%s %v %s\t| %s\n",
@@ -90,7 +90,7 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 			requestType,
 			latencyColor, latency, resetColor,
 			query)
-	} else if viper.GetInt("sql_log.level") == 3 {
+	} else if viper.GetInt("log.sql.level") == 3 {
 		// Time, query and arguments
 		// -------------------------
 		log.Printf("SQL  | %s | %4s |%s %v %s\t| %s | %v\n",
