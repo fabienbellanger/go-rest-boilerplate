@@ -17,7 +17,7 @@ func TestCheckError(t *testing.T) {
 	var exitCode int
 	var result, want string
 
-	err = errors.New("My error")
+	err = errors.New("my error")
 	exitCode = 0
 	CheckError(err, exitCode)
 	result = b.String()

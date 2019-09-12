@@ -27,8 +27,8 @@ func init() {
 // DatabaseCommand : Database command
 var DatabaseCommand = &cobra.Command{
 	Use:   "db",
-	Short: "Database operations",
-	Long:  "Database operations: initialisation and dump",
+	Short: "Make database operations",
+	Long:  "Make database operations: initialisation and dump",
 	Run: func(cmd *cobra.Command, args []string) {
 		color.Yellow(`
 

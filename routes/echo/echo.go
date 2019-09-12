@@ -3,7 +3,6 @@ package echo
 import (
 	"errors"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -19,7 +18,9 @@ type Host struct {
 }
 
 // StartServer starts Echo web server
-func StartServer(port int) {
+func StartServer() {
+	port := viper.GetString("server.port")
+
 	// Sous domaines
 	// -------------
 	hosts := initSubDomains(port)
@@ -49,7 +50,7 @@ func StartServer(port int) {
 	}
 
 	s := &http.Server{
-		Addr:         ":" + strconv.Itoa(port),
+		Addr:         ":" + port,
 		ReadTimeout:  time.Duration(viper.GetInt("server.readTimeout")) * time.Second,
 		WriteTimeout: time.Duration(viper.GetInt("server.writeTimeout")) * time.Second,
 	}
@@ -57,11 +58,11 @@ func StartServer(port int) {
 }
 
 // initSubDomains initializes sub domains
-func initSubDomains(port int) map[string]*Host {
+func initSubDomains(port string) map[string]*Host {
 	// Hosts
 	hosts := map[string]*Host{}
 	subdomain := ""
-	domain := viper.GetString("server.domain") + ":" + strconv.Itoa(port)
+	domain := viper.GetString("server.domain") + ":" + port
 
 	// Initialisation du serveur d'API
 	// -------------------------------

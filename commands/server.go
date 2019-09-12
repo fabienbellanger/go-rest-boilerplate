@@ -13,14 +13,7 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/routes/echo"
 )
 
-var port, defaultPort int
-
 func init() {
-	// Flag
-	// ----
-	defaultPort = 8888
-	ServerCommand.Flags().IntVarP(&port, "port", "p", defaultPort, "listened port")
-
 	// Ajout de la commande à la commande racine
 	rootCommand.AddCommand(ServerCommand)
 }
@@ -28,36 +21,31 @@ func init() {
 // ServerCommand : Server command
 var ServerCommand = &cobra.Command{
 	Use:   "serve",
-	Short: "Launch the web server API",
+	Short: "Launch the Web server",
 
 	Run: func(cmd *cobra.Command, args []string) {
 		color.Yellow(`
 
-|--------------------------|
-|                          |
-| Lancement du serveur Web |
-|                          |
-|--------------------------|
+|-------------------|
+|                   |
+| Launch Web server |
+|                   |
+|-------------------|
 
 `)
+		port := viper.GetInt("server.port")
 
 		// Test du port
 		// ------------
-		if port == defaultPort && viper.GetInt("server.port") != 0 {
-			// Si on n'a pas spécifié un port dans la commande, on prend celui du fichier de configuration
-			// -------------------------------------------------------------------------------------------
-			port = viper.GetInt("server.port")
-		}
-
 		if port < 1000 || port > 10000 {
-			port = defaultPort
+			lib.CheckError(errors.New("a valid port number must be configured (between 1000 and 10000)"), 1)
 		}
 
 		// Connexion à MySQL
 		// -----------------
 		if !lib.IsDatabaseConfigCorrect() {
 			err := errors.New("no or missing database information in settings file")
-			lib.CheckError(err, 1)
+			lib.CheckError(err, 2)
 		}
 
 		database.Open()
@@ -76,6 +64,6 @@ var ServerCommand = &cobra.Command{
 
 		// Lancement du serveur web
 		// ------------------------
-		echo.StartServer(port)
+		echo.StartServer()
 	},
 }

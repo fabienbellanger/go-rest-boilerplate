@@ -58,6 +58,7 @@ func initCorsAndSecurity(e *echo.Echo) {
 // initLogger initializes logger
 func initLogger(e *echo.Echo) {
 	lib.DefaultEchoLogWriter = os.Stdout
+
 	if viper.GetString("environment") == "production" {
 		// Ouvre le fichier server.log. S'il ne le trouve pas, il le crée
 		// ---------------------------------------------------------------

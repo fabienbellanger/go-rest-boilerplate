@@ -36,8 +36,8 @@ func init() {
 // LogCommand : Logs rotation command
 var LogCommand = &cobra.Command{
 	Use:   "log",
-	Short: "Server logs rotation",
-	Long:  "Server logs rotation",
+	Short: "Make server logs rotation",
+	Long:  "Make server logs rotation",
 	Run: func(cmd *cobra.Command, args []string) {
 		color.Yellow(`
 

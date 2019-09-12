@@ -3,16 +3,16 @@ package websockets
 import (
 	"io"
 	"os"
-	"strconv"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 // ServerStart starts websockets server
-func ServerStart(port int) {
+func ServerStart() {
 	// Lancement du hub
 	// ----------------
 	hub := newHub()
@@ -36,7 +36,7 @@ func ServerStart(port int) {
 
 		return nil
 	})
-	e.Logger.Fatal(e.Start(":" + strconv.Itoa(port)))
+	e.Logger.Fatal(e.Start(":" + viper.GetString("webSocketServer.port")))
 
 	// Version sans framework Echo
 	// ---------------------------

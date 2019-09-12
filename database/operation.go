@@ -35,7 +35,6 @@ func InitDatabase() {
 
 	transaction, err := DB.Begin()
 	lib.CheckError(err, 1)
-
 	defer func() {
 		// Rollback the transaction after the function returns.
 		// If the transaction was already commited, this will do nothing.
@@ -89,11 +88,9 @@ func DumpDatabase(structureOnly bool, dataOnly bool) (string, int) {
 	dumpFileName := "dump_" + viper.GetString("database.name") + "_" + time.Now().Format("2006-01-02_150405") + ".sql"
 	file, err := os.Create(dumpFileName)
 	lib.CheckError(err, 2)
-
 	defer file.Close()
 
 	size, err := file.Write(dumpOutput)
 	lib.CheckError(err, 3)
-
 	return dumpFileName, size
 }

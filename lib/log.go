@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -29,6 +30,9 @@ func DisplaySuccessMessage(msg string) {
 
 // CustomLog displays logs
 func CustomLog(v ...interface{}) {
+	if DefaultEchoLogWriter == nil {
+		DefaultEchoLogWriter = os.Stdout
+	}
 	log.SetOutput(DefaultEchoLogWriter)
 
 	// Remove logs timestamp
@@ -39,6 +43,9 @@ func CustomLog(v ...interface{}) {
 
 // SQLLog displays SQL log in gin.DefaultWriter
 func SQLLog(latency time.Duration, query string, args ...interface{}) {
+	if DefaultEchoLogWriter == nil {
+		DefaultEchoLogWriter = os.Stdout
+	}
 	log.SetOutput(DefaultEchoLogWriter)
 
 	// Remove logs timestamp
