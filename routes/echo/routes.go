@@ -30,7 +30,6 @@ func initApiRoutes(e *echo.Echo) {
 	// --------------------------------------------------------------------
 	api.NewApiAuthRoute(versionGroup).AuthRoutes()
 	api.NewApiBenchmarkRoute(versionGroup).BenchmarkRoutes()
-	web.NewWebExampleRoute(versionGroup).ExampleRoutes()
 
 	// Liste des routes protégées
 	// --------------------------
