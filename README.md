@@ -138,23 +138,35 @@ Go met à disposition de puissants outils pour mesurer les performances des prog
 => Lien vers une vidéo intéressante [Mesure et optimisation de la performance en Go](https://www.youtube.com/watch?v=jd47gDK-yDc)
 
 ### pprof
+Lancer :
 ```bash
 curl http://localhost:8888/debug/pprof/heap?seconds=10 > <fichier à analyser>
+```
+Puis :
+```bash
 go tool pprof -http :7000 <fichier à analyser> # Interface web
 go tool pprof --nodefraction=0 -http :7000 <fichier à analyser> # Interface web avec tous les noeuds
 go tool pprof <fichier à analyser> # Ligne de commande
 ```
 
 ### trace
+Lancer :
 ```bash
 go test <package path> -trace=<fichier à analyser>
 curl localhost:<port>/debug/pprof/trace?seconds=10 > <fichier à analyser>
+```
+Puis :
+```bash
 go tool trace <fichier à analyser>
 ```
 
 ### cover
+Lancer :
 ```bash
 go test <package path> -covermode=count -coverprofile=./<fichier à analyser>
+```
+Puis :
+```bash
 go tool cover -html=<fichier à analyser>
 ```
 
@@ -177,6 +189,7 @@ go tool cover -html=<fichier à analyser>
     -  [ ] Faire une interface graphique pour afficher et filter les logs
 -  [ ] Gestion des timezones
 -  [ ] Facade pour les datetimes
+-  [ ] Ajouter une Basic Auth pour pprof
 -  [ ] Problème de consommation mémoire
     -  [https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d](https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d)
 
