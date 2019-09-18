@@ -43,8 +43,11 @@ shutdownTimeout = 5 # In seconds
 allowOrigins = [
     "http://localhost:8889",
 ]
-pprof = fals
-domain = localhost
+
+[debug]
+pprof = true
+basicAuthUsername = ""
+basicAuthPassword = ""
 
 [webSocketServer]
 port = 8889
