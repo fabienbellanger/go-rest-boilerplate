@@ -13,6 +13,7 @@
     -  [cover](#cover)
 -  [TODO list](#todo-list)
 -  [Astuces et explications](#Astuces-et-explications)
+    -  [Performance, Débug et profilage](#Performance,-Débug-et-profilage)
     -  [Architecture](#architecture)
 
 
@@ -172,7 +173,6 @@ go tool cover -html=<fichier à analyser>
 
 
 ## TODO list
--  [ ] Utiliser et rendre paramétrable le Log Level d'Echo
 -  [x] Passer aux modules introduits avec Go 1.11 :
     -  https://roberto.selbach.ca/intro-to-go-modules/
     -  https://www.melvinvivas.com/go-version-1-11-modules/
@@ -180,21 +180,22 @@ go tool cover -html=<fichier à analyser>
 -  [x] Mettre en place un système de migration avec GORM
 -  [x] Utiliser [Viper](https://github.com/spf13/viper) pour gérer la config
 -  [x] Séparer les logs d'accès des autres logs
--  SQL logs
+-  [x] Ajouter une Basic Auth pour pprof
+-  [x] SQL logs
     -  [x] Afficher la requête sans retour à la ligne
     -  [x] Gérer la variable `limit` dans fichier de configuration
     -  [x] Gérer la rotation des logs
-    -  [ ] Afficher les arguments directement dans la requête ou dans un tableau
     -  [x] Logger GORM
-    -  [ ] Faire une interface graphique pour afficher et filter les logs
+-  [ ] Faire une interface graphique pour afficher et filter les logs
+-  [ ] Utiliser et rendre paramétrable le Log Level d'Echo
 -  [ ] Gestion des timezones
 -  [ ] Facade pour les datetimes
--  [ ] Ajouter une Basic Auth pour pprof
--  [ ] Problème de consommation mémoire
-    -  [https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d](https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d)
 
 
 ## Astuces et explications
+
+### Performance, Débug et profilage
+-  [https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d](https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d)
 -  [pprof & Memory leaks](https://www.freecodecamp.org/news/how-i-investigated-memory-leaks-in-go-using-pprof-on-a-large-codebase-4bec4325e192/)
 -  [Allocation efficiency in high-performance Go services](https://segment.com/blog/allocation-efficiency-in-high-performance-go-services/)
 -  [Astuces Slices](https://github.com/golang/go/wiki/SliceTricks)
