@@ -7,6 +7,7 @@
    -  [Production](#production)
 -  [Architecture du projet](#architecture-du-projet)
 -  [Golang web server in production](#golang-web-server-in-production)
+-  [Serveur Web](#Serveur-Web)
 -  [Mesure et performance](#mesure-et-performance)
     -  [pprof](#pprof)
     -  [trace](#trace)
@@ -128,6 +129,15 @@ WantedBy=multi-user.target
 | `service <service name> disable` | To disable on boot |
 | `service <service name> status` | To show status |
 | `service <service name> stop` | To stop |
+
+
+## Serveur Web
+Le serveur peut contenir plusieurs sous-domaines. Leur configuration se fait dans le fichier `config.toml` via la partie
+`[server]`. Le serveur possède 3 sous-domaines par défaut :
+-  `apiSubDomain` : sous-domaine relatif aux API
+-  `clientSubDomain` :  sous-domaine pour lancer, par exemple, une application JavaScript Vue.js
+-  `webSubDomain` : sous-domaine pour créer une application côté serveur. Il contient également les routes de debug pour 
+`pprof` ou `trace`.
 
 
 ## Mesure et performance

@@ -10,7 +10,6 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/routes/web"
 )
 
 type Host struct {
@@ -165,6 +164,12 @@ func initWebServer() *echo.Echo {
 	// Echo instance
 	e := echo.New()
 
+	// HTTP to HTTPS redirect
+	// ----------------------
+	if viper.GetString("environment") == "production" {
+		e.Pre(middleware.HTTPSRedirect())
+	}
+
 	// Logger
 	// ------
 	initLogger(e)
@@ -180,31 +185,6 @@ func initWebServer() *echo.Echo {
 	// HTTP errors management
 	// ----------------------
 	e.HTTPErrorHandler = customHTTPErrorHandler
-
-	// Profilage
-	// ---------
-	if viper.GetBool("debug.pprof") {
-		protectedGroup := e.Group("")
-
-		// Protection des routes par une Basic Auth
-		// ----------------------------------------
-		protectedGroup.Use(middleware.BasicAuth(
-			func(username, password string, c echo.Context) (bool, error) {
-				basicAuthUsername := viper.GetString("debug.basicAuthUsername")
-				basicAuthPassword := viper.GetString("debug.basicAuthPassword")
-
-				if basicAuthUsername == "" || basicAuthPassword == "" {
-					return false, nil
-				} else if username == basicAuthUsername && password == basicAuthPassword {
-					return true, nil
-				}
-
-				return false, nil
-			},
-		))
-
-		web.NewWebPprofRoute(protectedGroup).PprofRoutes()
-	}
 
 	// Liste des routes
 	// ----------------

@@ -41,5 +41,32 @@ func initApiRoutes(e *echo.Echo) {
 func initWebRoutes(e *echo.Echo) {
 	group := e.Group("")
 
+	// Profilage
+	// ---------
+	if viper.GetBool("debug.pprof") {
+		protectedGroup := e.Group("")
+
+		// Protection des routes par une Basic Auth
+		// ----------------------------------------
+		protectedGroup.Use(middleware.BasicAuth(
+			func(username, password string, c echo.Context) (bool, error) {
+				basicAuthUsername := viper.GetString("debug.basicAuthUsername")
+				basicAuthPassword := viper.GetString("debug.basicAuthPassword")
+
+				if basicAuthUsername == "" || basicAuthPassword == "" {
+					return false, nil
+				} else if username == basicAuthUsername && password == basicAuthPassword {
+					return true, nil
+				}
+
+				return false, nil
+			},
+		))
+
+		web.NewWebPprofRoute(protectedGroup).PprofRoutes()
+	}
+
+	// Routes
+	// ------
 	web.NewWebExampleRoute(group).ExampleRoutes()
 }
