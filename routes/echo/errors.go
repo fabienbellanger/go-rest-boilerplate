@@ -4,10 +4,14 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
 // customHTTPErrorHandler manages HTTP errors
 func customHTTPErrorHandler(err error, c echo.Context) {
+	lib.CheckError(err, 0)
+
 	code := http.StatusInternalServerError
 	if httpError, ok := err.(*echo.HTTPError); ok {
 		code = httpError.Code

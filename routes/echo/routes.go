@@ -69,4 +69,5 @@ func initWebRoutes(e *echo.Echo) {
 	// Routes
 	// ------
 	web.NewWebExampleRoute(group).ExampleRoutes()
+	web.NewWebLogsRoute(group).LogsRoutes()
 }

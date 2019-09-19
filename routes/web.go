@@ -7,3 +7,7 @@ type WebPprofRoutes interface {
 type WebExampleRoutes interface {
 	ExampleRoutes()
 }
+
+type WebLogsRoutes interface {
+	LogsRoutes()
+}
