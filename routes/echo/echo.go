@@ -166,7 +166,7 @@ func initWebServer() *echo.Echo {
 
 	// HTTP to HTTPS redirect
 	// ----------------------
-	if viper.GetString("environment") == "production" {
+	if viper.GetBool("server.redirectToHttps") {
 		e.Pre(middleware.HTTPSRedirect())
 	}
 

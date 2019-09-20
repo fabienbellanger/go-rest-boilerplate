@@ -43,6 +43,7 @@ shutdownTimeout = 5 # In seconds
 allowOrigins = [
     "http://localhost:8889",
 ]
+redirectToHttps = false
 
 [debug]
 pprof = true
