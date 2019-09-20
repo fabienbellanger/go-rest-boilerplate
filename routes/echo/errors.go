@@ -10,8 +10,6 @@ import (
 
 // customHTTPErrorHandler manages HTTP errors
 func customHTTPErrorHandler(err error, c echo.Context) {
-	lib.CheckError(err, 0)
-
 	code := http.StatusInternalServerError
 	if httpError, ok := err.(*echo.HTTPError); ok {
 		code = httpError.Code
@@ -29,8 +27,12 @@ func customHTTPErrorHandler(err error, c echo.Context) {
 		c.JSON(code, map[string]string{"message": "Resource Not Found"})
 	case http.StatusInternalServerError:
 		// 500
+		lib.CheckError(err, 0)
+
 		c.JSON(code, map[string]string{"message": "Internal Server Error"})
 	default:
+		lib.CheckError(err, 0)
+
 		c.JSON(code, "")
 	}
 }

@@ -1,5 +1,9 @@
 {{- define "example/index.gohtml" }}
     {{- template "layout/header.gohtml" . }}
-    <div>Hello <b>{{ .name }}</b></div>
+    </head>
+
+    <body>
+        <div>Hello <b>{{ .name }}</b></div>
+    </body>
     {{- template "layout/footer.gohtml" }}
 {{- end }}

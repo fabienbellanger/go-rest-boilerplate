@@ -1,87 +1,95 @@
 {{- define "example/websockets.gohtml" }}
     {{- template "layout/header.gohtml" . }}
-    <h1>Websockets</h1>
-    <input id="input" type="text" />
-    <button onclick="send(socket)">Send</button>
-    <pre id="output"></pre>
-    
-    <script>
-        const maxConnectionsAttempts = 5;
-        const timeBeforeNewAttempt   = 5000;
-        
-        let input               = document.getElementById("input");
-        let output              = document.getElementById("output");
-        let connectionsAttempts = 0;
-        let socket;
+    </head>
 
-        /**
-         * Connexion au serveur
-         *
-         * @author Fabien Bellanger
-         * @return WebSocket
-         */
-        function wsConnect() {
-            socket = new WebSocket("ws://localhost:" + {{ .webSocketUrl }});
+    <body>
+        <div class="container">
+            <h1>Websockets</h1>
 
-            socket.onopen = function () {
-                connectionsAttempts = 1;
-                output.innerHTML += "Status: Connected\n";
-            };
+            <input id="input" type="text" />
+            <button onclick="send(socket)">Send</button>
 
-            socket.onmessage = function (e) {
-                readMessage(e);
-            };
+            <pre id="output"></pre>
+        </div>
 
-            socket.onerror = function (ev) {
-                console.error(ev);
-            };
+        <script>
+            const maxConnectionsAttempts = 5;
+            const timeBeforeNewAttempt   = 5000;
 
-            socket.onclose = function () {
-                output.innerHTML += `Status: Disconnected (${connectionsAttempts} / ${maxConnectionsAttempts})\n`;
+            let input               = document.getElementById("input");
+            let output              = document.getElementById("output");
+            let connectionsAttempts = 0;
+            let socket;
 
-                if (connectionsAttempts < maxConnectionsAttempts)
-                {
-                    // On retente une connexion au serveur
-                    // -----------------------------------
-                    setTimeout(function() {
-                        socket = wsConnect();
-                    }, timeBeforeNewAttempt);
-                }
-            };
-            
-            connectionsAttempts++;
+            /**
+             * Connexion au serveur
+             *
+             * @author Fabien Bellanger
+             * @return WebSocket
+             */
+            function wsConnect() {
+                socket = new WebSocket("ws://localhost:" + {{ .webSocketUrl }});
 
-            return socket;
-        }
+                socket.onopen = function () {
+                    connectionsAttempts = 1;
+                    output.innerHTML += "Status: Connected\n";
+                };
 
-        /**
-         * Envoi d'un message au serveur
-         *
-         * @author Fabien Bellanger
-         * @param Socket socket
-         */
-        function send(socket) {
-            socket.send(JSON.stringify({message: "test", data : {text: {toto: input.value}}}));
-            socket.send(JSON.stringify({m: "t", d : {text: {toto: input.value}}}));
-            socket.send("klklklklkll");
+                socket.onmessage = function (e) {
+                    readMessage(e);
+                };
 
-            input.value = "";
-        }
+                socket.onerror = function (ev) {
+                    console.error(ev);
+                };
 
-        /**
-         * Lecture d'un message
-         *
-         * @author Fabien Bellanger
-         * @param Event event
-         */
-        function readMessage(event)
-        {
-            output.innerHTML += "Server: " + event.data + "\n";
-        }
+                socket.onclose = function () {
+                    output.innerHTML += `Status: Disconnected (${connectionsAttempts} / ${maxConnectionsAttempts})\n`;
 
-        // Connexion au serveur
-        // --------------------
-        socket = wsConnect();
-    </script>
+                    if (connectionsAttempts < maxConnectionsAttempts)
+                    {
+                        // On retente une connexion au serveur
+                        // -----------------------------------
+                        setTimeout(function() {
+                            socket = wsConnect();
+                        }, timeBeforeNewAttempt);
+                    }
+                };
+
+                connectionsAttempts++;
+
+                return socket;
+            }
+
+            /**
+             * Envoi d'un message au serveur
+             *
+             * @author Fabien Bellanger
+             * @param Socket socket
+             */
+            function send(socket) {
+                socket.send(JSON.stringify({message: "test", data : {text: {toto: input.value}}}));
+                socket.send(JSON.stringify({m: "t", d : {text: {toto: input.value}}}));
+                socket.send("klklklklkll");
+
+                input.value = "";
+            }
+
+            /**
+             * Lecture d'un message
+             *
+             * @author Fabien Bellanger
+             * @param Event event
+             */
+            function readMessage(event)
+            {
+                output.innerHTML += "Server: " + event.data + "\n";
+            }
+
+            // Connexion au serveur
+            // --------------------
+            socket = wsConnect();
+        </script>
+    </body>
     {{- template "layout/footer.gohtml" }}
 {{- end }}

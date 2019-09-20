@@ -11,3 +11,7 @@ type UserRepository interface {
 	ChangePassword(user *models.User, password string) bool
 	GetAllSqlRows(limit uint) (rows *sql.Rows, err error)
 }
+
+type LogsRepository interface {
+	GetAll() ([]models.LogFile, error)
+}

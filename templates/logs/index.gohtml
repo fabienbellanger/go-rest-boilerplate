@@ -1,5 +1,15 @@
 {{- define "logs/index.gohtml" }}
     {{- template "layout/header.gohtml" . }}
-    <h1>Logs</h1>
+    {{- template "logs/css.gohtml" . }}
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <h1>Logs</h1>
+            <pre>{{ .logs }}</pre>
+        </div>
+
+        {{- template "logs/javascript.gohtml" }}
+    </body>
     {{- template "layout/footer.gohtml" }}
 {{- end }}

@@ -1,10 +1,9 @@
 package web
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo/v4"
 
+	"github.com/fabienbellanger/go-rest-boilerplate/handlers/web"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes"
 )
 
@@ -21,9 +20,7 @@ func NewWebLogsRoute(g *echo.Group) routes.WebLogsRoutes {
 
 // LogsRoutes lists logs routes
 func (r *webLogsRoute) LogsRoutes() {
-	r.Group.GET("/logs", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "logs/index.gohtml", map[string]interface{}{
-			"title": "Logs interface",
-		})
-	})
+	logsHandler := web.NewLogsHandler()
+
+	r.Group.GET("/logs", logsHandler.GetLogs)
 }

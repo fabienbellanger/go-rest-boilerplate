@@ -78,14 +78,14 @@ func initLogger(e *echo.Echo) {
 			lib.CheckError(err, 2)
 
 			e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-				Format:           "ECHO | ${time_custom} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
+				Format:           "ECHO | ${time_custom} |  ${status} | ${latency_human}\t| ${method}\t| ${uri}\n",
 				Output:           io.Writer(logsFile),
 				CustomTimeFormat: "2006-01-02 15:04:05",
 			}))
 		}
 	} else {
 		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-			Format:           "ECHO | ${time_custom} |  ${status} | ${latency_human}\t| ${method}\t${uri}\n",
+			Format:           "ECHO | ${time_custom} |  ${status} | ${latency_human}\t| ${method}\t| ${uri}\n",
 			Output:           lib.DefaultEchoLogWriter,
 			CustomTimeFormat: "2006-01-02 15:04:05",
 		}))
