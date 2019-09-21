@@ -92,7 +92,7 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 	} else if viper.GetInt("log.sql.level") == 2 {
 		// Time and query
 		// --------------
-		log.Printf("SQL  | %s | %4s |%s %v %s\t| %s\n",
+		log.Printf("SQL  | %s | %4s |%s %v %s\t| %s |\n",
 			time.Now().Format("2006-01-02 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor,
