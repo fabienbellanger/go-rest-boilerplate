@@ -1,7 +1,6 @@
 package logs
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -26,12 +25,6 @@ func (m *fileLogsRepository) GetAll() ([]models.LogFile, error) {
 		Message:   "Internal server error",
 	}}
 
-	parseError(`ERR  | 2019-09-20 21:51:55 | [template: no template "logs/index.gohtml" associated with template "index.gohtml"]`)
-	parseEcho(`ECHO | 2019-09-20 21:51:55 |  500 | 326.921µs	| GET	| /logs`)
-	parseSql(`SQL  | 2019-09-21 21:37:13 |  SEL | 87.148393ms 	| SELECT id, username, lastname, firstname, created_at, deleted_at FROM users WHERE username = ? AND password = ? AND deleted_at IS NULL LIMIT 1 | [[[fabien 62670d1e1eea06b6c975e12bc8a16131b278f6d7bcbe017b65f854c58476baba86c2082b259fd0c1310935b365dc40f609971b6810b065e528b0b60119e69f61]]]`)
-	parseSql(`SQL  | 2019-09-21 21:37:13 |  SEL | 87.148393ms 	|`)
-	parseSql(`SQL  | 2019-09-21 21:37:13 |  SEL | 87.148393ms 	| SELECT id, username, lastname, firstname, created_at, deleted_at FROM users WHERE username = ? AND password = ? AND deleted_at IS NULL LIMIT 1 |`)
-
 	logs = append(logs, errorLog)
 
 	return logs, nil
@@ -51,8 +44,6 @@ func parseError(line string) (log models.LogErrorFile) {
 			}
 		}
 	}
-
-	fmt.Printf("%+v\n", log)
 
 	return
 }
@@ -75,8 +66,6 @@ func parseEcho(line string) (log models.LogEchoFile) {
 		}
 	}
 
-	fmt.Printf("%+v\n", log)
-
 	return
 }
 
@@ -97,8 +86,6 @@ func parseSql(line string) (log models.LogSqlFile) {
 			}
 		}
 	}
-
-	fmt.Printf("%+v\n", log)
 
 	return
 }
