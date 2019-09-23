@@ -1,9 +1,14 @@
 package logs
 
 import (
+	"bufio"
+	"os"
 	"regexp"
 	"strings"
 
+	"github.com/spf13/viper"
+
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 	"github.com/fabienbellanger/go-rest-boilerplate/models"
 	"github.com/fabienbellanger/go-rest-boilerplate/repositories"
 )
@@ -15,23 +20,85 @@ func NewfileLogsRepository() repositories.LogsRepository {
 	return &fileLogsRepository{}
 }
 
-// GetAll returns all logs
-func (m *fileLogsRepository) GetAll() ([]models.LogFile, error) {
-	logs := make([]models.LogFile, 0)
-
-	errorLog := models.LogFile{Error: &models.LogErrorFile{
-		Source:    "ERR",
-		Timestamp: "2019-09-20 14:17:58",
-		Message:   "Internal server error",
-	}}
-
-	logs = append(logs, errorLog)
+// GetAccessLogs returns access logs
+func (m *fileLogsRepository) GetAccessLogs(size int) ([]models.LogFile, error) {
+	logs := getFileLines("logs/access.log", 5)
 
 	return logs, nil
 }
 
+// GetErrorLogs returns error logs
+func (m *fileLogsRepository) GetErrorLogs(size int) ([]models.LogFile, error) {
+	logs := getFileLines("logs/error.log", 5)
+
+	return logs, nil
+}
+
+// Récupère les lignes du fichier
+func getFileLines(fileName string, size int) []models.LogFile {
+	file, err := os.Open(fileName)
+	defer file.Close()
+	lib.CheckError(err, 0)
+
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanLines)
+
+	var lines []models.LogFile
+	if size != 0 {
+		lines = make([]models.LogFile, size, size)
+		i := 0
+		for scanner.Scan() && i < size {
+			text := scanner.Text()
+			if strings.Contains(fileName, viper.GetString("log.server.accessFilename")) {
+				// Logs d'accès
+				// ------------
+				if line, isFound := parseEcho(text); isFound {
+					lines[i] = models.LogFile{Echo: &line}
+
+					i++
+				}
+			} else if strings.Contains(fileName, viper.GetString("log.server.errorFilename")) {
+				// Logs d'erreur
+				// -------------
+				if line, isFound := parseError(text); isFound {
+					lines[i] = models.LogFile{Error: &line}
+
+					i++
+				} else if line, isFound := parseSql(text); isFound {
+					lines[i] = models.LogFile{Sql: &line}
+
+					i++
+				}
+			}
+		}
+	} else {
+		// Si size == 0, alors on prend toutes les lignes
+		lines = make([]models.LogFile, 0)
+		for scanner.Scan() {
+			text := scanner.Text()
+			if strings.Contains(fileName, viper.GetString("log.server.accessFilename")) {
+				// Logs d'accès
+				// ------------
+				if line, isFound := parseEcho(text); isFound {
+					lines = append(lines, models.LogFile{Echo: &line})
+				}
+			} else if strings.Contains(fileName, viper.GetString("log.server.errorFilename")) {
+				// Logs d'erreur
+				// -------------
+				if line, isFound := parseError(text); isFound {
+					lines = append(lines, models.LogFile{Error: &line})
+				} else if line, isFound := parseSql(text); isFound {
+					lines = append(lines, models.LogFile{Sql: &line})
+				}
+			}
+		}
+	}
+
+	return lines
+}
+
 // parseError returns a variable of LogErrorFile type
-func parseError(line string) (log models.LogErrorFile) {
+func parseError(line string) (log models.LogErrorFile, isFound bool) {
 	var regex = regexp.MustCompile(`(ERR)(?:[| \t]+)([\d-: ]{19})(?:[| \t]+)(.*)`)
 
 	found := regex.FindAllStringSubmatch(line, -1)
@@ -41,6 +108,8 @@ func parseError(line string) (log models.LogErrorFile) {
 				log.Source = strings.Trim(match[1], " ")
 				log.Timestamp = strings.Trim(match[2], " ")
 				log.Message = strings.Trim(match[3], " ")
+
+				isFound = true
 			}
 		}
 	}
@@ -49,7 +118,7 @@ func parseError(line string) (log models.LogErrorFile) {
 }
 
 // parseEcho returns a variable of LogEchoFile type
-func parseEcho(line string) (log models.LogEchoFile) {
+func parseEcho(line string) (log models.LogEchoFile, isFound bool) {
 	var regex = regexp.MustCompile(`(ECHO)(?:[| \t]+)([\d-: ]{19})(?:[| \t]+)([\d]{3})(?:[| \t]+)([0-9a-z.\p{L}]+)(?:[| \t]*)([A-Z]+)(?:[| \t]*)(.*)`)
 
 	found := regex.FindAllStringSubmatch(line, -1)
@@ -62,6 +131,8 @@ func parseEcho(line string) (log models.LogEchoFile) {
 				log.Latency = strings.Trim(match[4], " ")
 				log.Method = strings.Trim(match[5], " ")
 				log.Uri = strings.Trim(match[6], " ")
+
+				isFound = true
 			}
 		}
 	}
@@ -70,7 +141,7 @@ func parseEcho(line string) (log models.LogEchoFile) {
 }
 
 // parseSql returns a variable of LogSqlFile type
-func parseSql(line string) (log models.LogSqlFile) {
+func parseSql(line string) (log models.LogSqlFile, isFound bool) {
 	var regex = regexp.MustCompile(`(SQL)(?:[| \t]+)([\d-: \t]{19})(?:[| \t]+)([A-Z]{3})(?:[| \t]+)([0-9a-z.\p{L}]+)(?:[| \t]+)((.*) (?:[|\t]+)(.*)|)`)
 
 	found := regex.FindAllStringSubmatch(line, -1)
@@ -83,6 +154,8 @@ func parseSql(line string) (log models.LogSqlFile) {
 				log.Latency = strings.Trim(match[4], " ")
 				log.Query = strings.Trim(match[6], " ")
 				log.Paramters = strings.Trim(match[7], " ")
+
+				isFound = true
 			}
 		}
 	}

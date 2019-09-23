@@ -6,7 +6,8 @@
     <body>
         <div class="container-fluid">
             <h1>Logs</h1>
-            <pre>{{ .logs }}</pre>
+            <pre>{{ .accessLogs }}</pre>
+            <pre>{{ .errorLogs }}</pre>
         </div>
 
         {{- template "logs/javascript.gohtml" }}

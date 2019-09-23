@@ -22,13 +22,16 @@ func NewLogsHandler() *LogsHandler {
 	}
 }
 
-// GetLogs returns all logs
+// GetLogs returns logs
 func (h *LogsHandler) GetLogs(c echo.Context) error {
-	logs, _ := h.repository.GetAll()
-	logsJson, _ := json.Marshal(logs)
+	accessLogs, _ := h.repository.GetAccessLogs(5)
+	accessLogsJson, _ := json.Marshal(accessLogs)
+	errorLogs, _ := h.repository.GetErrorLogs(5)
+	errorLogsJson, _ := json.Marshal(errorLogs)
 
 	return c.Render(http.StatusOK, "logs/index.gohtml", map[string]interface{}{
-		"title": "Logs interface",
-		"logs":  string(logsJson),
+		"title":      "Logs interface",
+		"accessLogs": string(accessLogsJson),
+		"errorLogs":  string(errorLogsJson),
 	})
 }
