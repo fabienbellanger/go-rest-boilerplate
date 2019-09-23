@@ -32,9 +32,19 @@
                             {{- range $index, $log := .accessLogs }}
                                 <tr>
                                     <td>{{ $log.Echo.Timestamp }}</td>
-                                    <td align="center">{{ $log.Echo.Code }}</td>
+                                    <td align="center">
+                                    {{- if or (eq $log.Echo.Code "200") (eq $log.Echo.Code "201") }}
+                                        <span class="badge badge-pill badge-success">{{ $log.Echo.Code }}</span>
+                                    {{- else if eq $log.Echo.Code "500" }}
+                                        <span class="badge badge-pill badge-danger">{{ $log.Echo.Code }}</span>
+                                    {{- else }}
+                                        <span class="badge badge-pill badge-warning">{{ $log.Echo.Code }}</span>
+                                    {{- end }}
+                                    </td>
                                     <td align="right">{{ $log.Echo.Latency }}</td>
-                                    <td align="center">{{ $log.Echo.Method }}</td>
+                                    <td align="center">
+                                        <span class="badge badge-pill badge-dark">{{ $log.Echo.Method }}</span>
+                                    </td>
                                     <td>{{ $log.Echo.Uri }}</td>
                                 </tr>
                             {{- end }}
@@ -47,29 +57,76 @@
                 <div>
                     <p class="font-weight-bold">Error logs</p>
                     {{- if gt (len .errorLogs) 0 }}
-                    <ul>
-                    {{- range $index, $log := .errorLogs }}
-                        <li>
-                        {{- if $log.Error }}
-                            {{ $log.Error.Timestamp }} | {{ $log.Error.Message }}
-                        {{- else if $log.Sql }}
-                            {{ $log.Sql.Timestamp }} | {{ $log.Sql.Request }} | {{ $log.Sql.Latency }} | {{ $log.Sql.Query }} | {{ $log.Sql.Paramters }}
-                        {{- end }}
-                        </li>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover table-sm" id="errorLogsTable">
+                            <thead>
+                            <tr>
+                                <th scope="col">Timestamp</th>
+                                <th scope="col">Message</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{- range $index, $log := .errorLogs }}
+                                <tr>
+                                    <td>{{ $log.Error.Timestamp }}</td>
+                                    <td>{{ $log.Error.Message }}</td>
+                                </tr>
+                            {{- end }}
+                            </tbody>
+                        </table>
+                    </div>
                     {{- end }}
-                    </ul>
+                </div>
+
+                <div>
+                    <p class="font-weight-bold">SQL logs</p>
+                    {{- if gt (len .sqlLogs) 0 }}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover table-sm" id="sqlLogsTable">
+                            <thead>
+                            <tr>
+                                <th scope="col">Timestamp</th>
+                                <th scope="col">Request</th>
+                                <th scope="col">Latency</th>
+                                <th scope="col">Query</th>
+                                <th scope="col">Parameters</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{- range $index, $log := .sqlLogs }}
+                                <tr>
+                                    <td>{{ $log.Sql.Timestamp }}</td>
+                                    <td align="center">
+                                        <span class="badge badge-pill badge-info">{{ $log.Sql.Request }}</span>
+                                    </td>
+                                    <td align="right">{{ $log.Sql.Latency }}</td>
+                                    <td>{{ $log.Sql.Query }}</td>
+                                    <td>{{ $log.Sql.Parameters }}</td>
+                                </tr>
+                            {{- end }}
+                            </tbody>
+                        </table>
+                    </div>
                     {{- end }}
                 </div>
             </div>
         </div>
 
         {{- template "logs/javascript.gohtml" }}
-        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
         <script>
             $(document).ready(function()
             {
                 $('#accessLogsTable').DataTable({
+                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, "All"]],
+                });
+
+                $('#errorLogsTable').DataTable({
+                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, "All"]],
+                });
+
+                $('#sqlLogsTable').DataTable({
                     'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, "All"]],
                 });
             });

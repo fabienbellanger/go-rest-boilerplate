@@ -25,12 +25,12 @@ func NewLogsHandler() *LogsHandler {
 func (h *LogsHandler) GetLogs(c echo.Context) error {
 	accessLogs, _ := h.repository.GetAccessLogs(5)
 	errorLogs, _ := h.repository.GetErrorLogs(5)
-	// accessLogsJson, _ := json.Marshal(accessLogs)
-	// errorLogsJson, _ := json.Marshal(errorLogs)
+	sqlLogs, _ := h.repository.GetSqlLogs(5)
 
 	return c.Render(http.StatusOK, "logs/index.gohtml", map[string]interface{}{
 		"title":      "Logs server interface",
 		"accessLogs": accessLogs,
 		"errorLogs":  errorLogs,
+		"sqlLogs":    sqlLogs,
 	})
 }

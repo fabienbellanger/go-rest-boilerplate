@@ -34,6 +34,13 @@ func (m *fileLogsRepository) GetErrorLogs(size int) ([]models.LogFile, error) {
 	return logs, nil
 }
 
+// GetSqlLogs returns SQL logs
+func (m *fileLogsRepository) GetSqlLogs(size int) ([]models.LogFile, error) {
+	logs := getFileLines("logs/sql.log", 5)
+
+	return logs, nil
+}
+
 // Récupère les lignes du fichier
 func getFileLines(fileName string, size int) []models.LogFile {
 	file, err := os.Open(fileName)
@@ -45,7 +52,7 @@ func getFileLines(fileName string, size int) []models.LogFile {
 
 	var lines []models.LogFile
 	if size != 0 {
-		lines = make([]models.LogFile, size, size)
+		lines = make([]models.LogFile, 0, size)
 		i := 0
 		for scanner.Scan() && i < size {
 			text := scanner.Text()
@@ -53,7 +60,7 @@ func getFileLines(fileName string, size int) []models.LogFile {
 				// Logs d'accès
 				// ------------
 				if line, isFound := parseEcho(text); isFound {
-					lines[i] = models.LogFile{Echo: &line}
+					lines = append(lines, models.LogFile{Echo: &line})
 
 					i++
 				}
@@ -61,11 +68,15 @@ func getFileLines(fileName string, size int) []models.LogFile {
 				// Logs d'erreur
 				// -------------
 				if line, isFound := parseError(text); isFound {
-					lines[i] = models.LogFile{Error: &line}
+					lines = append(lines, models.LogFile{Error: &line})
 
 					i++
-				} else if line, isFound := parseSql(text); isFound {
-					lines[i] = models.LogFile{Sql: &line}
+				}
+			} else if strings.Contains(fileName, viper.GetString("log.sql.sqlFilename")) {
+				// Logs SQL
+				// --------
+				if line, isFound := parseSql(text); isFound {
+					lines = append(lines, models.LogFile{Sql: &line})
 
 					i++
 				}
@@ -87,7 +98,11 @@ func getFileLines(fileName string, size int) []models.LogFile {
 				// -------------
 				if line, isFound := parseError(text); isFound {
 					lines = append(lines, models.LogFile{Error: &line})
-				} else if line, isFound := parseSql(text); isFound {
+				}
+			} else if strings.Contains(fileName, viper.GetString("log.sql.sqlFilename")) {
+				// Logs SQL
+				// --------
+				if line, isFound := parseSql(text); isFound {
 					lines = append(lines, models.LogFile{Sql: &line})
 				}
 			}
@@ -153,7 +168,7 @@ func parseSql(line string) (log models.LogSqlFile, isFound bool) {
 				log.Request = strings.Trim(match[3], " ")
 				log.Latency = strings.Trim(match[4], " ")
 				log.Query = strings.Trim(match[6], " ")
-				log.Paramters = strings.Trim(match[7], " ")
+				log.Parameters = strings.Trim(match[7], " ")
 
 				isFound = true
 			}

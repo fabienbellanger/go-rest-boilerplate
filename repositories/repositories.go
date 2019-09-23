@@ -15,4 +15,5 @@ type UserRepository interface {
 type LogsRepository interface {
 	GetAccessLogs(size int) ([]models.LogFile, error)
 	GetErrorLogs(size int) ([]models.LogFile, error)
+	GetSqlLogs(size int) ([]models.LogFile, error)
 }
