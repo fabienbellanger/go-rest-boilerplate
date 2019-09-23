@@ -195,7 +195,7 @@ go tool cover -html=<fichier à analyser>
     -  [x] Afficher la requête sans retour à la ligne
     -  [x] Gérer la variable `limit` dans fichier de configuration
     -  [x] Gérer la rotation des logs
-    -  [x] Logger GORM
+    -  [] Logger GORM dans un fichier de log [GORM logger](http://gorm.io/docs/logger.html)
 -  [ ] Mettre les logs SQL dans un fichier à part
 -  [ ] Faire une interface graphique pour afficher et filter les logs
     -  [ ] Mettre une Basic Auth

@@ -60,7 +60,7 @@ func initLogger(e *echo.Echo) {
 	lib.DefaultEchoLogWriter = os.Stdout
 
 	if viper.GetString("environment") == "production" {
-		// Ouvre le fichier server.log. S'il ne le trouve pas, il le crée
+		// Ouvre le fichier error.log. S'il ne le trouve pas, il le crée
 		// ---------------------------------------------------------------
 		logsFile, err := os.OpenFile(
 			"./"+viper.GetString("log.server.dirPath")+viper.GetString("log.server.errorFilename"),
@@ -70,6 +70,8 @@ func initLogger(e *echo.Echo) {
 
 		lib.DefaultEchoLogWriter = io.MultiWriter(logsFile)
 
+		// Logs d'accès
+		// ------------
 		if viper.GetBool("log.server.enableAccessLog") {
 			logsFile, err := os.OpenFile(
 				"./"+viper.GetString("log.server.dirPath")+viper.GetString("log.server.accessFileName"),
@@ -82,6 +84,18 @@ func initLogger(e *echo.Echo) {
 				Output:           io.Writer(logsFile),
 				CustomTimeFormat: "2006-01-02 15:04:05",
 			}))
+		}
+
+		// Logs SQL
+		// --------
+		if viper.GetInt("log.sql.level") > 0 {
+			logsFile, err := os.OpenFile(
+				"./"+viper.GetString("log.server.dirPath")+viper.GetString("log.sql.sqlFilename"),
+				os.O_RDWR|os.O_CREATE|os.O_APPEND,
+				0644)
+			lib.CheckError(err, 3)
+
+			lib.DefaultSqlLogWriter = io.MultiWriter(logsFile)
 		}
 	} else {
 		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{

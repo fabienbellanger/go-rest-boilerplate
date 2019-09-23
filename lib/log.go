@@ -12,8 +12,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-// DefaultEchoLogWriter displays logs on the good writer
+// DefaultEchoLogWriter displays errors logs on the good writer
 var DefaultEchoLogWriter io.Writer
+
+// DefaultSqlLogWriter displays SQL logs on the good writer
+var DefaultSqlLogWriter io.Writer
 
 var (
 	redColor   = string([]byte{27, 91, 57, 55, 59, 52, 49, 109})
@@ -43,10 +46,10 @@ func CustomLog(v ...interface{}) {
 
 // SQLLog displays SQL log in gin.DefaultWriter
 func SQLLog(latency time.Duration, query string, args ...interface{}) {
-	if DefaultEchoLogWriter == nil {
-		DefaultEchoLogWriter = os.Stdout
+	if DefaultSqlLogWriter == nil {
+		DefaultSqlLogWriter = os.Stdout
 	}
-	log.SetOutput(DefaultEchoLogWriter)
+	log.SetOutput(DefaultSqlLogWriter)
 
 	// Remove logs timestamp
 	log.SetFlags(0)
