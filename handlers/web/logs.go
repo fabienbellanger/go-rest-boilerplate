@@ -1,7 +1,6 @@
 package web
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -25,13 +24,13 @@ func NewLogsHandler() *LogsHandler {
 // GetLogs returns logs
 func (h *LogsHandler) GetLogs(c echo.Context) error {
 	accessLogs, _ := h.repository.GetAccessLogs(5)
-	accessLogsJson, _ := json.Marshal(accessLogs)
 	errorLogs, _ := h.repository.GetErrorLogs(5)
-	errorLogsJson, _ := json.Marshal(errorLogs)
+	// accessLogsJson, _ := json.Marshal(accessLogs)
+	// errorLogsJson, _ := json.Marshal(errorLogs)
 
 	return c.Render(http.StatusOK, "logs/index.gohtml", map[string]interface{}{
-		"title":      "Logs interface",
-		"accessLogs": string(accessLogsJson),
-		"errorLogs":  string(errorLogsJson),
+		"title":      "Logs server interface",
+		"accessLogs": accessLogs,
+		"errorLogs":  errorLogs,
 	})
 }

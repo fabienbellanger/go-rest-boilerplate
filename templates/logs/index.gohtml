@@ -1,16 +1,79 @@
 {{- define "logs/index.gohtml" }}
     {{- template "layout/header.gohtml" . }}
     {{- template "logs/css.gohtml" . }}
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
     </head>
 
     <body>
         <div class="container-fluid">
-            <h1>Logs</h1>
-            <pre>{{ .accessLogs }}</pre>
-            <pre>{{ .errorLogs }}</pre>
+            <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+                <a class="navbar-brand" href="#">{{ .title }}</a>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                </div>
+            </nav>
+
+            <div class="MainContainer">
+                <div>
+                    <p class="font-weight-bold">Access logs</p>
+                    {{- if gt (len .accessLogs) 0 }}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover table-sm" id="accessLogsTable">
+                            <thead>
+                                 <tr>
+                                     <th scope="col">Timestamp</th>
+                                     <th scope="col">Code</th>
+                                     <th scope="col">Latency</th>
+                                     <th scope="col">Method</th>
+                                     <th scope="col">URI</th>
+                                 </tr>
+                            </thead>
+                            <tbody>
+                            {{- range $index, $log := .accessLogs }}
+                                <tr>
+                                    <td>{{ $log.Echo.Timestamp }}</td>
+                                    <td align="center">{{ $log.Echo.Code }}</td>
+                                    <td align="right">{{ $log.Echo.Latency }}</td>
+                                    <td align="center">{{ $log.Echo.Method }}</td>
+                                    <td>{{ $log.Echo.Uri }}</td>
+                                </tr>
+                            {{- end }}
+                            </tbody>
+                        </table>
+                    </div>
+                    {{- end }}
+                </div>
+
+                <div>
+                    <p class="font-weight-bold">Error logs</p>
+                    {{- if gt (len .errorLogs) 0 }}
+                    <ul>
+                    {{- range $index, $log := .errorLogs }}
+                        <li>
+                        {{- if $log.Error }}
+                            {{ $log.Error.Timestamp }} | {{ $log.Error.Message }}
+                        {{- else if $log.Sql }}
+                            {{ $log.Sql.Timestamp }} | {{ $log.Sql.Request }} | {{ $log.Sql.Latency }} | {{ $log.Sql.Query }} | {{ $log.Sql.Paramters }}
+                        {{- end }}
+                        </li>
+                    {{- end }}
+                    </ul>
+                    {{- end }}
+                </div>
+            </div>
         </div>
 
         {{- template "logs/javascript.gohtml" }}
+        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(function()
+            {
+                $('#accessLogsTable').DataTable({
+                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, "All"]],
+                });
+            });
+        </script>
     </body>
     {{- template "layout/footer.gohtml" }}
 {{- end }}

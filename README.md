@@ -196,7 +196,10 @@ go tool cover -html=<fichier à analyser>
     -  [x] Gérer la variable `limit` dans fichier de configuration
     -  [x] Gérer la rotation des logs
     -  [x] Logger GORM
+-  [ ] Mettre les logs SQL dans un fichier à part
 -  [ ] Faire une interface graphique pour afficher et filter les logs
+    -  [ ] Mettre une Basic Auth
+    -  [ ] Séparer du serveur principal, ie. nouveau serveur
 -  [ ] Utiliser et rendre paramétrable le Log Level d'Echo
 -  [ ] Gestion des timezones
 -  [ ] Facade pour les datetimes
