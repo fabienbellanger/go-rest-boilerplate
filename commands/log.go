@@ -27,6 +27,7 @@ type logFile struct {
 
 var logErrorFileName string
 var logAccessFileName string
+var logSqlFileName string
 
 func init() {
 	// Ajout de la commande à la commande racine
@@ -70,22 +71,26 @@ func executeLogsRotation() {
 	// --------------------------------------------------
 	logErrorFiles := findLogFile(logErrorFileName)
 	logAccessFiles := findLogFile(logAccessFileName)
+	logSqlFiles := findLogFile(logSqlFileName)
 
 	// Rotation des fichiers de log non archivés
 	// -----------------------------------------
 	makeLogsRotation(logErrorFiles)
 	makeLogsRotation(logAccessFiles)
+	makeLogsRotation(logSqlFiles)
 
 	// Archivage des fichiers de log
 	// -----------------------------
 	makeLogsArchiving(logErrorFiles, logErrorFileName)
 	makeLogsArchiving(logAccessFiles, logAccessFileName)
+	makeLogsArchiving(logSqlFiles, logSqlFileName)
 
 	// Déplace le contenu du fichier courant dans le fichier préfixé par .1
 	// et remet à zéro le contenu du fichier courant
 	// --------------------------------------------------------------------
 	createNewLogFile(logErrorFileName)
 	createNewLogFile(logAccessFileName)
+	createNewLogFile(logSqlFileName)
 
 	lib.DisplaySuccessMessage("Logs rotation successfully completed\n")
 }
@@ -128,18 +133,28 @@ func copyFile(sourceName, destinationName string) {
 
 // checkLogFiles checks if log files exists
 func checkLogFiles() {
+	// Error logs
+	// ----------
 	logErrorFileName = viper.GetString("log.server.dirPath") + viper.GetString("log.server.errorFilename")
-
 	_, err := os.OpenFile(logErrorFileName, os.O_RDWR, 0755)
 	if err != nil {
 		lib.CheckError(errors.New("log file "+viper.GetString("log.server.errorFilename")+" does not exists"), 2)
 	}
 
+	// Access logs
+	// -----------
 	logAccessFileName = viper.GetString("log.server.dirPath") + viper.GetString("log.server.accessFilename")
-
 	_, err = os.OpenFile(logErrorFileName, os.O_RDWR, 0755)
 	if err != nil {
 		lib.CheckError(errors.New("log file "+viper.GetString("log.server.errorFilename")+" does not exists"), 2)
+	}
+
+	// SQL logs
+	// --------
+	logSqlFileName = viper.GetString("log.server.dirPath") + viper.GetString("log.sql.sqlFilename")
+	_, err = os.OpenFile(logSqlFileName, os.O_RDWR, 0755)
+	if err != nil {
+		lib.CheckError(errors.New("log file "+viper.GetString("log.sql.sqlFilename")+" does not exists"), 2)
 	}
 }
 
