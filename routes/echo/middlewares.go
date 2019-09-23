@@ -63,7 +63,7 @@ func initLogger(e *echo.Echo) {
 		// Ouvre le fichier error.log. S'il ne le trouve pas, il le crée
 		// ---------------------------------------------------------------
 		logsFile, err := os.OpenFile(
-			"./"+viper.GetString("log.server.dirPath")+viper.GetString("log.server.errorFilename"),
+			"./"+viper.GetString("log.dirPath")+viper.GetString("log.server.errorFilename"),
 			os.O_RDWR|os.O_CREATE|os.O_APPEND,
 			0644)
 		lib.CheckError(err, 1)
@@ -74,7 +74,7 @@ func initLogger(e *echo.Echo) {
 		// ------------
 		if viper.GetBool("log.server.enableAccessLog") {
 			logsFile, err := os.OpenFile(
-				"./"+viper.GetString("log.server.dirPath")+viper.GetString("log.server.accessFileName"),
+				"./"+viper.GetString("log.dirPath")+viper.GetString("log.server.accessFileName"),
 				os.O_RDWR|os.O_CREATE|os.O_APPEND,
 				0644)
 			lib.CheckError(err, 2)
@@ -90,7 +90,7 @@ func initLogger(e *echo.Echo) {
 		// --------
 		if viper.GetInt("log.sql.level") > 0 {
 			logsFile, err := os.OpenFile(
-				"./"+viper.GetString("log.server.dirPath")+viper.GetString("log.sql.sqlFilename"),
+				"./"+viper.GetString("log.dirPath")+viper.GetString("log.sql.sqlFilename"),
 				os.O_RDWR|os.O_CREATE|os.O_APPEND,
 				0644)
 			lib.CheckError(err, 3)

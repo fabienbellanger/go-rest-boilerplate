@@ -54,11 +54,12 @@ basicAuthPassword = ""
 port = 8889
 
 [log]
-    [log.server]
     dirPath = "logs/" # Inside project directory
+    nbFilesToArchive = 7
+
+    [log.server]
     errorFilename = "error.log"
     accessFilename = "access.log"
-    nbFilesToArchive = 7
     enableAccessLog = true
 
     [log.sql]

@@ -59,8 +59,8 @@ var LogCommand = &cobra.Command{
 func executeLogsRotation() {
 	// Le répertoire existe t-il ?
 	// ---------------------------
-	if _, err := os.Stat(viper.GetString("log.server.dirPath")); os.IsNotExist(err) {
-		lib.CheckError(errors.New(viper.GetString("log.server.dirPath")+" directory does not exist"), 1)
+	if _, err := os.Stat(viper.GetString("log.dirPath")); os.IsNotExist(err) {
+		lib.CheckError(errors.New(viper.GetString("log.dirPath")+" directory does not exist"), 1)
 	}
 
 	// Vérifie que les fichiers d'erreur et d'accès existent
@@ -135,7 +135,7 @@ func copyFile(sourceName, destinationName string) {
 func checkLogFiles() {
 	// Error logs
 	// ----------
-	logErrorFileName = viper.GetString("log.server.dirPath") + viper.GetString("log.server.errorFilename")
+	logErrorFileName = viper.GetString("log.dirPath") + viper.GetString("log.server.errorFilename")
 	_, err := os.OpenFile(logErrorFileName, os.O_RDWR, 0755)
 	if err != nil {
 		lib.CheckError(errors.New("log file "+viper.GetString("log.server.errorFilename")+" does not exists"), 2)
@@ -143,7 +143,7 @@ func checkLogFiles() {
 
 	// Access logs
 	// -----------
-	logAccessFileName = viper.GetString("log.server.dirPath") + viper.GetString("log.server.accessFilename")
+	logAccessFileName = viper.GetString("log.dirPath") + viper.GetString("log.server.accessFilename")
 	_, err = os.OpenFile(logErrorFileName, os.O_RDWR, 0755)
 	if err != nil {
 		lib.CheckError(errors.New("log file "+viper.GetString("log.server.errorFilename")+" does not exists"), 2)
@@ -151,7 +151,7 @@ func checkLogFiles() {
 
 	// SQL logs
 	// --------
-	logSqlFileName = viper.GetString("log.server.dirPath") + viper.GetString("log.sql.sqlFilename")
+	logSqlFileName = viper.GetString("log.dirPath") + viper.GetString("log.sql.sqlFilename")
 	_, err = os.OpenFile(logSqlFileName, os.O_RDWR, 0755)
 	if err != nil {
 		lib.CheckError(errors.New("log file "+viper.GetString("log.sql.sqlFilename")+" does not exists"), 2)
@@ -164,7 +164,7 @@ func findLogFile(logFilename string) []logFile {
 
 	// On parcours tous les fichiers du dossier
 	// ----------------------------------------
-	err := filepath.Walk(viper.GetString("log.server.dirPath"), func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(viper.GetString("log.dirPath"), func(path string, info os.FileInfo, err error) error {
 		isLogFile, _ := regexp.Match(`^`+logFilename+`.[\d]+$`, []byte(path))
 
 		if isLogFile {
@@ -203,7 +203,7 @@ func findArchiveName(fileName string) (string, error) {
 
 	// On parcours tous les fichiers du dossier
 	// ----------------------------------------
-	err := filepath.Walk(viper.GetString("log.server.dirPath"), func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(viper.GetString("log.dirPath"), func(path string, info os.FileInfo, err error) error {
 		regexResult := regex.FindAllSubmatch([]byte(path), -1)
 
 		for _, matchMessage := range regexResult {
