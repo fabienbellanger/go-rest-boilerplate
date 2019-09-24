@@ -22,10 +22,10 @@ type LogEchoFile struct {
 }
 
 type LogSqlFile struct {
-	Source    string `json:"source"`
-	Timestamp string `json:"timestamp"`
-	Request   string `json:"request"`
-	Latency   string `json:"latency"`
-	Query     string `json:"query"`
-	Paramters string `json:"parameters"`
+	Source     string `json:"source"`
+	Timestamp  string `json:"timestamp"`
+	Request    string `json:"request"`
+	Latency    string `json:"latency"`
+	Query      string `json:"query"`
+	Parameters string `json:"parameters"`
 }
