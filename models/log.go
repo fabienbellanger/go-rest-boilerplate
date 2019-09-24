@@ -15,7 +15,7 @@ type LogErrorFile struct {
 type LogEchoFile struct {
 	Source    string `json:"source"`
 	Timestamp string `json:"timestamp"`
-	Code      string `json:"code"`
+	Code      int    `json:"code"`
 	Latency   string `json:"latency"`
 	Method    string `json:"method"`
 	Uri       string `json:"uri"`

@@ -18,9 +18,9 @@
                         <tr>
                             <td>{{ $log.Echo.Timestamp }}</td>
                             <td align="center">
-                                {{- if or (eq $log.Echo.Code "200") (eq $log.Echo.Code "201") }}
+                                {{- if and (ge $log.Echo.Code 200) (lt $log.Echo.Code 300) }}
                                     <span class="badge badge-pill badge-success">{{ $log.Echo.Code }}</span>
-                                {{- else if eq $log.Echo.Code "500" }}
+                                {{- else if eq $log.Echo.Code 500 }}
                                     <span class="badge badge-pill badge-danger">{{ $log.Echo.Code }}</span>
                                 {{- else }}
                                     <span class="badge badge-pill badge-warning">{{ $log.Echo.Code }}</span>

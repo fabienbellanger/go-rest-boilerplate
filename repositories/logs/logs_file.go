@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -140,9 +141,11 @@ func parseEcho(line string) (log models.LogEchoFile, isFound bool) {
 	if len(found) == 1 {
 		for _, match := range found {
 			if len(match) == 7 {
+				code, _ := strconv.Atoi(strings.Trim(match[3], " "))
+
 				log.Source = strings.Trim(match[1], " ")
 				log.Timestamp = strings.Trim(match[2], " ")
-				log.Code = strings.Trim(match[3], " ")
+				log.Code = code
 				log.Latency = strings.Trim(match[4], " ")
 				log.Method = strings.Trim(match[5], " ")
 				log.Uri = strings.Trim(match[6], " ")

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"html/template"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -19,6 +20,21 @@ func NewLogsHandler() *LogsHandler {
 	return &LogsHandler{
 		repository: logsRepository.NewfileLogsRepository(),
 	}
+}
+
+var templateFuncMap = template.FuncMap{
+	"displayHttpCode": displayHttpCode,
+}
+
+// displayHttpCode displays right color in function of HTTP code
+func displayHttpCode(code int) string {
+	if code >= 200 && code < 300 {
+		return "success"
+	} else if code >= 500 && code < 600 {
+		return "danger"
+	}
+
+	return "warning"
 }
 
 // GetLogs returns logs
