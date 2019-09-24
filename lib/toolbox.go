@@ -11,7 +11,7 @@ import (
 func CheckError(err error, exitCode int) {
 	if err != nil {
 		if exitCode != 0 {
-			CustomLog("Error (" + strconv.Itoa(exitCode) + "): " + err.Error())
+			CustomLog("Error(" + strconv.Itoa(exitCode) + "): " + err.Error())
 
 			os.Exit(exitCode)
 		} else {

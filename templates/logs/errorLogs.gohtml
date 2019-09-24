@@ -2,24 +2,22 @@
     <div>
         <p class="font-weight-bold">Error logs</p>
         {{- if gt (len .errorLogs) 0 }}
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover table-sm" id="errorLogsTable">
-                    <thead>
+            <table class="table table-bordered table-striped table-hover table-sm" id="errorLogsTable">
+                <thead>
                     <tr>
                         <th scope="col">Timestamp</th>
                         <th scope="col">Message</th>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {{- range $index, $log := .errorLogs }}
-                        <tr>
-                            <td>{{ $log.Error.Timestamp }}</td>
-                            <td>{{ $log.Error.Message }}</td>
-                        </tr>
-                    {{- end }}
-                    </tbody>
-                </table>
-            </div>
+                </thead>
+                <tbody>
+                {{- range $index, $log := .errorLogs }}
+                    <tr>
+                        <td>{{ $log.Error.Timestamp }}</td>
+                        <td>{{ $log.Error.Message }}</td>
+                    </tr>
+                {{- end }}
+                </tbody>
+            </table>
         {{- end }}
     </div>
 {{- end }}

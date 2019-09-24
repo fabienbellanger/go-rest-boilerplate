@@ -6,3 +6,7 @@ body {
 .MainContainer {
     margin-top: 70px;
 }
+
+.http-code, .http-method {
+    font-size: 0.8rem;
+}

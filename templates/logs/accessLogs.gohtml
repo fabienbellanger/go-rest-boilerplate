@@ -2,9 +2,8 @@
     <div>
         <p class="font-weight-bold">Access logs</p>
         {{- if gt (len .accessLogs) 0 }}
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover table-sm" id="accessLogsTable">
-                    <thead>
+            <table class="table table-bordered table-striped table-hover table-sm" id="accessLogsTable">
+                <thead>
                     <tr>
                         <th scope="col">Timestamp</th>
                         <th scope="col">Code</th>
@@ -12,30 +11,25 @@
                         <th scope="col">Method</th>
                         <th scope="col">URI</th>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {{- range $index, $log := .accessLogs }}
-                        <tr>
-                            <td>{{ $log.Echo.Timestamp }}</td>
-                            <td align="center">
-                                {{- if and (ge $log.Echo.Code 200) (lt $log.Echo.Code 300) }}
-                                    <span class="badge badge-pill badge-success">{{ $log.Echo.Code }}</span>
-                                {{- else if eq $log.Echo.Code 500 }}
-                                    <span class="badge badge-pill badge-danger">{{ $log.Echo.Code }}</span>
-                                {{- else }}
-                                    <span class="badge badge-pill badge-warning">{{ $log.Echo.Code }}</span>
-                                {{- end }}
-                            </td>
-                            <td align="right">{{ $log.Echo.Latency }}</td>
-                            <td align="center">
-                                <span class="badge badge-pill badge-dark">{{ $log.Echo.Method }}</span>
-                            </td>
-                            <td>{{ $log.Echo.Uri }}</td>
-                        </tr>
-                    {{- end }}
-                    </tbody>
-                </table>
-            </div>
+                </thead>
+                <tbody>
+                {{- range $index, $log := .accessLogs }}
+                    <tr>
+                        <td>{{ $log.Echo.Timestamp }}</td>
+                        <td align="center">
+                            <span class="badge badge-pill badge-{{ displayHttpCode $log.Echo.Code }} http-code">
+                                {{ $log.Echo.Code }}
+                            </span>
+                        </td>
+                        <td align="right">{{ $log.Echo.Latency }}</td>
+                        <td align="center">
+                            <span class="badge badge-pill badge-dark http-method">{{ $log.Echo.Method }}</span>
+                        </td>
+                        <td>{{ $log.Echo.Uri }}</td>
+                    </tr>
+                {{- end }}
+                </tbody>
+            </table>
         {{- end }}
     </div>
 {{- end }}

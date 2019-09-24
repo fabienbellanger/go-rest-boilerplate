@@ -1,9 +1,9 @@
 package echo
 
 import (
+	"html/template"
 	"io"
 	"os"
-	"text/template"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
+	"github.com/fabienbellanger/go-rest-boilerplate/routes/web"
 )
 
 // TemplateRenderer is a custom html/template renderer for Echo framework
@@ -23,10 +24,11 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 	return t.templates.ExecuteTemplate(w, name, data)
 }
 
-// initTemplates initializes template renderer
-func initTemplates(e *echo.Echo) {
+// initWebTemplates initializes template renderer
+func initWebTemplates(e *echo.Echo) {
 	t := &TemplateRenderer{
-		templates: template.Must(template.ParseGlob("templates/**/*.gohtml")),
+		templates: template.Must(
+			template.New("").Funcs(web.TemplateFuncMap).ParseGlob("templates/**/*.gohtml")),
 	}
 	e.Renderer = t
 }

@@ -2,9 +2,8 @@
     <div>
         <p class="font-weight-bold">SQL logs</p>
         {{- if gt (len .sqlLogs) 0 }}
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover table-sm" id="sqlLogsTable">
-                    <thead>
+            <table class="table table-bordered table-striped table-hover table-sm" id="sqlLogsTable">
+                <thead>
                     <tr>
                         <th scope="col">Timestamp</th>
                         <th scope="col">Request</th>
@@ -12,22 +11,21 @@
                         <th scope="col">Query</th>
                         <th scope="col">Parameters</th>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {{- range $index, $log := .sqlLogs }}
-                        <tr>
-                            <td>{{ $log.Sql.Timestamp }}</td>
-                            <td align="center">
-                                <span class="badge badge-pill badge-info">{{ $log.Sql.Request }}</span>
-                            </td>
-                            <td align="right">{{ $log.Sql.Latency }}</td>
-                            <td>{{ $log.Sql.Query }}</td>
-                            <td>{{ $log.Sql.Parameters }}</td>
-                        </tr>
-                    {{- end }}
-                    </tbody>
-                </table>
-            </div>
+                </thead>
+                <tbody>
+                {{- range $index, $log := .sqlLogs }}
+                    <tr>
+                        <td>{{ $log.Sql.Timestamp }}</td>
+                        <td align="center">
+                            <span class="badge badge-pill badge-info">{{ $log.Sql.Request }}</span>
+                        </td>
+                        <td align="right">{{ $log.Sql.Latency }}</td>
+                        <td>{{ $log.Sql.Query }}</td>
+                        <td>{{ $log.Sql.Parameters }}</td>
+                    </tr>
+                {{- end }}
+                </tbody>
+            </table>
         {{- end }}
     </div>
 {{- end }}

@@ -45,5 +45,5 @@ func initWebStaticFilesAndTemplates(e *echo.Echo) {
 
 	// Templates
 	// ---------
-	initTemplates(e)
+	initWebTemplates(e)
 }
