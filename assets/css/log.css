@@ -1,5 +1,5 @@
 body {
-    font-size: 0.875rem;
+    font-size:   0.875rem;
     font-family: 'Roboto';
 }
 
@@ -7,6 +7,10 @@ body {
     margin-top: 70px;
 }
 
-.http-code, .http-method {
+#accessLogsList, #errorLogsList, #sqlLogsList {
+    margin-top: 20px;
+}
+
+.http-code, .http-method, .request-type {
     font-size: 0.8rem;
 }

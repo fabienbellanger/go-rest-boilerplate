@@ -9,14 +9,41 @@
             <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
                 <a class="navbar-brand" href="#">{{ .title }}</a>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                </div>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent"></div>
             </nav>
 
             <div class="MainContainer">
-                {{- template "logs/accessLogs.gohtml" . }}
-                {{- template "logs/errorLogs.gohtml" . }}
-                {{- template "logs/sqlLogs.gohtml" . }}
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="errors-tab" data-toggle="tab" href="#errors" role="tab"
+                           aria-controls="errors" aria-selected="true">
+                            Errors
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="sql-tab" data-toggle="tab" href="#sql" role="tab"
+                           aria-controls="sql" aria-selected="false">
+                            SQL
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="access-tab" data-toggle="tab" href="#access" role="tab"
+                           aria-controls="access" aria-selected="false">
+                            Access
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="errors" role="tabpanel" aria-labelledby="errors-tab">
+                        {{- template "logs/errorLogs.gohtml" . }}
+                    </div>
+                    <div class="tab-pane fade" id="sql" role="tabpanel" aria-labelledby="sql-tab">
+                        {{- template "logs/sqlLogs.gohtml" . }}
+                    </div>
+                    <div class="tab-pane fade" id="access" role="tabpanel" aria-labelledby="access-tab">
+                        {{- template "logs/accessLogs.gohtml" . }}
+                    </div>
+                </div>
             </div>
         </div>
 

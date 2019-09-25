@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
-	"github.com/fabienbellanger/go-rest-boilerplate/routes/web"
+	"github.com/fabienbellanger/go-rest-boilerplate/templates"
 )
 
 // TemplateRenderer is a custom html/template renderer for Echo framework
@@ -28,7 +28,7 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 func initWebTemplates(e *echo.Echo) {
 	t := &TemplateRenderer{
 		templates: template.Must(
-			template.New("").Funcs(web.TemplateFuncMap).ParseGlob("templates/**/*.gohtml")),
+			template.New("").Funcs(templates.TemplateFuncMap).ParseGlob("templates/**/*.gohtml")),
 	}
 	e.Renderer = t
 }
