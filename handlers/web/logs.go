@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -28,9 +29,18 @@ func (h *LogsHandler) GetLogs(c echo.Context) error {
 	sqlLogs, _ := h.repository.GetSqlLogs(5)
 
 	return c.Render(http.StatusOK, "logs/index.gohtml", map[string]interface{}{
-		"title":      "Logs server interface",
+		"title":      "Server Logs Interface",
 		"accessLogs": accessLogs,
 		"errorLogs":  errorLogs,
 		"sqlLogs":    sqlLogs,
 	})
+}
+
+// GetErrorsLogs returns logs
+func (h *LogsHandler) GetErrorsLogs(c echo.Context) error {
+	query := c.Request().URL.Query()
+	delete(query, "_")
+	fmt.Printf("%+v\n", query)
+
+	return c.String(http.StatusOK, "OK")
 }

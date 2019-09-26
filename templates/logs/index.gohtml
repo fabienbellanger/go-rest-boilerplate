@@ -51,18 +51,25 @@
         <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
         <script>
-            $(document).ready(function()
+            $(function()
             {
-                $('#accessLogsTable').DataTable({
-                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, "All"]],
-                });
-
                 $('#errorLogsTable').DataTable({
-                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, "All"]],
+                    'processing': true,
+                    'serverSide': true,
+                    'ajax': 'logs/loadErrors',
+                    'columns': [
+                        { 'data': 'timestamp' },
+                        { 'data': 'message' },
+                    ],
+                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, 'All']],
                 });
 
                 $('#sqlLogsTable').DataTable({
-                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, "All"]],
+                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, 'All']],
+                });
+
+                $('#accessLogsTable').DataTable({
+                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, 'All']],
                 });
             });
         </script>

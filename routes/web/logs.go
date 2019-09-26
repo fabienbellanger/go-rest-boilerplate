@@ -23,4 +23,5 @@ func (r *webLogsRoute) LogsRoutes() {
 	logsHandler := web.NewLogsHandler()
 
 	r.Group.GET("/logs", logsHandler.GetLogs)
+	r.Group.GET("/logs/loadErrors", logsHandler.GetErrorsLogs)
 }
