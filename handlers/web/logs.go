@@ -36,8 +36,8 @@ func (h *LogsHandler) GetLogs(c echo.Context) error {
 	})
 }
 
-// GetErrorsLogs returns logs
-func (h *LogsHandler) GetErrorsLogs(c echo.Context) error {
+// LoadLogs returns logs
+func (h *LogsHandler) LoadLogs(c echo.Context) error {
 	query := c.Request().URL.Query()
 	delete(query, "_")
 	fmt.Printf("%+v\n", query)

@@ -56,8 +56,8 @@
                 $('#errorLogsTable').DataTable({
                     'processing': true,
                     'serverSide': true,
-                    'ajax': 'logs/loadErrors',
-                    'columns': [
+                    'ajax':       'logs/load?logType=errors',
+                    'columns':    [
                         { 'data': 'timestamp' },
                         { 'data': 'message' },
                     ],
