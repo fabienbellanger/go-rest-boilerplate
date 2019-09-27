@@ -11,12 +11,14 @@ var logsErrors bool
 var logsSql bool
 var logsAccess bool
 var logsAll bool
+var logsCsvSeparator string
 
 func init() {
 	LogsExportCommand.Flags().BoolVarP(&logsErrors, "errors", "e", false, "Export errors logs")
 	LogsExportCommand.Flags().BoolVarP(&logsAccess, "access", "a", false, "Export access logs")
 	LogsExportCommand.Flags().BoolVarP(&logsSql, "sql", "s", false, "Export SQL logs")
 	LogsExportCommand.Flags().BoolVarP(&logsAll, "all", "A", false, "Export all logs")
+	LogsExportCommand.Flags().StringVarP(&logsCsvSeparator, "separator", "c", ";", "CSV separator (',', ';', 'tab')")
 
 	// Ajout de la commande à la commande racine
 	rootCommand.AddCommand(LogsExportCommand)
@@ -63,7 +65,9 @@ var LogsExportCommand = &cobra.Command{
 			logs = append(logs, "sql")
 		}
 
-		log.Printf("%+v\n", logs)
+		if logsCsvSeparator != "," && logsCsvSeparator != ";" && logsCsvSeparator != "tab" {
+			// TODO: error
+		}
 
 		// Traitement
 		// ----------
@@ -73,5 +77,5 @@ var LogsExportCommand = &cobra.Command{
 
 // exportLogs exports selected logs
 func exportLogs(logs []string) {
-	log.Printf("%+v\n", logs)
+	log.Printf("Separator: %s\nLogs: %+v\n", logsCsvSeparator, logs)
 }
