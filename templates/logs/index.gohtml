@@ -54,22 +54,15 @@
             $(function()
             {
                 $('#errorLogsTable').DataTable({
-                    'processing': true,
-                    'serverSide': true,
-                    'ajax':       'logs/load?logType=errors',
-                    'columns':    [
-                        { 'data': 'timestamp' },
-                        { 'data': 'message' },
-                    ],
-                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, 'All']],
+                    'lengthMenu': [[100, 200, 500], [100, 200, 500]],
                 });
 
                 $('#sqlLogsTable').DataTable({
-                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, 'All']],
+                    'lengthMenu': [[100, 200, 500], [100, 200, 500]],
                 });
 
                 $('#accessLogsTable').DataTable({
-                    'lengthMenu': [[25, 50, 100, 500, -1], [25, 50, 100, 500, 'All']],
+                    'lengthMenu': [[100, 200, 500], [100, 200, 500]],
                 });
             });
         </script>

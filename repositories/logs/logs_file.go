@@ -1,12 +1,11 @@
 package logs
 
 import (
-	"bufio"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
 
+	"github.com/hpcloud/tail"
 	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
@@ -23,94 +22,70 @@ func NewfileLogsRepository() repositories.LogsRepository {
 
 // GetAccessLogs returns access logs
 func (m *fileLogsRepository) GetAccessLogs(size int) ([]models.LogFile, error) {
-	logs := getFileLines("logs/access.log", 5)
-
-	return logs, nil
+	return getFileLines("logs/access.log", size)
 }
 
 // GetErrorLogs returns error logs
 func (m *fileLogsRepository) GetErrorLogs(size int) ([]models.LogFile, error) {
-	logs := getFileLines("logs/error.log", 5)
-
-	return logs, nil
+	return getFileLines("logs/error.log", size)
 }
 
 // GetSqlLogs returns SQL logs
 func (m *fileLogsRepository) GetSqlLogs(size int) ([]models.LogFile, error) {
-	logs := getFileLines("logs/sql.log", 5)
-
-	return logs, nil
+	return getFileLines("logs/sql.log", size)
 }
 
-// Récupère les lignes du fichier
-func getFileLines(fileName string, size int) []models.LogFile {
-	file, err := os.Open(fileName)
-	defer file.Close()
-	lib.CheckError(err, 0)
-
-	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanLines)
-
+// Récupère les dernières lignes du fichier
+func getFileLines(fileName string, size int) ([]models.LogFile, error) {
 	var lines []models.LogFile
-	if size != 0 {
-		lines = make([]models.LogFile, 0, size)
-		i := 0
-		for scanner.Scan() && i < size {
-			text := scanner.Text()
-			if strings.Contains(fileName, viper.GetString("log.server.accessFilename")) {
-				// Logs d'accès
-				// ------------
-				if line, isFound := parseEcho(text); isFound {
-					lines = append(lines, models.LogFile{Echo: &line})
 
-					i++
-				}
-			} else if strings.Contains(fileName, viper.GetString("log.server.errorFilename")) {
-				// Logs d'erreur
-				// -------------
-				if line, isFound := parseError(text); isFound {
-					lines = append(lines, models.LogFile{Error: &line})
-
-					i++
-				}
-			} else if strings.Contains(fileName, viper.GetString("log.sql.sqlFilename")) {
-				// Logs SQL
-				// --------
-				if line, isFound := parseSql(text); isFound {
-					lines = append(lines, models.LogFile{Sql: &line})
-
-					i++
-				}
-			}
-		}
-	} else {
-		// Si size == 0, alors on prend toutes les lignes
-		lines = make([]models.LogFile, 0)
-		for scanner.Scan() {
-			text := scanner.Text()
-			if strings.Contains(fileName, viper.GetString("log.server.accessFilename")) {
-				// Logs d'accès
-				// ------------
-				if line, isFound := parseEcho(text); isFound {
-					lines = append(lines, models.LogFile{Echo: &line})
-				}
-			} else if strings.Contains(fileName, viper.GetString("log.server.errorFilename")) {
-				// Logs d'erreur
-				// -------------
-				if line, isFound := parseError(text); isFound {
-					lines = append(lines, models.LogFile{Error: &line})
-				}
-			} else if strings.Contains(fileName, viper.GetString("log.sql.sqlFilename")) {
-				// Logs SQL
-				// --------
-				if line, isFound := parseSql(text); isFound {
-					lines = append(lines, models.LogFile{Sql: &line})
-				}
-			}
-		}
+	if size < 0 {
+		return lines, nil
+	} else if size > 500 {
+		size = 500
 	}
 
-	return lines
+	// Récupération des lignes en partant de la fin du fichier
+	// -------------------------------------------------------
+	fileLines, err := tail.TailFile(fileName, tail.Config{Follow: false})
+	if err != nil {
+		lib.CheckError(err, 0)
+		return lines, err
+	}
+
+	// Traitement des lignes
+	// ---------------------
+	i := 0
+	lines = make([]models.LogFile, 0)
+	for fileLine := range fileLines.Lines {
+		if i >= size {
+			break
+		}
+
+		if strings.Contains(fileName, viper.GetString("log.server.accessFilename")) {
+			// Logs d'accès
+			// ------------
+			if line, isFound := parseEcho(fileLine.Text); isFound {
+				lines = append(lines, models.LogFile{Echo: &line})
+			}
+		} else if strings.Contains(fileName, viper.GetString("log.server.errorFilename")) {
+			// Logs d'erreur
+			// -------------
+			if line, isFound := parseError(fileLine.Text); isFound {
+				lines = append(lines, models.LogFile{Error: &line})
+			}
+		} else if strings.Contains(fileName, viper.GetString("log.sql.sqlFilename")) {
+			// Logs SQL
+			// --------
+			if line, isFound := parseSql(fileLine.Text); isFound {
+				lines = append(lines, models.LogFile{Sql: &line})
+			}
+		}
+
+		i++
+	}
+
+	return lines, nil
 }
 
 // parseError returns a variable of LogErrorFile type

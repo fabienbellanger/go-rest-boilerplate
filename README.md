@@ -197,6 +197,7 @@ go tool cover -html=<fichier à analyser>
     -  [x] Gérer la rotation des logs
     -  [] Logger GORM dans un fichier de log [GORM logger](http://gorm.io/docs/logger.html)
 -  [ ] Mettre les logs SQL dans un fichier à part
+-  [ ] Exporter les logs en CSV
 -  [ ] Faire une interface graphique pour afficher et filter les logs
     -  [ ] Mettre une Basic Auth
     -  [ ] Séparer du serveur principal, ie. nouveau serveur

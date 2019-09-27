@@ -14,3 +14,20 @@ body {
 .http-code, .http-method, .request-type {
     font-size: 0.8rem;
 }
+
+.col-timestamp {
+    width:       140px;
+    min-width:   140px;
+    white-space: nowrap;
+    overflow:    hidden;
+}
+
+.col-uri, .col-parameters, .col-query, .col-message {
+    text-overflow: ellipsis;
+    overflow:      hidden;
+    overflow-wrap: break-word;
+}
+
+.col-query {
+    min-width:  500px;
+}

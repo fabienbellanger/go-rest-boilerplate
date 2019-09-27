@@ -1,10 +1,14 @@
 package templates
 
-import "html/template"
+import (
+	"html/template"
+	"strings"
+)
 
 var TemplateFuncMap = template.FuncMap{
 	"getHttpCodeClass":   GetHttpCodeClass,
 	"getHttpMethodClass": GetHttpMethodClass,
+	"addNoBreakspace":    AddNoBreakspace,
 }
 
 // GetHttpCodeClass displays right CSS class in function of HTTP code
@@ -34,4 +38,9 @@ func GetHttpMethodClass(method string) string {
 	default:
 		return "secondary"
 	}
+}
+
+// AddNoBreakspace adds &nbsp; instead of spaces
+func AddNoBreakspace(s string) template.HTML {
+	return template.HTML(strings.ReplaceAll(s, " ", "&nbsp;"))
 }

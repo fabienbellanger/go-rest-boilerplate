@@ -4,7 +4,7 @@
         <table class="table table-bordered table-striped table-hover table-sm" id="accessLogsTable">
             <thead>
                 <tr>
-                    <th scope="col" width="140px">Timestamp</th>
+                    <th scope="col" width="140px" class="col-timestamp">Timestamp</th>
                     <th scope="col" width="60px">Code</th>
                     <th scope="col" width="100px">Latency</th>
                     <th scope="col" width="70px">Method</th>
@@ -14,7 +14,7 @@
             <tbody>
             {{- range $index, $log := .accessLogs }}
                 <tr>
-                    <td>{{ $log.Echo.Timestamp }}</td>
+                    <td>{{ addNoBreakspace $log.Echo.Timestamp }}</td>
                     <td align="center">
                         <span class="badge badge-pill badge-{{ getHttpCodeClass $log.Echo.Code }} http-code">
                             {{ $log.Echo.Code }}
@@ -26,7 +26,7 @@
                             {{ $log.Echo.Method }}
                         </span>
                     </td>
-                    <td>{{ $log.Echo.Uri }}</td>
+                    <td class="col-uri">{{ $log.Echo.Uri }}</td>
                 </tr>
             {{- end }}
             </tbody>
