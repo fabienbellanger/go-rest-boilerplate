@@ -1,7 +1,7 @@
 {{- define "logs/sqlLogs.gohtml" }}
     <div id="sqlLogsList">
     {{- if gt (len .sqlLogs) 0 }}
-        <table class="table table-responsive table-bordered table-striped table-hover table-sm" id="sqlLogsTable">
+        <table class="table table-bordered table-striped table-hover table-sm" id="sqlLogsTable">
             <thead>
                 <tr>
                     <th scope="col" width="140px" class="col-timestamp">Timestamp</th>
