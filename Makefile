@@ -39,8 +39,12 @@ runDbDump:
 dbDump: install runDbDump
 
 runLogsRotation:
-	$(GORUN) main.go log
-log: install runLogsRotation
+	$(GORUN) main.go logs-rotation
+logsRotation: install runLogsRotation
+
+runLogsExport:
+	$(GORUN) main.go logs-export -A
+logsExport: install runLogsExport
 
 runMakeMigration:
 	$(GORUN) main.go make-migration

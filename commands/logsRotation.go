@@ -36,7 +36,7 @@ func init() {
 
 // LogCommand : Logs rotation command
 var LogCommand = &cobra.Command{
-	Use:   "log",
+	Use:   "logs-rotation",
 	Short: "Make server logs rotation",
 	Long:  "Make server logs rotation",
 	Run: func(cmd *cobra.Command, args []string) {

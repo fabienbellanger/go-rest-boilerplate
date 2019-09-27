@@ -29,7 +29,8 @@
 | Commande | Description |
 |---|---|
 | `make serve` | Launch Web server |
-| `make log` | Launch logs rotation |
+| `make logsRotation` | Launch logs rotation |
+| `make logsExport` | Launch logs CSV export |
 | `make dbInit` | Launch database initilization |
 | `make dbDump` | Launch database dump |
 | `make make-migration` | Create migration |
@@ -44,7 +45,8 @@ configuration `config.toml`.
 | Commande | Description |
 |---|---|
 | `./<binaire> serve` | Launch Web server |
-| `./<binaire> log` | Launch logs rotation |
+| `./<binaire> logs-rotation` | Launch logs rotation |
+| `./<binaire> logs-export` | Launch logs CSV export |
 | `./<binaire> db --init` | Launch database initilization |
 | `./<binaire> db --dump` | Launch database dump |
 | `./<binaire> make-migration -n <Name in CamelCase>` | Create migration |
@@ -196,12 +198,11 @@ go tool cover -html=<fichier à analyser>
     -  [x] Gérer la variable `limit` dans fichier de configuration
     -  [x] Gérer la rotation des logs
     -  [] Logger GORM dans un fichier de log [GORM logger](http://gorm.io/docs/logger.html)
--  [ ] Mettre les logs SQL dans un fichier à part
+-  [x] Mettre les logs SQL dans un fichier à part
 -  [ ] Exporter les logs en CSV
 -  [ ] Faire une interface graphique pour afficher et filter les logs
-    -  [ ] Mettre une Basic Auth
+    -  [x] Mettre une Basic Auth
     -  [ ] Séparer du serveur principal, ie. nouveau serveur
--  [ ] Utiliser et rendre paramétrable le Log Level d'Echo
 -  [ ] Gestion des timezones
 -  [ ] Facade pour les datetimes
 

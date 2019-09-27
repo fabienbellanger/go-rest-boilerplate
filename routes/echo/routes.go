@@ -40,10 +40,15 @@ func initApiRoutes(e *echo.Echo) {
 // initWebRoutes initializes routes list
 func initWebRoutes(e *echo.Echo) {
 	group := e.Group("")
-	protectedGroup := e.Group("")
+
+	// Routes
+	// ------
+	web.NewWebExampleRoute(group).ExampleRoutes()
 
 	// Protection des routes par une Basic Auth
 	// ----------------------------------------
+	protectedGroup := e.Group("")
+
 	protectedGroup.Use(middleware.BasicAuth(
 		func(username, password string, c echo.Context) (bool, error) {
 			basicAuthUsername := viper.GetString("debug.basicAuthUsername")
@@ -65,8 +70,7 @@ func initWebRoutes(e *echo.Echo) {
 		web.NewWebPprofRoute(protectedGroup).PprofRoutes()
 	}
 
-	// Routes
-	// ------
-	web.NewWebExampleRoute(group).ExampleRoutes()
-	web.NewWebLogsRoute(group).LogsRoutes()
+	// Interface de visualisation des logs
+	// -----------------------------------
+	web.NewWebLogsRoute(protectedGroup).LogsRoutes()
 }
