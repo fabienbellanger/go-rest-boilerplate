@@ -1,9 +1,13 @@
 package logs
 
 import (
+	"bufio"
+	"fmt"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/hpcloud/tail"
 	"github.com/spf13/viper"
@@ -33,6 +37,91 @@ func (m *fileLogsRepository) GetErrorLogs(size int) ([]models.LogFile, error) {
 // GetSqlLogs returns SQL logs
 func (m *fileLogsRepository) GetSqlLogs(size int) ([]models.LogFile, error) {
 	return getFileLines("logs/sql.log", size)
+}
+
+func GetCsvFromFilename(fileName string, sep string) (string, error) {
+	// Source
+	// ------
+	file, err := os.Open("logs/" + fileName)
+	if err != nil {
+		lib.CheckError(err, 0)
+		return "", nil
+	}
+	defer file.Close()
+
+	// Destination
+	// -----------
+	var exportFileName string
+	if strings.Contains(fileName, viper.GetString("log.server.errorFilename")) {
+		exportFileName = "errors"
+	} else if strings.Contains(fileName, viper.GetString("log.sql.sqlFilename")) {
+		exportFileName = "sql"
+	} else if strings.Contains(fileName, viper.GetString("log.server.accessFilename")) {
+		exportFileName = "access"
+	}
+	exportFileName += "_" + time.Now().Format("20060102150405") + ".csv"
+	exportFile, err := os.Create(exportFileName)
+	if err != nil {
+		lib.CheckError(err, 0)
+		return "", nil
+	}
+	defer exportFile.Close()
+
+	// Ecriture du fichier
+	// -------------------
+	if strings.Contains(fileName, viper.GetString("log.server.errorFilename")) {
+		fmt.Fprintf(exportFile, "\"%s\"%s\"%s\"\n", "Timestamp", sep, "Message")
+	} else if strings.Contains(fileName, viper.GetString("log.sql.sqlFilename")) {
+		fmt.Fprintf(exportFile, "\"%s\"%s\"%s\"%s\"%s\"%s\"%s\"%s\"%s\"\n",
+			"Timestamp", sep,
+			"Request", sep,
+			"Latency", sep,
+			"Query", sep,
+			"Parameters")
+	} else if strings.Contains(fileName, viper.GetString("log.server.accessFilename")) {
+		fmt.Fprintf(exportFile, "\"%s\"%s\"%s\"%s\"%s\"%s\"%s\"%s\"%s\"\n",
+			"Timestamp", sep,
+			"Code", sep,
+			"Latency", sep,
+			"Method", sep,
+			"URI")
+	}
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if strings.Contains(fileName, viper.GetString("log.server.errorFilename")) {
+			// Logs d'erreur
+			// -------------
+			if lineParsed, isFound := parseError(line); isFound {
+				fmt.Fprintf(exportFile, "\"%s\"%s\"%s\"\n", lineParsed.Timestamp, sep, lineParsed.Message)
+			}
+		} else if strings.Contains(fileName, viper.GetString("log.sql.sqlFilename")) {
+			// Logs SQL
+			// --------
+			if lineParsed, isFound := parseSql(line); isFound {
+				fmt.Fprintf(exportFile, "\"%s\"%s\"%s\"%s\"%s\"%s\"%s\"%s\"%s\"\n",
+					lineParsed.Timestamp, sep,
+					lineParsed.Request, sep,
+					lineParsed.Latency, sep,
+					lineParsed.Query, sep,
+					lineParsed.Parameters)
+			}
+		} else if strings.Contains(fileName, viper.GetString("log.server.accessFilename")) {
+			// Logs d'accès
+			// ------------
+			if lineParsed, isFound := parseEcho(line); isFound {
+				fmt.Fprintf(exportFile, "\"%s\"%s%d%s\"%s\"%s\"%s\"%s\"%s\"\n",
+					lineParsed.Timestamp, sep,
+					lineParsed.Code, sep,
+					lineParsed.Latency, sep,
+					lineParsed.Method, sep,
+					lineParsed.Uri)
+			}
+		}
+	}
+
+	return exportFileName, nil
 }
 
 // Récupère les dernières lignes du fichier

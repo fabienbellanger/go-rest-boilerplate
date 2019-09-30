@@ -11,6 +11,10 @@ dump_*.sql
 *.pprof
 goRestBoilerplate
 
+errors_*.csv
+sql_*.csv
+access_*.csv
+
 gin.log*
 /logs/*
 !/logs/.gitignore

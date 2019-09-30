@@ -1,10 +1,13 @@
 package commands
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
+	logsRepository "github.com/fabienbellanger/go-rest-boilerplate/repositories/logs"
 )
 
 var logsErrors bool
@@ -63,10 +66,16 @@ var LogsExportCommand = &cobra.Command{
 			logs = append(logs, "access")
 			logs = append(logs, "errors")
 			logs = append(logs, "sql")
+
+			logsAll = true
 		}
 
 		if logsCsvSeparator != "," && logsCsvSeparator != ";" && logsCsvSeparator != "tab" {
 			// TODO: error
+		}
+
+		if logsCsvSeparator == "tab" {
+			logsCsvSeparator = "\t"
 		}
 
 		// Traitement
@@ -77,5 +86,34 @@ var LogsExportCommand = &cobra.Command{
 
 // exportLogs exports selected logs
 func exportLogs(logs []string) {
-	log.Printf("Separator: %s\nLogs: %+v\n", logsCsvSeparator, logs)
+	if logsAll {
+		createFile(viper.GetString("log.server.errorFilename"))
+		createFile(viper.GetString("log.server.accessFilename"))
+		createFile(viper.GetString("log.sql.sqlFilename"))
+	} else {
+		if logsErrors {
+			createFile(viper.GetString("log.server.errorFilename"))
+		}
+
+		if logsAccess {
+			createFile(viper.GetString("log.server.accessFilename"))
+		}
+
+		if logsSql {
+			createFile(viper.GetString("log.sql.sqlFilename"))
+		}
+	}
+	fmt.Println("")
+}
+
+// createFile creates CSV file and display result to the console
+func createFile(fileName string) {
+	exportedFileName, err := logsRepository.GetCsvFromFilename(fileName, logsCsvSeparator)
+	if err != nil {
+		red := color.New(color.FgRed).SprintFunc()
+		fmt.Printf("[%s]  %s file not created\n", red("x"), exportedFileName)
+	} else {
+		green := color.New(color.FgGreen).SprintFunc()
+		fmt.Printf("[%s]  %s file created\n", green("✔"), exportedFileName)
+	}
 }
