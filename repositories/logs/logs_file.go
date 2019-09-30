@@ -39,6 +39,7 @@ func (m *fileLogsRepository) GetSqlLogs(size int) ([]models.LogFile, error) {
 	return getFileLines("logs/sql.log", size)
 }
 
+// GetCsvFromFilename creates a CSV file of log type
 func GetCsvFromFilename(fileName string, sep string) (string, error) {
 	// Source
 	// ------
