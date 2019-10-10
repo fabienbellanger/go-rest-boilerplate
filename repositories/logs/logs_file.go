@@ -70,6 +70,13 @@ func GetCsvFromFilename(fileName string, sep string) (string, error) {
 
 	// Ecriture du fichier
 	// -------------------
+	writeLogsFiles(fileName, exportFile, sep, file)
+
+	return exportFileName, nil
+}
+
+// writeLogsFiles write CSV file
+func writeLogsFiles(fileName string, exportFile *os.File, sep string, file *os.File) {
 	if strings.Contains(fileName, viper.GetString("log.server.errorFilename")) {
 		fmt.Fprintf(exportFile, "\"%s\"%s\"%s\"\n", "Timestamp", sep, "Message")
 	} else if strings.Contains(fileName, viper.GetString("log.sql.sqlFilename")) {
@@ -121,8 +128,6 @@ func GetCsvFromFilename(fileName string, sep string) (string, error) {
 			}
 		}
 	}
-
-	return exportFileName, nil
 }
 
 // Récupère les dernières lignes du fichier
