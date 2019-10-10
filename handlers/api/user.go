@@ -161,7 +161,7 @@ func (h *UserHandler) ChangePassword(c echo.Context) error {
 	ok := h.repository.ChangePassword(&user, newPassword)
 	if !ok {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": "An error has occured",
+			"message": "An error has occurred",
 		})
 	}
 

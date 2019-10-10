@@ -289,8 +289,8 @@ func makeLogsArchiving(logFiles []logFile, logFilename string) {
 		}
 	}
 
-	// Supression des fichiers logs archivés
-	// -------------------------------------
+	// Suppression des fichiers logs archivés
+	// --------------------------------------
 	for _, file := range logFilesName {
 		err = os.Remove(file)
 		lib.CheckError(err, 0)

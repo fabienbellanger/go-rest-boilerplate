@@ -11,10 +11,10 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
-// Database is the connection handle
+// Orm represents database is the connection handle
 var Orm *gorm.DB
 
-// Open connects to the database and links to the ORM
+// OpenORM connects to the database and links to the ORM
 func OpenORM() {
 	db, err := gorm.Open(
 		viper.GetString("database.driver"),

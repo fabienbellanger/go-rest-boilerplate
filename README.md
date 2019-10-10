@@ -1,5 +1,7 @@
 # Go Web Server boilerplate
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/fabienbellanger/go-rest-boilerplate)](https://goreportcard.com/report/github.com/fabienbellanger/go-rest-boilerplate)
+
 ## Sommaire
 -  [Installation](#installation)
 -  [Liste des commandes](#liste-des-commandes)

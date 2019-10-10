@@ -37,7 +37,7 @@ func InitDatabase() {
 	lib.CheckError(err, 1)
 	defer func() {
 		// Rollback the transaction after the function returns.
-		// If the transaction was already commited, this will do nothing.
+		// If the transaction was already committed, this will do nothing.
 		_ = transaction.Rollback()
 	}()
 
