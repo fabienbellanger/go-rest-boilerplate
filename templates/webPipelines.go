@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// TemplateFuncMap lists functions
 var TemplateFuncMap = template.FuncMap{
 	"getHttpCodeClass":   GetHttpCodeClass,
 	"getHttpMethodClass": GetHttpMethodClass,

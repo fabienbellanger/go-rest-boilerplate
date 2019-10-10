@@ -14,12 +14,12 @@ import (
 	userRepository "github.com/fabienbellanger/go-rest-boilerplate/repositories/user"
 )
 
-// BenchmarkHandler
+// BenchmarkHandler type
 type BenchmarkHandler struct {
 	userRepository repositories.UserRepository
 }
 
-// NewBenchmarkHandler
+// NewBenchmarkHandler type
 func NewBenchmarkHandler() *BenchmarkHandler {
 	return &BenchmarkHandler{
 		userRepository: userRepository.NewMysqlUserRepository(),

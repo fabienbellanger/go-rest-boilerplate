@@ -12,6 +12,7 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
+// Host type
 type Host struct {
 	Echo *echo.Echo
 }

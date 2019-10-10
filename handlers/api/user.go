@@ -25,12 +25,12 @@ type JwtClaims struct {
 	jwt.StandardClaims
 }
 
-// UserHandler
+// UserHandler type
 type UserHandler struct {
 	repository repositories.UserRepository
 }
 
-// NewUserHandler
+// NewUserHandler type
 func NewUserHandler() *UserHandler {
 	return &UserHandler{
 		repository: userRepository.NewMysqlUserRepository(),

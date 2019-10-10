@@ -9,12 +9,12 @@ import (
 	logsRepository "github.com/fabienbellanger/go-rest-boilerplate/repositories/logs"
 )
 
-// LogsHandler
+// LogsHandler type
 type LogsHandler struct {
 	repository repositories.LogsRepository
 }
 
-// NewLogsHandler
+// NewLogsHandler returns LogsHandler
 func NewLogsHandler() *LogsHandler {
 	return &LogsHandler{
 		repository: logsRepository.NewfileLogsRepository(),
