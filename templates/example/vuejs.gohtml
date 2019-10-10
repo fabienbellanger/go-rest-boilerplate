@@ -1,20 +1,22 @@
 {{- define "example/vuejs.gohtml" }}
     {{- template "layout/header.gohtml" . }}
+    </head>
 
-    <div id="app">
-        ${ message }
-    </div>
+    <body>
+        <div id="app">
+            ${ message }
+        </div>
 
-    <script type="text/javascript" src="/js/vue.js"></script>
-    <script type="text/javascript">
-        let app = new Vue({
-            el: '#app',
-            delimiters: ['${', '}'],
-            data: {
-                message: 'Hello Vue!',
-            }
-        });
-    </script>
-
+        <script type="text/javascript" src="/js/vue.js"></script>
+        <script type="text/javascript">
+            let app = new Vue({
+                el: '#app',
+                delimiters: ['${', '}'],
+                data: {
+                    message: 'Hello Vue!',
+                }
+            });
+        </script>
+    </body>
     {{- template "layout/footer.gohtml" }}
 {{- end }}

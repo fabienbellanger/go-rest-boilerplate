@@ -1,12 +1,14 @@
 package commands
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
 	"github.com/spf13/viper"
 
 	"github.com/fabienbellanger/go-rest-boilerplate/database"
+	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -14,14 +16,7 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/websockets"
 )
 
-var webSocketPort, webSocketDefaultPort int
-
 func init() {
-	// Flag
-	// ----
-	webSocketDefaultPort = 8889
-	WebSocketCommand.Flags().IntVarP(&webSocketPort, "port", "p", webSocketDefaultPort, "listened port")
-
 	// Ajout de la commande à la commande racine
 	rootCommand.AddCommand(WebSocketCommand)
 }
@@ -29,33 +24,28 @@ func init() {
 // WebSocketCommand : Web command
 var WebSocketCommand = &cobra.Command{
 	Use:   "websocket",
-	Short: "Launch the websocket server",
+	Short: "Launch the WebSocket server",
 
 	Run: func(cmd *cobra.Command, args []string) {
 		color.Yellow(`
 
-|------------------------------------|
-|                                    |
-| Lancement du serveur de WebSockets |
-|                                    |
-|------------------------------------|
+|--------------------------|
+|                          |
+| Launch WebSockets server |
+|                          |
+|--------------------------|
 
 `)
+		port := viper.GetInt("webSocketServer.port")
 
 		// Test du port
 		// ------------
-		if webSocketPort == webSocketDefaultPort && viper.GetInt("webSocketServer.port") != 0 {
-			// Si on n'a pas spécifié un port dans la commande, on prend celui du fichier de configuration
-			// -------------------------------------------------------------------------------------------
-			webSocketPort = viper.GetInt("webSocketServer.port")
-		}
-
-		if webSocketPort < 1000 || webSocketPort > 10000 {
-			webSocketPort = webSocketDefaultPort
+		if port < 1000 || port > 10000 {
+			lib.CheckError(errors.New("a valid port number must be configured (between 1000 and 10000)"), 1)
 		}
 
 		fmt.Print("Listening on port  ")
-		color.Green(strconv.Itoa(webSocketPort) + "\n")
+		color.Green(strconv.Itoa(port) + "\n")
 
 		// Connexion à l'ORM
 		// -----------------
@@ -67,6 +57,6 @@ var WebSocketCommand = &cobra.Command{
 
 		// Lancement du serveur websocket
 		// ------------------------------
-		websockets.ServerStart(webSocketPort)
+		websockets.ServerStart()
 	},
 }

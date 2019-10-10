@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/labstack/echo/v4"
 
-	userHandler "github.com/fabienbellanger/go-rest-boilerplate/handlers/user"
+	"github.com/fabienbellanger/go-rest-boilerplate/handlers/api"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes"
 )
 
@@ -20,7 +20,7 @@ func NewApiUserRoute(g *echo.Group) routes.ApiUserRoutes {
 
 // UsersRoutes manages users routes
 func (r *apiUserRoute) UsersRoutes() {
-	userHandler := userHandler.NewUserHandler()
+	userHandler := api.NewUserHandler()
 
 	r.Group.GET("/users", userHandler.GetUserDetailsHandler)
 	r.Group.PATCH("/users/change-password", userHandler.ChangePassword)

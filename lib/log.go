@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -11,8 +12,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-// DefaultEchoLogWriter displays logs on the good writer
+// DefaultEchoLogWriter displays errors logs on the good writer
 var DefaultEchoLogWriter io.Writer
+
+// DefaultSqlLogWriter displays SQL logs on the good writer
+var DefaultSqlLogWriter io.Writer
 
 var (
 	redColor   = string([]byte{27, 91, 57, 55, 59, 52, 49, 109})
@@ -29,6 +33,9 @@ func DisplaySuccessMessage(msg string) {
 
 // CustomLog displays logs
 func CustomLog(v ...interface{}) {
+	if DefaultEchoLogWriter == nil {
+		DefaultEchoLogWriter = os.Stdout
+	}
 	log.SetOutput(DefaultEchoLogWriter)
 
 	// Remove logs timestamp
@@ -39,7 +46,10 @@ func CustomLog(v ...interface{}) {
 
 // SQLLog displays SQL log in gin.DefaultWriter
 func SQLLog(latency time.Duration, query string, args ...interface{}) {
-	log.SetOutput(DefaultEchoLogWriter)
+	if DefaultSqlLogWriter == nil {
+		DefaultSqlLogWriter = os.Stdout
+	}
+	log.SetOutput(DefaultSqlLogWriter)
 
 	// Remove logs timestamp
 	log.SetFlags(0)
@@ -58,7 +68,7 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 	} else {
 		latencyColor = resetColor
 
-		if latency.Seconds() >= viper.GetFloat64("sql_log.limit") {
+		if latency.Seconds() >= viper.GetFloat64("log.sql.limit") {
 			latencyColor = redColor
 		}
 	}
@@ -75,22 +85,22 @@ func SQLLog(latency time.Duration, query string, args ...interface{}) {
 
 	// Affichage des logs
 	// ------------------
-	if viper.GetInt("sql_log.level") == 1 {
+	if viper.GetInt("log.sql.level") == 1 {
 		// Time only
 		// ---------
 		log.Printf("SQL  | %s | %4s |%s %v %s\t|\n",
 			time.Now().Format("2006-01-02 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor)
-	} else if viper.GetInt("sql_log.level") == 2 {
+	} else if viper.GetInt("log.sql.level") == 2 {
 		// Time and query
 		// --------------
-		log.Printf("SQL  | %s | %4s |%s %v %s\t| %s\n",
+		log.Printf("SQL  | %s | %4s |%s %v %s\t| %s |\n",
 			time.Now().Format("2006-01-02 15:04:05"),
 			requestType,
 			latencyColor, latency, resetColor,
 			query)
-	} else if viper.GetInt("sql_log.level") == 3 {
+	} else if viper.GetInt("log.sql.level") == 3 {
 		// Time, query and arguments
 		// -------------------------
 		log.Printf("SQL  | %s | %4s |%s %v %s\t| %s | %v\n",

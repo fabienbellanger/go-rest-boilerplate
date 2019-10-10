@@ -1,0 +1,30 @@
+{{- define "logs/sqlLogs.gohtml" }}
+    <div id="sqlLogsList">
+    {{- if gt (len .sqlLogs) 0 }}
+        <table class="table table-bordered table-striped table-hover table-sm" id="sqlLogsTable">
+            <thead>
+                <tr>
+                    <th scope="col" width="140px" class="col-timestamp">Timestamp</th>
+                    <th scope="col" width="70px">Request</th>
+                    <th scope="col" width="100px">Latency</th>
+                    <th scope="col">Query</th>
+                    <th scope="col">Parameters</th>
+                </tr>
+            </thead>
+            <tbody>
+            {{- range $index, $log := .sqlLogs }}
+                <tr>
+                    <td>{{ $log.Sql.Timestamp }}</td>
+                    <td align="center">
+                        <span class="badge badge-pill badge-info request-type">{{ $log.Sql.Request }}</span>
+                    </td>
+                    <td align="right">{{ $log.Sql.Latency }}</td>
+                    <td class="col-query">{{ $log.Sql.Query }}</td>
+                    <td class="col-parameters">{{ $log.Sql.Parameters }}</td>
+                </tr>
+            {{- end }}
+            </tbody>
+        </table>
+    {{- end }}
+    </div>
+{{- end }}

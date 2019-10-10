@@ -22,9 +22,9 @@ update:
 updateAll:
 	$(GOGET) -u all && $(GOMOD) tidy
 
-runApi:
-	$(GORUN) -race main.go api
-api: install runApi
+runServe:
+	$(GORUN) -race main.go serve
+serve: install runServe
 
 runWebSocket:
 	$(GORUN) -race main.go websocket
@@ -39,8 +39,12 @@ runDbDump:
 dbDump: install runDbDump
 
 runLogsRotation:
-	$(GORUN) main.go log
-log: install runLogsRotation
+	$(GORUN) main.go logs-rotation
+logsRotation: install runLogsRotation
+
+runLogsExport:
+	$(GORUN) main.go logs-export -A
+logsExport: install runLogsExport
 
 runMakeMigration:
 	$(GORUN) main.go make-migration

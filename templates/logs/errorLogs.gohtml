@@ -1,0 +1,22 @@
+{{- define "logs/errorLogs.gohtml" }}
+    <div id="errorLogsList">
+    {{- if gt (len .errorLogs) 0 }}
+        <table class="table table-bordered table-striped table-hover table-sm" id="errorLogsTable">
+            <thead>
+                <tr>
+                    <th scope="col" width="140px" class="col-timestamp">Timestamp</th>
+                    <th scope="col">Message</th>
+                </tr>
+            </thead>
+            <tbody>
+            {{- range $index, $log := .errorLogs }}
+                <tr>
+                    <td>{{ $log.Error.Timestamp }}</td>
+                    <td class="col-message">{{ $log.Error.Message }}</td>
+                </tr>
+            {{- end }}
+            </tbody>
+        </table>
+    {{- end }}
+    </div>
+{{- end }}

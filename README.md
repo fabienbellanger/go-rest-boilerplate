@@ -1,4 +1,6 @@
-# Go Rest API boilerplate
+# Go Web Server boilerplate
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/fabienbellanger/go-rest-boilerplate)](https://goreportcard.com/report/github.com/fabienbellanger/go-rest-boilerplate)
 
 ## Sommaire
 -  [Installation](#installation)
@@ -7,8 +9,15 @@
    -  [Production](#production)
 -  [Architecture du projet](#architecture-du-projet)
 -  [Golang web server in production](#golang-web-server-in-production)
+-  [Serveur Web](#Serveur-Web)
+-  [Mesure et performance](#mesure-et-performance)
+    -  [pprof](#pprof)
+    -  [trace](#trace)
+    -  [cover](#cover)
 -  [TODO list](#todo-list)
 -  [Astuces et explications](#Astuces-et-explications)
+    -  [Performance, Débug et profilage](#Performance,-Débug-et-profilage)
+    -  [Architecture](#architecture)
 
 
 ## Installation
@@ -21,8 +30,9 @@
 ### Dévelopement
 | Commande | Description |
 |---|---|
-| `make api` | Launch Web server |
-| `make log` | Launch logs rotation |
+| `make serve` | Launch Web server |
+| `make logsRotation` | Launch logs rotation |
+| `make logsExport` | Launch logs CSV export |
 | `make dbInit` | Launch database initilization |
 | `make dbDump` | Launch database dump |
 | `make make-migration` | Create migration |
@@ -31,12 +41,14 @@
 
 ### Production
 
-Compiler le fichier binaire `<binaire>` avec `make build` et renseigner des bonnes valeurs de le fichier de configuration `config.toml`.
+Compiler le fichier binaire `<binaire>` avec `make build` et renseigner des bonnes valeurs de le fichier de 
+configuration `config.toml`.
 
 | Commande | Description |
 |---|---|
-| `./<binaire> api` | Launch Web server |
-| `./<binaire> log` | Launch logs rotation |
+| `./<binaire> serve` | Launch Web server |
+| `./<binaire> logs-rotation` | Launch logs rotation |
+| `./<binaire> logs-export` | Launch logs CSV export |
 | `./<binaire> db --init` | Launch database initilization |
 | `./<binaire> db --dump` | Launch database dump |
 | `./<binaire> make-migration -n <Name in CamelCase>` | Create migration |
@@ -49,14 +61,20 @@ Compiler le fichier binaire `<binaire>` avec `make build` et renseigner des bonn
 \_ assets
    \_ js
 \_ commands
-\_ handlers
 \_ database
+\_ handlers
+   \_ api
+   \_ web
 \_ lib
 \_ logs
-\_ orm
-   \_ migrations
-   \_ models
+\_ migrations
+\_ models
+\_ repositories
+   \_ user
 \_ routes
+   \_ user
+   \_ echo
+   \_ web
 \_ templates
    \_ example
    \_ layout
@@ -65,12 +83,20 @@ Compiler le fichier binaire `<binaire>` avec `make build` et renseigner des bonn
 
 -  Le dossier `assets` contient les fichiers multimédia (images, vidéos, etc.), JavaScript ou encore CSS.
 -  Le dossier `commands` contient toutes les commandes que l'on peut lancer depuis un terminal.
--  Le dossier `handlers` contient tous les controleurs du serveur Web.
--  Le dossier `database` contient tous les fichiers relatifs à l'utilisation de MySQL ainsi que l'initialisation et le dump de la base.
+-  Le dossier `database` contient tous les fichiers relatifs à l'utilisation de MySQL ainsi que l'initialisation 
+    et le dump de la base. Il contient également l'initalisation de l'ORM.
+-  Le dossier `handlers` contient tous les handlers du serveur Web. Ils sont divisés par type. 
+    Par exemple, on a un dossier `api` pour gérer les API et un dossier `web` pour gérer un "site".
 -  Le dossier `lib` contient des fonctions globales à l'application.
 -  Le dossier `logs` contient les logs du serveur Web.
--  Le dossier `orm` contient les fichiers de migrations ainsi que les modèles.
--  Le dossier `routes` contient les fichiers relatifs au routing.
+-  Le dossier `migrations` contient les fichiers de migrations.
+-  Le dossier `models` contient les modèles (base de données).
+-  Le dossier `repositories` contient les repositories.
+    Ces fichiers permettent d'écrire les requêtes s'appliquant à un modèle.
+    Les fichiers dépendant du type de base de données, ils sont suffixés par le type de base de données, 
+    par exemple, `_mysql`.
+-  Le dossier `routes` contient les fichiers relatifs au routing. Ils sont divisés par type. 
+    Par exemple, on a un dossier `api` pour gérer les API et un dossier `web` pour gérer un "site".
 -  Le dossier `templates` contient les templates des différentes page Web.
 -  Le dossier `websockets` contient les fichiers relatifs au serveur de WebSockets.
 
@@ -109,6 +135,15 @@ WantedBy=multi-user.target
 | `service <service name> stop` | To stop |
 
 
+## Serveur Web
+Le serveur peut contenir plusieurs sous-domaines. Leur configuration se fait dans le fichier `config.toml` via la partie
+`[server]`. Le serveur possède 3 sous-domaines par défaut :
+-  `apiSubDomain` : sous-domaine relatif aux API
+-  `clientSubDomain` :  sous-domaine pour lancer, par exemple, une application JavaScript Vue.js
+-  `webSubDomain` : sous-domaine pour créer une application côté serveur. Il contient également les routes de debug pour 
+`pprof` ou `trace`.
+
+
 ## Mesure et performance
 Go met à disposition de puissants outils pour mesurer les performances des programmes :
 -  pprof (graph, flamegraph, peek)
@@ -118,51 +153,66 @@ Go met à disposition de puissants outils pour mesurer les performances des prog
 => Lien vers une vidéo intéressante [Mesure et optimisation de la performance en Go](https://www.youtube.com/watch?v=jd47gDK-yDc)
 
 ### pprof
+Lancer :
 ```bash
 curl http://localhost:8888/debug/pprof/heap?seconds=10 > <fichier à analyser>
+```
+Puis :
+```bash
 go tool pprof -http :7000 <fichier à analyser> # Interface web
 go tool pprof --nodefraction=0 -http :7000 <fichier à analyser> # Interface web avec tous les noeuds
 go tool pprof <fichier à analyser> # Ligne de commande
 ```
 
 ### trace
+Lancer :
 ```bash
 go test <package path> -trace=<fichier à analyser>
 curl localhost:<port>/debug/pprof/trace?seconds=10 > <fichier à analyser>
+```
+Puis :
+```bash
 go tool trace <fichier à analyser>
 ```
 
 ### cover
+Lancer :
 ```bash
 go test <package path> -covermode=count -coverprofile=./<fichier à analyser>
+```
+Puis :
+```bash
 go tool cover -html=<fichier à analyser>
 ```
 
 
 ## TODO list
--  [ ] Utiliser et rendre paramétrable le Log Level d'Echo
 -  [x] Passer aux modules introduits avec Go 1.11 :
     -  https://roberto.selbach.ca/intro-to-go-modules/
     -  https://www.melvinvivas.com/go-version-1-11-modules/
     -  https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d
 -  [x] Mettre en place un système de migration avec GORM
 -  [x] Utiliser [Viper](https://github.com/spf13/viper) pour gérer la config
--  [ ] Séparer les logs d'accès des autres logs
--  SQL logs
+-  [x] Séparer les logs d'accès des autres logs
+-  [x] Ajouter une Basic Auth pour pprof
+-  [x] SQL logs
     -  [x] Afficher la requête sans retour à la ligne
     -  [x] Gérer la variable `limit` dans fichier de configuration
     -  [x] Gérer la rotation des logs
-    -  [ ] Afficher les arguments directement dans la requête ou dans un tableau
-    -  [x] Logger GORM
-    -  [ ] Faire une interface graphique pour afficher et filter les logs
+    -  [] Logger GORM dans un fichier de log [GORM logger](http://gorm.io/docs/logger.html)
+-  [x] Mettre les logs SQL dans un fichier à part
+-  [x] Exporter les logs en CSV
+-  [ ] Faire une interface graphique pour afficher et filter les logs
+    -  [x] Mettre une Basic Auth
+    -  [ ] Séparer du serveur principal, ie. nouveau serveur
 -  [ ] Gestion des timezones
 -  [ ] Facade pour les datetimes
--  [ ] Problème de consommation mémoire
-    -  [https://github.com/gin-contrib/pprof](https://github.com/gin-contrib/pprof)
-    -  [https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d](https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d)
 
 
 ## Astuces et explications
+
+### Performance, Débug et profilage
+-  [https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d](https://medium.com/dm03514-tech-blog/sre-debugging-simple-memory-leaks-in-go-e0a9e6d63d4d)
 -  [pprof & Memory leaks](https://www.freecodecamp.org/news/how-i-investigated-memory-leaks-in-go-using-pprof-on-a-large-codebase-4bec4325e192/)
 -  [Allocation efficiency in high-performance Go services](https://segment.com/blog/allocation-efficiency-in-high-performance-go-services/)
 -  [Astuces Slices](https://github.com/golang/go/wiki/SliceTricks)

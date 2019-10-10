@@ -5,20 +5,20 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
 
-	"github.com/fabienbellanger/go-rest-boilerplate/handlers/user"
+	apiHandler "github.com/fabienbellanger/go-rest-boilerplate/handlers/api"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes/api"
 	"github.com/fabienbellanger/go-rest-boilerplate/routes/web"
 )
 
-// initRoutes initializes routes list
-func initRoutes(e *echo.Echo) {
+// initApiRoutes initializes routes list
+func initApiRoutes(e *echo.Echo) {
 	// JWT configuration
 	// -----------------
 	jwtConfiguration := middleware.JWTConfig{
 		ContextKey:  "user",
 		TokenLookup: "header:" + echo.HeaderAuthorization,
 		AuthScheme:  "Bearer",
-		Claims:      &user.JwtClaims{},
+		Claims:      &apiHandler.JwtClaims{},
 		SigningKey:  []byte(viper.GetString("jwt.secret")),
 	}
 
@@ -29,11 +29,48 @@ func initRoutes(e *echo.Echo) {
 	// Liste des routes non protégées (à placer avant les routes protégées)
 	// --------------------------------------------------------------------
 	api.NewApiAuthRoute(versionGroup).AuthRoutes()
-	api.NewApiExampleRoute(versionGroup).ExampleRoutes()
-	web.NewWebExampleRoute(versionGroup).ExampleRoutes()
+	api.NewApiBenchmarkRoute(versionGroup).BenchmarkRoutes()
 
 	// Liste des routes protégées
 	// --------------------------
 	versionGroup.Use(middleware.JWTWithConfig(jwtConfiguration))
 	api.NewApiUserRoute(versionGroup).UsersRoutes()
+}
+
+// initWebRoutes initializes routes list
+func initWebRoutes(e *echo.Echo) {
+	group := e.Group("")
+
+	// Routes
+	// ------
+	web.NewWebExampleRoute(group).ExampleRoutes()
+
+	// Protection des routes par une Basic Auth
+	// ----------------------------------------
+	protectedGroup := e.Group("")
+
+	protectedGroup.Use(middleware.BasicAuth(
+		func(username, password string, c echo.Context) (bool, error) {
+			basicAuthUsername := viper.GetString("debug.basicAuthUsername")
+			basicAuthPassword := viper.GetString("debug.basicAuthPassword")
+
+			if basicAuthUsername == "" || basicAuthPassword == "" {
+				return false, nil
+			} else if username == basicAuthUsername && password == basicAuthPassword {
+				return true, nil
+			}
+
+			return false, nil
+		},
+	))
+
+	// Profilage
+	// ---------
+	if viper.GetBool("debug.pprof") {
+		web.NewWebPprofRoute(protectedGroup).PprofRoutes()
+	}
+
+	// Interface de visualisation des logs
+	// -----------------------------------
+	web.NewWebLogsRoute(protectedGroup).LogsRoutes()
 }

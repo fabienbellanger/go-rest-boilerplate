@@ -134,11 +134,11 @@ func Delete(query string, args ...interface{}) (int64, error) {
 
 // logRequest writes query log to Gin default writer
 func logRequest(start time.Time, query string, args ...interface{}) {
-	if viper.GetInt("sql_log.level") >= 1 {
+	if viper.GetInt("log.sql.level") >= 1 {
 		elapsed := time.Since(start)
-		limit := viper.GetFloat64("sql_log.limit")
+		limit := viper.GetFloat64("log.sql.limit")
 
-		if limit == 0.0 || viper.GetBool("sql_log.displayOverLimit") || elapsed.Seconds() >= limit {
+		if limit == 0.0 || viper.GetBool("log.sql.displayOverLimit") || elapsed.Seconds() >= limit {
 			lib.SQLLog(elapsed, query, args)
 		}
 	}
