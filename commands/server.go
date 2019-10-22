@@ -33,10 +33,16 @@ var ServerCommand = &cobra.Command{
 |-------------------|
 
 `)
-		port := viper.GetInt("server.port")
+		// Informations
+		// ------------
+		fmt.Print("Version\t\t\t")
+		color.Green(viper.GetString("version") + "\n")
+		fmt.Print("Environment\t\t")
+		color.Green(viper.GetString("environment") + "\n")
 
 		// Test du port
 		// ------------
+		port := viper.GetInt("server.port")
 		if port < 1000 || port > 10000 {
 			lib.CheckError(errors.New("a valid port number must be configured (between 1000 and 10000)"), 1)
 		}
@@ -60,7 +66,7 @@ var ServerCommand = &cobra.Command{
 		defer database.Orm.Close()
 
 		fmt.Print("Connection to ORM \t")
-		color.Green("✔\n")
+		color.Green("✔\n\n")
 
 		// Lancement du serveur web
 		// ------------------------
