@@ -11,7 +11,7 @@ import (
 )
 
 var logsErrors bool
-var logsSql bool
+var logsSQL bool
 var logsAccess bool
 var logsAll bool
 var logsCsvSeparator string
@@ -19,7 +19,7 @@ var logsCsvSeparator string
 func init() {
 	LogsExportCommand.Flags().BoolVarP(&logsErrors, "errors", "e", false, "Export errors logs")
 	LogsExportCommand.Flags().BoolVarP(&logsAccess, "access", "a", false, "Export access logs")
-	LogsExportCommand.Flags().BoolVarP(&logsSql, "sql", "s", false, "Export SQL logs")
+	LogsExportCommand.Flags().BoolVarP(&logsSQL, "sql", "s", false, "Export SQL logs")
 	LogsExportCommand.Flags().BoolVarP(&logsAll, "all", "A", false, "Export all logs")
 	LogsExportCommand.Flags().StringVarP(&logsCsvSeparator, "separator", "c", ";", "CSV separator (',', ';', 'tab')")
 
@@ -57,7 +57,7 @@ var LogsExportCommand = &cobra.Command{
 				logs = append(logs, "errors")
 			}
 
-			if logsSql {
+			if logsSQL {
 				logs = append(logs, "sql")
 			}
 		}
@@ -99,7 +99,7 @@ func exportLogs(logs []string) {
 			createFile(viper.GetString("log.server.accessFilename"))
 		}
 
-		if logsSql {
+		if logsSQL {
 			createFile(viper.GetString("log.sql.sqlFilename"))
 		}
 	}

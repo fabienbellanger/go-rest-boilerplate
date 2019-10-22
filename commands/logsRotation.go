@@ -27,7 +27,7 @@ type logFile struct {
 
 var logErrorFileName string
 var logAccessFileName string
-var logSqlFileName string
+var logSQLFileName string
 
 func init() {
 	// Ajout de la commande à la commande racine
@@ -71,26 +71,26 @@ func executeLogsRotation() {
 	// --------------------------------------------------
 	logErrorFiles := findLogFile(logErrorFileName)
 	logAccessFiles := findLogFile(logAccessFileName)
-	logSqlFiles := findLogFile(logSqlFileName)
+	logSQLFiles := findLogFile(logSQLFileName)
 
 	// Rotation des fichiers de log non archivés
 	// -----------------------------------------
 	makeLogsRotation(logErrorFiles)
 	makeLogsRotation(logAccessFiles)
-	makeLogsRotation(logSqlFiles)
+	makeLogsRotation(logSQLFiles)
 
 	// Archivage des fichiers de log
 	// -----------------------------
 	makeLogsArchiving(logErrorFiles, logErrorFileName)
 	makeLogsArchiving(logAccessFiles, logAccessFileName)
-	makeLogsArchiving(logSqlFiles, logSqlFileName)
+	makeLogsArchiving(logSQLFiles, logSQLFileName)
 
 	// Déplace le contenu du fichier courant dans le fichier préfixé par .1
 	// et remet à zéro le contenu du fichier courant
 	// --------------------------------------------------------------------
 	createNewLogFile(logErrorFileName)
 	createNewLogFile(logAccessFileName)
-	createNewLogFile(logSqlFileName)
+	createNewLogFile(logSQLFileName)
 
 	lib.DisplaySuccessMessage("Logs rotation successfully completed\n")
 }
@@ -151,8 +151,8 @@ func checkLogFiles() {
 
 	// SQL logs
 	// --------
-	logSqlFileName = viper.GetString("log.dirPath") + viper.GetString("log.sql.sqlFilename")
-	_, err = os.OpenFile(logSqlFileName, os.O_RDWR, 0755)
+	logSQLFileName = viper.GetString("log.dirPath") + viper.GetString("log.sql.sqlFilename")
+	_, err = os.OpenFile(logSQLFileName, os.O_RDWR, 0755)
 	if err != nil {
 		lib.CheckError(errors.New("log file "+viper.GetString("log.sql.sqlFilename")+" does not exists"), 2)
 	}
