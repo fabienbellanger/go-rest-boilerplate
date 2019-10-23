@@ -7,3 +7,6 @@ branches:
   only:
     - master
     - develop
+
+before_script:
+  - cp config.toml.dist config.toml
