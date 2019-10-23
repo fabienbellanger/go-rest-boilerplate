@@ -204,9 +204,8 @@ go tool cover -html=<fichier à analyser>
 -  [x] Exporter les logs en CSV
 -  [ ] Faire une interface graphique pour afficher et filter les logs
     -  [x] Mettre une Basic Auth
-    -  [ ] Séparer du serveur principal, ie. nouveau serveur
 -  [ ] Gestion des timezones
--  [ ] Facade pour les datetimes
+-  [ ] Interface pour les datetimes
 
 
 ## Astuces et explications
