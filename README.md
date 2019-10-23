@@ -1,6 +1,7 @@
 # Go Web Server boilerplate
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/fabienbellanger/go-rest-boilerplate)](https://goreportcard.com/report/github.com/fabienbellanger/go-rest-boilerplate)
+[![Build Status](https://travis-ci.org/fabienbellanger/go-rest-boilerplate.svg?branch=master)](https://travis-ci.org/fabienbellanger/go-rest-boilerplate)
 
 ## Sommaire
 -  [Installation](#installation)
