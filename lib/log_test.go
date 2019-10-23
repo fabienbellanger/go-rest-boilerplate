@@ -57,7 +57,7 @@ func TestCustomLog(t *testing.T) {
 // TestSQLLog
 func TestSQLLog(t *testing.T) {
 	b := new(bytes.Buffer)
-	DefaultEchoLogWriter = b
+	DefaultSqlLogWriter = b
 	viper.Set("environment", "development")
 	viper.Set("log.sql.limit", 0.01)
 	viper.Set("log.sql.level", 1)
