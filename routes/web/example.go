@@ -30,11 +30,4 @@ func (r *webExampleRoute) ExampleRoutes() {
 			"webSocketUrl": viper.GetString("webSocketServer.port"),
 		})
 	})
-
-	// Test page for VueJS
-	r.Group.GET("/vuejs", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "example/vuejs.gohtml", map[string]interface{}{
-			"title": "VueJS example",
-		})
-	})
 }
