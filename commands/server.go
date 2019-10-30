@@ -43,7 +43,7 @@ var ServerCommand = &cobra.Command{
 		// Test du port
 		// ------------
 		port := viper.GetInt("server.port")
-		if port < 1000 || port > 10000 {
+		if port < 10 || port > 10000 {
 			lib.CheckError(errors.New("a valid port number must be configured (between 1000 and 10000)"), 1)
 		}
 

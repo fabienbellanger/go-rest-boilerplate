@@ -10,6 +10,10 @@
    -  [Production](#production)
 -  [Architecture du projet](#architecture-du-projet)
 -  [Golang web server in production](#golang-web-server-in-production)
+-  [Deploiement avec Docker](#Deploiement-avec-Docker)
+    -  [Liens](#Liens)
+    -  [Commandes](#Commandes)
+    -  [TODO](#TODO)
 -  [Serveur Web](#Serveur-Web)
 -  [Mesure et performance](#mesure-et-performance)
     -  [pprof](#pprof)
@@ -136,6 +140,26 @@ WantedBy=multi-user.target
 | `service <service name> status` | To show status |
 | `service <service name> stop` | To stop |
 
+
+## Deploiement avec Docker
+
+### Liens
+-  [Deploying Go servers with Docker](https://blog.golang.org/docker)
+-  [Building Docker Containers for Go Applications](https://www.callicoder.com/docker-golang-image-container-example/)
+
+### Commandes
+| Commande | Description |
+|---|---|
+| `docker image ls` | Lister les images |
+| `docker image remove <image_id>` ou `docker rmi <image_id>` | Supprimer une image |
+| `docker container ls` | Lister les conteneurs |
+| `docker container stop <container_id>` | Stopper un conteneur |
+| `docker rm <container_id>` | Supprimer un conteneur |
+| `docker build -t <image_name> -f <dockerfile_name>.` | Build de l'image |
+| `docker run -d -p <port_local>:<port_container> <image_name>` | Lancement de l'image |
+
+### TODO
+-  [ ] Pouvoir modifier dynamique le port et le nom du binaire dans le dockerfile
 
 ## Serveur Web
 Le serveur peut contenir plusieurs sous-domaines. Leur configuration se fait dans le fichier `config.toml` via la partie
