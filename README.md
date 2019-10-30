@@ -155,7 +155,7 @@ WantedBy=multi-user.target
 | `docker container ls` | Lister les conteneurs |
 | `docker container stop <container_id>` | Stopper un conteneur |
 | `docker rm <container_id>` | Supprimer un conteneur |
-| `docker build -t <image_name> -f <dockerfile_name>.` | Build de l'image |
+| `docker build -t <image_name> -f <dockerfile_name> .` | Build de l'image |
 | `docker run -d -p <port_local>:<port_container> <image_name>` | Lancement de l'image |
 
 ### TODO
