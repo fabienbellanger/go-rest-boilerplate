@@ -20,11 +20,8 @@ func OpenORM() {
 		viper.GetString("database.driver"),
 		viper.GetString("database.user")+":"+viper.GetString("database.password")+
 			"@tcp("+viper.GetString("database.host")+":"+viper.GetString("database.port")+")"+
-			"/"+viper.GetString("database.name")+"?parseTime=true&loc="+
-			viper.GetString("database.timezone")+
+			"/"+viper.GetString("database.name")+"?parseTime=true&loc=GMT"+ //viper.GetString("database.timezone")+
 			"&charset="+viper.GetString("database.charset"))
-	lib.CheckError(err, 1)
-
 	lib.CheckError(err, 1)
 
 	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
