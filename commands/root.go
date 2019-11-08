@@ -1,8 +1,6 @@
 package commands
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -25,6 +23,6 @@ func Execute() {
 	// Lancement de la commande racine
 	// -------------------------------
 	if err := rootCommand.Execute(); err != nil {
-		os.Exit(1)
+		lib.CheckError(err, 1)
 	}
 }

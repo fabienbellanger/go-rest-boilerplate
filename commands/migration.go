@@ -13,7 +13,7 @@ import (
 	"github.com/fabienbellanger/go-rest-boilerplate/lib"
 )
 
-const migrationsPath = "./orm/migrations/"
+const migrationsPath = "./migrations/"
 
 var migrationFileName string
 
@@ -40,39 +40,47 @@ var MigrationCommand = &cobra.Command{
 
 `)
 
+		if migrationFileName == "" {
+			lib.CheckError(errors.New("migration file name cannot be empty"), 1)
+		}
+
 		timePrefix := time.Now().Format("20060102150405")
 		migrationFileNamePath := migrationsPath + timePrefix + "_" + migrationFileName + ".go"
 		functionName := "Migration" + timePrefix + migrationFileName
 
 		// Création du fichier de migration
 		// --------------------------------
-		createMigrationFile(migrationsPath, migrationFileNamePath, functionName, timePrefix)
+		err := createMigrationFile(migrationsPath, migrationFileNamePath, functionName, timePrefix)
+		lib.CheckError(err, 1)
 
 		// Ajout de la fonction à fin du fichier orm/migration.go
 		// ------------------------------------------------------
-		updateMigrationsFile(functionName)
+		err = updateMigrationsFile(functionName)
+		lib.CheckError(err, 1)
 	},
 }
 
 // createMigrationFile creates migration file
-func createMigrationFile(migrationsPath string, migrationFileNamePath string, functionName string, timePrefix string) {
+func createMigrationFile(migrationsPath string, migrationFileNamePath string, functionName string, timePrefix string) error {
 	// Le répertoire existe t-il ?
 	// ---------------------------
 	if _, err := os.Stat(migrationsPath); os.IsNotExist(err) {
-		lib.CheckError(errors.New(migrationsPath+" directory does not exist"), 1)
+		return errors.New(migrationsPath + " directory does not exist")
 	}
 
 	// Le fichier existe t-il ?
 	// ------------------------
 	if _, err := os.Stat(migrationFileNamePath); err == nil {
-		lib.CheckError(errors.New(migrationFileNamePath+" file already exists"), 2)
+		return errors.New(migrationFileNamePath + " file already exists")
 	}
 
 	// Création du fichier
 	// -------------------
 	file, err := os.Create(migrationFileNamePath)
-	lib.CheckError(err, 3)
 	defer file.Close()
+	if err != nil {
+		return err
+	}
 
 	// Ecriture dans le fichier
 	// ------------------------
@@ -89,18 +97,22 @@ func ` + functionName + `(db *gorm.DB) {
 	if err != nil {
 		// Suppression du fichier
 		err := os.Remove(migrationFileNamePath)
-		lib.CheckError(err, 5)
+
+		return err
 	}
-	lib.CheckError(err, 4)
 
 	lib.DisplaySuccessMessage("File " + timePrefix + migrationFileName + ".go created\n")
+
+	return nil
 }
 
 // updateMigrationsFile inserts line into migrations file with the commented function
-func updateMigrationsFile(functionName string) {
-	migrationsFile, err := os.Open("orm/migration.go")
-	lib.CheckError(err, 6)
+func updateMigrationsFile(functionName string) error {
+	migrationsFile, err := os.Open("./database/migration.go")
 	defer migrationsFile.Close()
+	if err != nil {
+		return err
+	}
 
 	var lines []string
 	scanner := bufio.NewScanner(migrationsFile)
@@ -117,8 +129,12 @@ func updateMigrationsFile(functionName string) {
 		fileContent += line + "\n"
 	}
 
-	err = ioutil.WriteFile("orm/migration.go", []byte(fileContent), 0644)
-	lib.CheckError(err, 7)
+	err = ioutil.WriteFile("./database/migration.go", []byte(fileContent), 0644)
+	if err != nil {
+		return err
+	}
 
-	lib.DisplaySuccessMessage("File orm/migration.go updated (just uncomment to apply)\n")
+	lib.DisplaySuccessMessage("File database/migration.go updated (just uncomment to apply)\n")
+
+	return nil
 }

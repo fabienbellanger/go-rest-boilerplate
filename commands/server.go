@@ -50,8 +50,7 @@ var ServerCommand = &cobra.Command{
 		// Connexion à MySQL
 		// -----------------
 		if !lib.IsDatabaseConfigCorrect() {
-			err := errors.New("no or missing database information in settings file")
-			lib.CheckError(err, 2)
+			lib.CheckError(errors.New("no or missing database information in settings file"), 1)
 		}
 
 		database.Open()

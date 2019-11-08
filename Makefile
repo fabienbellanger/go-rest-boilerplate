@@ -24,35 +24,35 @@ updateAll:
 
 runServe:
 	$(GORUN) -race main.go serve
-serve: install runServe
+serve: runServe
 
 runWebSocket:
 	$(GORUN) -race main.go websocket
-ws: install runWebSocket
+ws: runWebSocket
 
 runDbInit:
 	$(GORUN) main.go db --init
-dbInit: install runDbInit
+dbInit: runDbInit
 
 runDbDump:
 	$(GORUN) main.go db --dump
-dbDump: install runDbDump
+dbDump: runDbDump
 
 runLogsRotation:
 	$(GORUN) main.go logs-rotation
-logsRotation: install runLogsRotation
+logsRotation: runLogsRotation
 
 runLogsExport:
 	$(GORUN) main.go logs-export -A
-logsExport: install runLogsExport
+logsExport: runLogsExport
 
 runMakeMigration:
 	$(GORUN) main.go make-migration
-make-migration: install runMakeMigration
+make-migration: runMakeMigration
 
 runMigrate:
 	$(GORUN) main.go migrate --force
-migrate: install runMigrate
+migrate: runMigrate
 
 build: 
 	$(GOBUILD) -o $(BINARY_NAME) -v
