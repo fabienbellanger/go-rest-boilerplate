@@ -142,23 +142,22 @@ func (c *Client) broadcastMessage() {
 				// Le hub ferme le channel
 				err := c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				lib.CheckError(err, 0)
-
 				return
 			}
 
 			w, err := c.conn.NextWriter(websocket.TextMessage)
 			if err != nil {
 				lib.CheckError(err, 0)
-
 				return
 			}
 
-			_, err = w.Write(message)
+			// TODO: Attention au problème de concurrence si plusieurs write
+			fmt.Printf("%+v\n", string(message))
+			_, err = w.Write([]byte(string(message) + "_broadcast"))
 			lib.CheckError(err, 0)
 
 			if err := w.Close(); err != nil {
 				lib.CheckError(err, 0)
-
 				return
 			}
 		}
@@ -203,5 +202,5 @@ func (c *Client) test(message Message) {
 
 	// Broadcast du message (attention problème de concurrence, ne pas faire plusieurs write en même temps)
 	// ----------------------------------------------------------------------------------------------------
-	// c.hub.broadcast <- []byte(message.Message)
+	c.hub.broadcast <- []byte(message.Message)
 }
